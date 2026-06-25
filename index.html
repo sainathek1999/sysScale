@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — System Design Estimator</title>
+  <meta name="description" content="Interactive capacity estimation tool for system design interviews.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles (load order matters: tokens → base → layout → components → animations) -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header class="header">
+    <a href="#" class="logo"><span class="logo-mark">⚡</span>SysScale</a>
+    <span class="header-sep"></span>
+    <nav class="header-nav">
+      <button class="header-tab active" onclick="SS.setMode('estimate', this)">Estimator</button>
+      <button class="header-tab" onclick="SS.setMode('cheatsheet', this)">Cheat Sheet</button>
+    </nav>
+    <div class="header-right"><span class="version-badge">v3.0</span></div>
+  </header>
+
+  <!-- ── Body (3 columns) ───────────────────────────── -->
+  <div class="body-wrap">
+
+    <!-- Left sidebar -->
+    <aside class="left-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Systems</div>
+        <div id="system-list"></div>
+      </div>
+      <div class="params-section" id="params-panel"></div>
+    </aside>
+
+    <!-- Center -->
+    <main class="center-panel">
+      <div class="metric-bar" id="metric-bar"></div>
+      <div class="steps-area" id="steps-area"></div>
+    </main>
+
+    <!-- Right panel -->
+    <aside class="right-panel">
+      <div class="right-panel-tabs">
+        <button class="rp-tab active" onclick="SS.setRpTab('arch', this)">Architecture</button>
+        <button class="rp-tab" onclick="SS.setRpTab('components', this)">Components</button>
+        <button class="rp-tab" onclick="SS.setRpTab('tradeoffs', this)">Tradeoffs</button>
+      </div>
+      <div class="rp-content" id="rp-content"></div>
+    </aside>
+
+  </div>
+
+  <!-- ── Scripts (load order: utils → core → systems → app) ── -->
+  <script src="js/utils/format.js"></script>
+  <script src="js/core/diagram.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/core/render.js"></script>
+
+  <script src="js/systems/rate-limiter.js"></script>
+  <script src="js/systems/url-shortener.js"></script>
+  <script src="js/systems/chat-service.js"></script>
+  <script src="js/systems/notifications.js"></script>
+  <script src="js/systems/typeahead.js"></script>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

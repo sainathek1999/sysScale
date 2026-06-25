@@ -1,0 +1,116 @@
+/* ============================================================
+   animations.css — Keyframes + entrance/transition effects
+   ============================================================ */
+
+/* ── Keyframes ───────────────────────────────────────── */
+@keyframes ambient-drift {
+  0%   { transform: translateX(-50%) translateY(0)    scale(1);   opacity: 0.8; }
+  100% { transform: translateX(-50%) translateY(40px) scale(1.1); opacity: 1; }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(var(--indigo-rgb), 0.4); }
+  50%      { box-shadow: 0 0 26px rgba(var(--indigo-rgb), 0.7); }
+}
+
+@keyframes value-flash {
+  0%   { color: var(--amber2); transform: scale(1.15); }
+  100% { color: var(--teal2);  transform: scale(1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pop-in {
+  0%   { opacity: 0; transform: scale(0.92); }
+  60%  { transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake-in {
+  0%   { opacity: 0; transform: translateX(-6px); }
+  30%  { transform: translateX(4px); }
+  50%  { transform: translateX(-3px); }
+  70%  { transform: translateX(2px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes node-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -16; }
+}
+
+/* ── Entrance staggering ─────────────────────────────── */
+.metric-pill {
+  animation: pop-in var(--dur) var(--ease-out) backwards;
+}
+.metric-pill:nth-child(1) { animation-delay: 0.02s; }
+.metric-pill:nth-child(2) { animation-delay: 0.06s; }
+.metric-pill:nth-child(3) { animation-delay: 0.10s; }
+.metric-pill:nth-child(4) { animation-delay: 0.14s; }
+.metric-pill:nth-child(5) { animation-delay: 0.18s; }
+
+.step-card {
+  animation: fade-up var(--dur) var(--ease-out) backwards;
+}
+.steps-inner .step-card:nth-child(1) { animation-delay: 0.05s; }
+.steps-inner .step-card:nth-child(2) { animation-delay: 0.10s; }
+.steps-inner .step-card:nth-child(3) { animation-delay: 0.15s; }
+.steps-inner .step-card:nth-child(4) { animation-delay: 0.20s; }
+.steps-inner .step-card:nth-child(5) { animation-delay: 0.25s; }
+.steps-inner .step-card:nth-child(6) { animation-delay: 0.30s; }
+.steps-inner .step-card:nth-child(7) { animation-delay: 0.35s; }
+
+.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.32s backwards; }
+
+.system-btn { animation: slide-in-right var(--dur) var(--ease-out) backwards; }
+.system-btn:nth-child(1) { animation-delay: 0.04s; }
+.system-btn:nth-child(2) { animation-delay: 0.08s; }
+.system-btn:nth-child(3) { animation-delay: 0.12s; }
+.system-btn:nth-child(4) { animation-delay: 0.16s; }
+.system-btn:nth-child(5) { animation-delay: 0.20s; }
+
+.comp-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
+.comp-card:nth-child(2) { animation-delay: 0.05s; }
+.comp-card:nth-child(3) { animation-delay: 0.10s; }
+.comp-card:nth-child(4) { animation-delay: 0.15s; }
+
+.rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
+
+/* Architecture diagram animated edges + bottleneck node */
+.arch-edge {
+  stroke-dasharray: 4 4;
+  animation: dash-flow 1.2s linear infinite;
+}
+.arch-node-bottleneck {
+  animation: node-pulse 1.4s var(--ease-in-out) infinite;
+}
+
+/* Header bar entrance */
+.header { animation: fade-in var(--dur-slow) var(--ease-out); }
+
+/* ── Reduced motion ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  body::before { animation: none; }
+}

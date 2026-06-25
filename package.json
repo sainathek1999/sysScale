@@ -1,0 +1,11 @@
+{
+  "name": "sysscale",
+  "version": "3.0.0",
+  "description": "Interactive capacity-estimation tool for system design interviews",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": ["system-design", "capacity-estimation", "interview-prep"],
+  "license": "MIT"
+}
