@@ -1,76 +1,82 @@
 /* ============================================================
-   tokens.css — Design system variables (violet-forward theme)
+   tokens.css — Mission Control dark theme
    ============================================================ */
+
+/* @property for animated conic gradient on logo */
+@property --logo-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 :root {
-  /* Surfaces — violet-tinted whites, not sterile pure white */
-  --bg0: #FFFFFF;
-  --bg1: #F7F7FE;
-  --bg2: #EFEFF9;
-  --bg3: #E4E3F3;
-  --bg4: #D2D0E8;
+  /* ── Void palette ──────────────────────────────────────── */
+  --bg0:  #070A10;   /* the void */
+  --bg1:  #0C1018;   /* primary panel */
+  --bg2:  #101620;   /* elevated surface */
+  --bg3:  #16202E;   /* hover */
+  --bg4:  #1D2A3A;   /* active border fill */
 
-  /* Borders */
-  --border:  rgba(109, 40, 217, 0.08);
-  --border2: rgba(109, 40, 217, 0.14);
-  --border3: rgba(109, 40, 217, 0.26);
+  /* ── Borders (cyan-tinted) ─────────────────────────────── */
+  --border:  rgba(34, 211, 238, 0.07);
+  --border2: rgba(34, 211, 238, 0.13);
+  --border3: rgba(34, 211, 238, 0.28);
 
-  /* Text — violet-dark tones */
-  --text:  #1A1035;
-  --text2: #3D3356;
-  --text3: #8B80A8;
-  --text4: #C2BCDA;
+  /* ── Text ──────────────────────────────────────────────── */
+  --text:  #EFF6FF;   /* cool white */
+  --text2: #94A3B8;   /* slate-400 */
+  --text3: #475569;   /* slate-600 */
+  --text4: #1E293B;   /* almost invisible */
 
-  /* Primary: deep electric violet */
-  --indigo:  #6D28D9;
-  --indigo2: #5B21B6;
-  --indigo3: #F5F3FF;
+  /* ── Primary: electric cyan ────────────────────────────── */
+  --indigo:  #22D3EE;   /* repurposed — this is our primary cyan */
+  --indigo2: #06B6D4;
+  --indigo3: rgba(34, 211, 238, 0.08);
+  --indigo-rgb: 34, 211, 238;
 
-  /* Secondary accents */
-  --teal:    #0891B2;
-  --teal2:   #06B6D4;
-  --amber:   #D97706;
-  --amber2:  #F59E0B;
-  --red:     #DC2626;
-  --red2:    #EF4444;
-  --green:   #059669;
-  --green2:  #22C55E;
-  --purple:  #8B5CF6;
-  --purple2: #A78BFA;
+  /* ── Secondary accents ─────────────────────────────────── */
+  --teal:    #10B981;
+  --teal2:   #34D399;
+  --teal-rgb: 16, 185, 129;
+  --amber:   #F59E0B;
+  --amber2:  #FBBF24;
+  --red:     #EF4444;
+  --red2:    #F87171;
+  --red-rgb: 239, 68, 68;
+  --green:   #10B981;
+  --green2:  #34D399;
+  --purple:  #A78BFA;
+  --purple2: #C4B5FD;
 
-  /* RGB for rgba() */
-  --indigo-rgb: 109, 40, 217;
-  --teal-rgb:   8, 145, 178;
-  --red-rgb:    220, 38, 38;
-
-  /* Typography */
-  --font-head: 'Plus Jakarta Sans', system-ui, sans-serif;
+  /* ── Typography ────────────────────────────────────────── */
+  --font-head: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Radii */
-  --r-sm: 7px;
-  --r:    11px;
-  --r-lg: 15px;
-  --r-xl: 22px;
+  /* ── Radii ──────────────────────────────────────────────── */
+  --r-sm: 5px;
+  --r:    9px;
+  --r-lg: 13px;
+  --r-xl: 18px;
 
-  /* Motion */
+  /* ── Motion ─────────────────────────────────────────────── */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast: 0.13s;
-  --dur:      0.22s;
-  --dur-slow: 0.40s;
+  --dur-fast: 0.12s;
+  --dur:      0.20s;
+  --dur-slow: 0.38s;
 
-  /* Layout */
-  --header-h:   58px;
-  --sidebar-w:  252px;
-  --rightbar-w: 320px;
+  /* ── Layout ─────────────────────────────────────────────── */
+  --header-h:   54px;
+  --sidebar-w:  248px;
+  --rightbar-w: 316px;
 
-  /* Shadows — violet-tinted */
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(109,40,217,0.05);
-  --shadow:        0 2px 8px rgba(0,0,0,0.04), 0 4px 18px rgba(109,40,217,0.07);
-  --shadow-md:     0 4px 14px rgba(0,0,0,0.05), 0 10px 30px rgba(109,40,217,0.09);
-  --shadow-lg:     0 8px 30px rgba(0,0,0,0.06), 0 20px 50px rgba(109,40,217,0.10);
-  --shadow-violet: 0 4px 16px rgba(109, 40, 217, 0.28);
-  --shadow-teal:   0 4px 14px rgba(8, 145, 178, 0.22);
+  /* ── Shadows = glows on dark ────────────────────────────── */
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.6),  0 0 0 1px rgba(34,211,238,0.04);
+  --shadow:      0 4px 14px rgba(0,0,0,0.7), 0 0 0 1px rgba(34,211,238,0.06);
+  --shadow-md:   0 8px 28px rgba(0,0,0,0.8), 0 0 0 1px rgba(34,211,238,0.08);
+  --shadow-lg:   0 16px 48px rgba(0,0,0,0.9),0 0 0 1px rgba(34,211,238,0.06);
+  --shadow-violet: 0 0 20px rgba(34,211,238,0.20), 0 0 40px rgba(34,211,238,0.08);
+  --shadow-teal:   0 0 16px rgba(16,185,129,0.22);
 }

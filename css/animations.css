@@ -1,19 +1,16 @@
 /* ============================================================
-   animations.css — Keyframes + entrance/transition effects
+   animations.css — Keyframes + entrance effects (dark theme)
    ============================================================ */
 
-@keyframes logo-pulse {
-  0%, 100% { box-shadow: 0 2px 8px rgba(var(--indigo-rgb), 0.30); }
-  50%      { box-shadow: 0 4px 20px rgba(var(--indigo-rgb), 0.52); }
-}
-
 @keyframes value-flash {
-  0%   { background: rgba(217,119,6,0.18); color: var(--amber); transform: scale(1.14); }
-  100% { background: var(--indigo3);       color: var(--indigo); transform: scale(1); }
+  0%   { background: rgba(245,158,11,0.20); color: var(--amber);
+         box-shadow: 0 0 12px rgba(245,158,11,0.35); transform: scale(1.12); }
+  100% { background: rgba(var(--indigo-rgb),0.10); color: var(--indigo);
+         box-shadow: none; transform: scale(1); }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -23,60 +20,66 @@
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(10px); }
+  from { opacity: 0; transform: translateX(8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes pop-in {
-  0%   { opacity: 0; transform: scale(0.90) translateY(4px); }
-  60%  { transform: scale(1.02) translateY(-1px); }
+  0%   { opacity: 0; transform: scale(0.88) translateY(6px); }
+  65%  { transform: scale(1.02) translateY(-1px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 @keyframes shake-in {
-  0%   { opacity: 0; transform: translateX(-6px); }
-  30%  { transform: translateX(4px); }
+  0%   { opacity: 0; transform: translateX(-8px); }
+  30%  { transform: translateX(5px); }
   55%  { transform: translateX(-2px); }
   75%  { transform: translateX(1px); }
   100% { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes node-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.45; }
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px rgba(239,68,68,0.6)); }
+  50%       { opacity: 0.45; filter: drop-shadow(0 0 0px transparent); }
 }
 
 @keyframes dash-flow {
   to { stroke-dashoffset: -16; }
 }
 
-/* ── Staggered entrances ─────────────────────────────── */
+/* Metric pills — staggered pop-in */
 .metric-pill { animation: pop-in var(--dur) var(--ease-out) backwards; }
-.metric-pill:nth-child(1) { animation-delay: 0.02s; }
-.metric-pill:nth-child(2) { animation-delay: 0.07s; }
-.metric-pill:nth-child(3) { animation-delay: 0.12s; }
-.metric-pill:nth-child(4) { animation-delay: 0.17s; }
-.metric-pill:nth-child(5) { animation-delay: 0.22s; }
+.metric-pill:nth-child(1) { animation-delay: 0.03s; }
+.metric-pill:nth-child(2) { animation-delay: 0.08s; }
+.metric-pill:nth-child(3) { animation-delay: 0.13s; }
+.metric-pill:nth-child(4) { animation-delay: 0.18s; }
+.metric-pill:nth-child(5) { animation-delay: 0.23s; }
 
+/* Step cards — staggered fade-up */
 .step-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
-.steps-inner .step-card:nth-child(1) { animation-delay: 0.04s; }
-.steps-inner .step-card:nth-child(2) { animation-delay: 0.09s; }
-.steps-inner .step-card:nth-child(3) { animation-delay: 0.14s; }
-.steps-inner .step-card:nth-child(4) { animation-delay: 0.19s; }
-.steps-inner .step-card:nth-child(5) { animation-delay: 0.24s; }
-.steps-inner .step-card:nth-child(6) { animation-delay: 0.29s; }
-.steps-inner .step-card:nth-child(7) { animation-delay: 0.34s; }
+.steps-inner .step-card:nth-child(1) { animation-delay: 0.05s; }
+.steps-inner .step-card:nth-child(2) { animation-delay: 0.10s; }
+.steps-inner .step-card:nth-child(3) { animation-delay: 0.15s; }
+.steps-inner .step-card:nth-child(4) { animation-delay: 0.20s; }
+.steps-inner .step-card:nth-child(5) { animation-delay: 0.25s; }
+.steps-inner .step-card:nth-child(6) { animation-delay: 0.30s; }
+.steps-inner .step-card:nth-child(7) { animation-delay: 0.35s; }
 
-.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.28s backwards; }
+.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.30s backwards; }
 
+/* System buttons — slide in from right */
 .system-btn { animation: slide-in-right var(--dur) var(--ease-out) backwards; }
-.system-btn:nth-child(1) { animation-delay: 0.03s; }
-.system-btn:nth-child(2) { animation-delay: 0.07s; }
-.system-btn:nth-child(3) { animation-delay: 0.11s; }
-.system-btn:nth-child(4) { animation-delay: 0.15s; }
-.system-btn:nth-child(5) { animation-delay: 0.19s; }
-.system-btn:nth-child(6) { animation-delay: 0.23s; }
+.system-btn:nth-child(1) { animation-delay: 0.04s; }
+.system-btn:nth-child(2) { animation-delay: 0.08s; }
+.system-btn:nth-child(3) { animation-delay: 0.12s; }
+.system-btn:nth-child(4) { animation-delay: 0.16s; }
+.system-btn:nth-child(5) { animation-delay: 0.20s; }
+.system-btn:nth-child(6) { animation-delay: 0.24s; }
+.system-btn:nth-child(7) { animation-delay: 0.28s; }
+.system-btn:nth-child(8) { animation-delay: 0.32s; }
+.system-btn:nth-child(9) { animation-delay: 0.36s; }
 
+/* Component cards */
 .comp-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
 .comp-card:nth-child(2) { animation-delay: 0.05s; }
 .comp-card:nth-child(3) { animation-delay: 0.10s; }
@@ -84,23 +87,26 @@
 
 .rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
 
+/* Arch edges — flowing dashes */
 .arch-edge {
   stroke-dasharray: 4 4;
-  animation: dash-flow 1.2s linear infinite;
+  animation: dash-flow 1.4s linear infinite;
 }
+
+/* Bottleneck node pulse */
 .arch-node-bottleneck {
-  animation: node-pulse 1.4s var(--ease-in-out) infinite;
+  animation: node-pulse 1.3s var(--ease-in-out) infinite;
 }
 
-.logo-mark { animation: logo-pulse 4s var(--ease-in-out) infinite; }
-.header    { animation: fade-in var(--dur-slow) var(--ease-out); }
+/* Header entrance */
+.header { animation: fade-in var(--dur-slow) var(--ease-out); }
 
-/* ── Reduced motion ──────────────────────────────────── */
+/* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  body::before { display: none; }
+  body::before, body::after { display: none; }
 }

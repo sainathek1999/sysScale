@@ -1,5 +1,5 @@
 /* ============================================================
-   base.css — Reset + global element styles
+   base.css — Reset + global dark-mode element styles
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,93 +18,110 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle violet ambient glow top-center */
+/* ── Scanline overlay — the signature ───────────────────── */
+/* Barely perceptible horizontal banding: live instrument feel */
 body::before {
   content: '';
   position: fixed;
-  top: -120px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 320px;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 3px
+  );
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform; /* promote to own layer — no repaint */
+}
+
+/* Ambient deep cyan bloom — top left, very subtle */
+body::after {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 500px;
   background: radial-gradient(ellipse,
-    rgba(109, 40, 217, 0.06) 0%,
-    transparent 70%);
+    rgba(34, 211, 238, 0.04) 0%,
+    transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Scrollbars */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text4); }
+/* ── Scrollbars ─────────────────────────────────────────── */
+::-webkit-scrollbar          { width: 3px; height: 3px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: rgba(34,211,238,0.22); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(34,211,238,0.40); }
 
-/* Range slider */
+/* ── Range slider ───────────────────────────────────────── */
 input[type=range] {
   width: 100%;
-  height: 4px;
+  height: 3px;
   appearance: none;
-  background: var(--bg3);
+  background: var(--bg4);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
 }
 input[type=range]::-webkit-slider-thumb {
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: white;
-  border: 2.5px solid var(--indigo);
-  box-shadow: var(--shadow-sm), 0 0 0 0 rgba(var(--indigo-rgb), 0.18);
+  background: var(--bg1);
+  border: 2px solid var(--indigo);
+  box-shadow: 0 0 0 0 rgba(var(--indigo-rgb), 0.25),
+              0 0 8px rgba(var(--indigo-rgb), 0.35);
   transition: transform var(--dur-fast) var(--ease-spring),
               box-shadow var(--dur-fast);
 }
 input[type=range]::-webkit-slider-thumb:hover {
-  transform: scale(1.22);
-  box-shadow: var(--shadow-sm), 0 0 0 5px rgba(var(--indigo-rgb), 0.14);
+  transform: scale(1.25);
+  box-shadow: 0 0 0 5px rgba(var(--indigo-rgb), 0.14),
+              0 0 12px rgba(var(--indigo-rgb), 0.45);
 }
 input[type=range]:active::-webkit-slider-thumb {
   transform: scale(1.1);
-  box-shadow: var(--shadow-sm), 0 0 0 8px rgba(var(--indigo-rgb), 0.10);
-}
-input[type=range]::-moz-range-thumb {
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: white;
-  border: 2.5px solid var(--indigo);
-}
-input[type=range]::-moz-range-progress {
-  height: 4px;
-  background: var(--indigo);
-  border-radius: 2px;
+  box-shadow: 0 0 0 8px rgba(var(--indigo-rgb), 0.10),
+              0 0 16px rgba(var(--indigo-rgb), 0.50);
 }
 
+/* ── Select ─────────────────────────────────────────────── */
 select {
   width: 100%;
   padding: 7px 10px;
-  background: white;
-  border: 1.5px solid var(--border2);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
   border-radius: var(--r);
   color: var(--text);
   font-size: 12px;
   outline: none;
   cursor: pointer;
   font-family: var(--font-body);
-  box-shadow: var(--shadow-sm);
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
 }
-select:hover { border-color: var(--border3); }
-select:focus {
+select:hover  { border-color: var(--border3); }
+select:focus  {
   border-color: var(--indigo);
-  box-shadow: var(--shadow-sm), 0 0 0 3px rgba(var(--indigo-rgb), 0.14);
+  box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.15),
+              0 0 12px rgba(var(--indigo-rgb), 0.12);
 }
+select option { background: var(--bg2); color: var(--text); }
 
-code { font-family: var(--font-mono); font-size: 0.90em; }
+code { font-family: var(--font-mono); font-size: 0.88em; color: var(--indigo); }
 
 :focus-visible {
-  outline: 2px solid var(--indigo);
+  outline: 1px solid var(--indigo);
   outline-offset: 2px;
   border-radius: 3px;
+  box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.18);
 }

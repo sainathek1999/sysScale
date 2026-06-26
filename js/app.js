@@ -288,5 +288,24 @@
   document.addEventListener('DOMContentLoaded', function () {
     S.readURL();
     S.renderAll();
+
+    // Lenis smooth scroll on the two overflow-y panels
+    if (window.Lenis) {
+      [document.getElementById('steps-area'), document.getElementById('rp-content')].forEach(function (el) {
+        if (!el) return;
+        const lenis = new window.Lenis({
+          wrapper: el,
+          content: el,
+          smoothWheel: true,
+          duration: 1.1,
+          easing: function (t) { return 1 - Math.pow(1 - t, 4); },
+          gestureOrientation: 'vertical',
+          normalizeWheel: false,
+          smoothTouch: false,
+        });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+      });
+    }
   });
 })();
