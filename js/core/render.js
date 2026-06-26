@@ -74,6 +74,8 @@ window.SS = window.SS || {};
       <ul class="tips-list">${sys.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
     h += '</div>';
     el('steps-area').innerHTML = h;
+    // Inject glossary tooltips after render
+    if (window.SS.applyGlossary) window.SS.applyGlossary(el('steps-area'));
   };
 
   /* ── Right panel ───────────────────────────────────── */
@@ -99,13 +101,23 @@ window.SS = window.SS || {};
           <div class="comp-reason">${comp.reason}</div>
           <div class="comp-stats">${comp.stats.map(s => `<span class="comp-stat">${s}</span>`).join('')}</div>
         </div>`).join('');
-    } else {
+    } else if (S.cur.rpTab === 'tradeoffs') {
       h = `<div class="rp-section-title">Algorithm tradeoffs</div>
         <table class="tradeoff-table"><thead><tr><th>Option</th><th>Pro / Con</th></tr></thead><tbody>
         ${sys.tradeoffs(c).map(t =>
           `<tr><td>${t.algo}</td><td><span class="pro">✓ ${t.pro}</span><br><span class="con">✗ ${t.con}</span></td></tr>`
         ).join('')}
         </tbody></table>`;
+    } else {
+      // Glossary tab — sorted alphabetically
+      const G = window.SS.GLOSSARY || {};
+      const entries = Object.entries(G).sort((a, b) => a[0].localeCompare(b[0]));
+      h = `<div class="rp-section-title">Term glossary (${entries.length} terms)</div>
+        <div class="glossary-list">` +
+        entries.map(([term, def]) =>
+          `<div class="glossary-entry"><div class="glossary-term-label">${term}</div><div class="glossary-def">${def}</div></div>`
+        ).join('') +
+        `</div>`;
     }
     el('rp-content').innerHTML = h;
   };
