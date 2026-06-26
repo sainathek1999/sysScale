@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — Practice</title>
+  <meta name="description" content="Mock interview mode, estimation drills, and concept quizzes for system design.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
+    <span class="header-sep"></span>
+    <nav class="header-nav">
+      <a href="index.html"     class="header-tab">Home</a>
+      <a href="estimator.html" class="header-tab">Estimator</a>
+      <a href="learn.html"     class="header-tab">Learn</a>
+      <a href="practice.html"  class="header-tab active">Practice</a>
+      <a href="reference.html" class="header-tab">Reference</a>
+    </nav>
+    <div class="header-right">
+      <span class="version-badge">v4.0</span>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-container">
+
+      <div class="page-title">Practice</div>
+      <div class="page-subtitle">Sharpen system design skills through deliberate repetition.</div>
+
+      <!-- Mock interview -->
+      <div class="practice-main-card">
+        <div class="practice-card-icon">🎯</div>
+        <div class="practice-main-title">Mock Interview</div>
+        <div class="practice-main-desc">
+          Pick a system and start a 35-minute timed session. Work from memory —
+          diagram, estimate, explain your tradeoffs. Timer prompts guide you through
+          each stage. Review the model answer when time's up.
+        </div>
+
+        <div class="mock-controls">
+          <select id="mock-system-select">
+            <option value="rate-limiter">Rate Limiter</option>
+            <option value="url-shortener">URL Shortener</option>
+            <option value="chat-service">Chat Service</option>
+            <option value="notifications">Notifications</option>
+            <option value="typeahead">Search Typeahead</option>
+            <option value="zoom">Video Conferencing</option>
+            <option value="news-feed">News Feed</option>
+            <option value="ride-sharing">Ride Sharing</option>
+            <option value="job-scheduler">Job Scheduler</option>
+          </select>
+          <button class="btn-primary" onclick="startMockInterview()">→ Start Session</button>
+          <button class="btn-secondary" onclick="startRandomInterview()">🎲 Random</button>
+        </div>
+
+        <div class="mock-tip">
+          <strong style="color:var(--indigo)">Tip:</strong>
+          Answer out loud. Aim for: Clarify → Estimate → High-level design → Deep dive → Tradeoffs.
+          The first 5 minutes on clarifications always impresses interviewers.
+        </div>
+      </div>
+
+      <!-- Secondary cards -->
+      <div class="practice-secondary-grid">
+
+        <div class="practice-secondary-card">
+          <div class="practice-secondary-title">⚡ Estimation Drills</div>
+          <div class="practice-secondary-desc">
+            Flashcard mode. 60 cards covering powers of 2, latency numbers,
+            throughput benchmarks, storage sizes. 30 seconds per card.
+          </div>
+          <span class="coming-pill">Coming Sprint 7</span>
+        </div>
+
+        <div class="practice-secondary-card">
+          <div class="practice-secondary-title">📝 Concept Quizzes</div>
+          <div class="practice-secondary-desc">
+            5 questions per module. Multiple choice with inline feedback.
+            Wrong answer shows the explanation. Score saved to progress.
+          </div>
+          <span class="coming-pill">Coming Sprint 1</span>
+        </div>
+
+        <div class="practice-secondary-card">
+          <div class="practice-secondary-title">📊 Progress Dashboard</div>
+          <div class="practice-secondary-desc">
+            Track completed modules, quiz scores, and practice sessions.
+            Visual progress per learning track.
+          </div>
+          <span class="coming-pill">Coming Sprint 8</span>
+        </div>
+
+        <div class="practice-secondary-card">
+          <div class="practice-secondary-title">⚖️ Comparison Mode</div>
+          <div class="practice-secondary-desc">
+            Pick two systems and see their architecture, metrics, and tradeoffs
+            side by side. Great for spotting patterns.
+          </div>
+          <span class="coming-pill">Coming Sprint 8</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    var SYSTEMS = [
+      'rate-limiter','url-shortener','chat-service','notifications',
+      'typeahead','zoom','news-feed','ride-sharing','job-scheduler'
+    ];
+
+    function startMockInterview() {
+      var sys = document.getElementById('mock-system-select').value;
+      window.location.href = 'estimator.html?s=' + sys + '&practice=1';
+    }
+
+    function startRandomInterview() {
+      var sys = SYSTEMS[Math.floor(Math.random() * SYSTEMS.length)];
+      window.location.href = 'estimator.html?s=' + sys + '&practice=1';
+    }
+  </script>
+
+</body>
+</html>

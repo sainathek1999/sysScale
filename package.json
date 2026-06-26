@@ -1,7 +1,7 @@
 {
   "name": "sysscale",
   "version": "4.0.0",
-  "description": "Interactive capacity-estimation tool for system design interviews",
+  "description": "System design learning platform — estimator, curriculum, practice, reference",
   "scripts": {
     "start": "python3 -m http.server 8000",
     "dev": "python3 -m http.server 8000"

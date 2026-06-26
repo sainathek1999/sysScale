@@ -3,106 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SysScale — System Design Estimator</title>
-  <meta name="description" content="Interactive capacity estimation tool for system design interviews.">
+  <title>SysScale — System Design Engineering</title>
+  <meta name="description" content="Master system design with 30 production systems, 18 concept modules, and interactive estimation tools.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Lenis — buttery smooth scroll (lightweight, no build needed) -->
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Styles (load order matters: tokens → base → layout → components → animations) -->
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
 
-  <!-- ── Header ─────────────────────────────────────── -->
   <header class="header">
-    <a href="#" class="logo"><span class="logo-mark">SS</span>SysScale</a>
+    <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
     <span class="header-sep"></span>
     <nav class="header-nav">
-      <button class="header-tab active" onclick="SS.setMode('estimate', this)">Estimator</button>
-      <button class="header-tab" onclick="SS.setMode('cheatsheet', this)">Cheat Sheet</button>
+      <a href="index.html"     class="header-tab active">Home</a>
+      <a href="estimator.html" class="header-tab">Estimator</a>
+      <a href="learn.html"     class="header-tab">Learn</a>
+      <a href="practice.html"  class="header-tab">Practice</a>
+      <a href="reference.html" class="header-tab">Reference</a>
     </nav>
     <div class="header-right">
-      <!-- Interview timer -->
-      <div class="timer-wrap" id="timer-wrap">
-        <button class="timer-btn" id="timer-btn" onclick="SS.toggleTimer()">
-          <span class="timer-icon">⏱</span>
-          <span id="timer-label">Practice</span>
-        </button>
-        <div class="timer-display" id="timer-display" style="display:none">
-          <span id="timer-countdown">35:00</span>
-          <button class="timer-stop" onclick="SS.stopTimer()" title="Stop timer">✕</button>
-        </div>
-      </div>
-      <!-- Export -->
-      <button class="export-btn" onclick="SS.exportPrint()" title="Print / export cheat sheet">
-        <span>⬇</span> Export
-      </button>
       <span class="version-badge">v4.0</span>
     </div>
   </header>
 
-  <!-- Interview prompt toast -->
-  <div class="timer-toast" id="timer-toast" style="display:none"></div>
+  <div class="page-wrap">
+    <div class="page-container">
 
-  <!-- Glossary tooltip (singleton, repositioned on hover) -->
-  <div class="glossary-tooltip" id="g-tooltip" style="display:none"></div>
-
-  <!-- ── Body (3 columns) ───────────────────────────── -->
-  <div class="body-wrap">
-
-    <!-- Left sidebar -->
-    <aside class="left-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Systems</div>
-        <div id="system-list"></div>
+      <!-- Hero -->
+      <div class="page-hero">
+        <div class="page-hero-eyebrow">System Design Platform</div>
+        <h1 class="page-hero-title">System Design,<br><span>Engineered.</span></h1>
+        <p class="page-hero-sub">
+          30 production systems. 18 concept modules. Interactive estimation tools.
+          Build the mental model of a principal engineer.
+        </p>
+        <div class="page-hero-actions">
+          <a href="estimator.html" class="btn-primary">→ Start Estimating</a>
+          <a href="learn.html"     class="btn-secondary">Browse Curriculum</a>
+        </div>
       </div>
-      <div class="params-section" id="params-panel"></div>
-    </aside>
 
-    <!-- Center -->
-    <main class="center-panel">
-      <div class="metric-bar" id="metric-bar"></div>
-      <div class="steps-area" id="steps-area"></div>
-    </main>
+      <!-- Learning tracks -->
+      <div class="section-label">Learning Tracks</div>
+      <div class="tracks-grid" id="tracks-grid"></div>
 
-    <!-- Right panel -->
-    <aside class="right-panel">
-      <div class="right-panel-tabs">
-        <button class="rp-tab active" onclick="SS.setRpTab('arch', this)">Architecture</button>
-        <button class="rp-tab" onclick="SS.setRpTab('components', this)">Components</button>
-        <button class="rp-tab" onclick="SS.setRpTab('tradeoffs', this)">Tradeoffs</button>
-        <button class="rp-tab" onclick="SS.setRpTab('glossary', this)">Glossary</button>
+      <!-- Quick actions -->
+      <div class="section-label">Quick Start</div>
+      <div class="quick-grid">
+        <a href="practice.html" class="quick-card">
+          <div class="quick-card-title">🎯 Mock Interview</div>
+          <div class="quick-card-desc">35-minute timed session. Pick a system, work from memory, then check your answer.</div>
+          <div class="quick-card-cta">Start a session →</div>
+        </a>
+        <a href="estimator.html" class="quick-card">
+          <div class="quick-card-title">⚡ Estimator</div>
+          <div class="quick-card-desc">Tune sliders and watch traffic, storage, bandwidth, and architecture update live.</div>
+          <div class="quick-card-cta">Open tool →</div>
+        </a>
+        <a href="reference.html" class="quick-card">
+          <div class="quick-card-title">📖 Reference</div>
+          <div class="quick-card-desc">Capacity constants, latency numbers, component throughput. Keep it open in another tab.</div>
+          <div class="quick-card-cta">Open reference →</div>
+        </a>
+        <a href="learn.html" class="quick-card">
+          <div class="quick-card-title">🧠 Fundamentals</div>
+          <div class="quick-card-desc">CAP theorem, consistency models, replication, load balancers — the foundations every interview tests.</div>
+          <div class="quick-card-cta">Start learning →</div>
+        </a>
       </div>
-      <div class="rp-content" id="rp-content"></div>
-    </aside>
 
+    </div>
   </div>
 
-  <!-- ── Scripts (load order: utils → core → systems → app) ── -->
-  <script src="js/utils/format.js"></script>
-  <script src="js/utils/glossary.js"></script>
-  <script src="js/core/diagram.js"></script>
-  <script src="js/core/state.js"></script>
-  <script src="js/core/render.js"></script>
+  <script src="js/content/tracks.js"></script>
+  <script src="js/core/progress.js"></script>
+  <script>
+    (function () {
+      var grid     = document.getElementById('tracks-grid');
+      var tracks   = (window.SS && window.SS.TRACKS) ? window.SS.TRACKS : [];
+      var progress = window.SS && window.SS.progress;
 
-  <script src="js/systems/rate-limiter.js"></script>
-  <script src="js/systems/url-shortener.js"></script>
-  <script src="js/systems/chat-service.js"></script>
-  <script src="js/systems/notifications.js"></script>
-  <script src="js/systems/typeahead.js"></script>
-  <script src="js/systems/zoom.js"></script>
-  <script src="js/systems/news-feed.js"></script>
-  <script src="js/systems/ride-sharing.js"></script>
-  <script src="js/systems/job-scheduler.js"></script>
+      tracks.forEach(function (track) {
+        var prog = progress
+          ? progress.getTrackProgress(track.id)
+          : { done: 0, total: track.modules.length };
+        var pct  = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
+        var href = track.id === 'systems' ? 'estimator.html' : 'learn.html#' + track.id;
+        var totalLabel = prog.total > 0 ? prog.total : (track.id === 'systems' ? 9 : '—');
 
-  <script src="js/app.js"></script>
+        var card = document.createElement('a');
+        card.href      = href;
+        card.className = 'track-card';
+        card.style.setProperty('--track-color', track.color);
+        card.innerHTML =
+          '<span class="track-card-icon">' + track.icon + '</span>' +
+          '<div class="track-card-name">'  + track.name + '</div>' +
+          '<div class="track-card-desc">'  + track.description + '</div>' +
+          '<div class="track-progress-bar"><div class="track-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="track-progress-label">' + prog.done + ' / ' + totalLabel + ' complete</div>';
+        grid.appendChild(card);
+      });
+    })();
+  </script>
+
 </body>
 </html>

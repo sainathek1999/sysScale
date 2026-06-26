@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — Reference</title>
+  <meta name="description" content="Capacity estimation cheat sheet, latency numbers, component throughput, and full glossary.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
+    <span class="header-sep"></span>
+    <nav class="header-nav">
+      <a href="index.html"     class="header-tab">Home</a>
+      <a href="estimator.html" class="header-tab">Estimator</a>
+      <a href="learn.html"     class="header-tab">Learn</a>
+      <a href="practice.html"  class="header-tab">Practice</a>
+      <a href="reference.html" class="header-tab active">Reference</a>
+    </nav>
+    <div class="header-right">
+      <button class="export-btn" onclick="window.print()" title="Print reference">⬇ Print</button>
+      <span class="version-badge">v4.0</span>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-container">
+
+      <div class="page-title">Reference</div>
+      <div class="page-subtitle">Everything you need to know cold on interview day. Keep this open in another tab.</div>
+
+      <div class="reference-grid">
+
+        <!-- Left column: cheat sheet -->
+        <div class="reference-panel">
+
+          <div class="tips-box">
+            <div class="tips-box-head">Universal constants</div>
+            <ul class="tips-list">
+              <li>1 day = <strong>86,400 seconds</strong></li>
+              <li>1 month ≈ 2.5 M seconds &nbsp;·&nbsp; 1 year ≈ 31.5 M seconds</li>
+              <li>Peak multiplier: <strong>5× average</strong> (consumer APIs) &nbsp;·&nbsp; <strong>10×</strong> (notifications / events)</li>
+              <li>Concurrent users ≈ <strong>10% of DAU</strong> at any moment</li>
+              <li>Read/write ratio typical: <strong>100:1</strong> for social feeds, <strong>10:1</strong> for e-commerce</li>
+            </ul>
+          </div>
+
+          <div class="tips-box">
+            <div class="tips-box-head">The 5-step framework</div>
+            <ul class="tips-list">
+              <li><strong>Clarify:</strong> state assumptions, scale, consistency, edge cases — out loud</li>
+              <li><strong>Traffic:</strong> DAU × actions/day ÷ 86,400 = avg RPS → ×5 (or ×10) = peak</li>
+              <li><strong>Storage:</strong> entities/day × bytes/entity × retention days</li>
+              <li><strong>Bandwidth:</strong> peak RPS × payload × 8 bits = bps</li>
+              <li><strong>Scale:</strong> ops_needed ÷ component_capacity = nodes → ×3 replication</li>
+            </ul>
+          </div>
+
+          <div class="tips-box">
+            <div class="tips-box-head">Component throughput</div>
+            <table class="metrics-table">
+              <tr><td>Redis single node</td><td class="hl">~100K ops/s</td></tr>
+              <tr><td>MySQL / Postgres write</td><td class="hl">5K–10K/s</td></tr>
+              <tr><td>Cassandra per node</td><td class="hl">~50K writes/s</td></tr>
+              <tr><td>Kafka single broker</td><td class="hl">~1M msgs/s</td></tr>
+              <tr><td>Elasticsearch per node</td><td class="hl">~5K writes/s</td></tr>
+              <tr><td>S3 / object storage</td><td class="hl">~3.5K req/s per prefix</td></tr>
+              <tr><td>Load balancer (L7)</td><td class="hl">~100K req/s</td></tr>
+              <tr><td>SSD random IOPS</td><td class="hl">100K IOPS</td></tr>
+              <tr><td>HDD sequential</td><td class="hl">100 MB/s</td></tr>
+            </table>
+          </div>
+
+          <div class="tips-box">
+            <div class="tips-box-head">Latency numbers (know these cold)</div>
+            <table class="metrics-table">
+              <tr><td>L1 cache reference</td><td class="hl">~0.5 ns</td></tr>
+              <tr><td>L2 cache reference</td><td class="hl">~7 ns</td></tr>
+              <tr><td>RAM access</td><td class="hl">~100 ns</td></tr>
+              <tr><td>SSD random read</td><td class="hl">~150 μs</td></tr>
+              <tr><td>HDD random read</td><td class="hl">~10 ms</td></tr>
+              <tr><td>Same-DC network RTT</td><td class="hl">~0.5 ms</td></tr>
+              <tr><td>Cross-region RTT (US↔EU)</td><td class="hl">~80 ms</td></tr>
+              <tr><td>Cross-region RTT (US↔Asia)</td><td class="hl">~150 ms</td></tr>
+              <tr><td>TCP handshake (local)</td><td class="hl">~1 ms</td></tr>
+            </table>
+          </div>
+
+          <div class="tips-box">
+            <div class="tips-box-head">Storage sizes</div>
+            <table class="metrics-table">
+              <tr><td>UUID / GUID</td><td class="hl">16 B</td></tr>
+              <tr><td>Unix timestamp (int64)</td><td class="hl">8 B</td></tr>
+              <tr><td>Average user record</td><td class="hl">~1 KB</td></tr>
+              <tr><td>Tweet / short message</td><td class="hl">~200–500 B</td></tr>
+              <tr><td>Redis key overhead</td><td class="hl">~60 B</td></tr>
+              <tr><td>MySQL row overhead</td><td class="hl">~100 B</td></tr>
+              <tr><td>Photo (JPEG compressed)</td><td class="hl">~300 KB</td></tr>
+              <tr><td>Video 1 min 720p</td><td class="hl">~50 MB</td></tr>
+              <tr><td>Video 1 min 4K</td><td class="hl">~375 MB</td></tr>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Right column: glossary -->
+        <div class="reference-panel">
+
+          <div class="tips-box">
+            <div class="tips-box-head">Powers of 2</div>
+            <table class="metrics-table">
+              <tr><td>2<sup>10</sup> = 1 KB</td><td class="hl">1,024</td></tr>
+              <tr><td>2<sup>20</sup> = 1 MB</td><td class="hl">1,048,576</td></tr>
+              <tr><td>2<sup>30</sup> = 1 GB</td><td class="hl">1,073,741,824</td></tr>
+              <tr><td>2<sup>40</sup> = 1 TB</td><td class="hl">~1 trillion</td></tr>
+              <tr><td>2<sup>50</sup> = 1 PB</td><td class="hl">~1 quadrillion</td></tr>
+            </table>
+          </div>
+
+          <div class="tips-box">
+            <div class="tips-box-head">Quick rules of thumb</div>
+            <ul class="tips-list">
+              <li><strong>1M users × 1 KB</strong> = 1 GB storage</li>
+              <li><strong>1M req/day</strong> ÷ 86,400 ≈ <strong>12 RPS</strong></li>
+              <li><strong>100M DAU × 10 actions</strong> = ~12K avg RPS (×5 peak = 60K RPS)</li>
+              <li><strong>1 TB/day</strong> ÷ 86,400 ≈ 12 MB/s ingress</li>
+              <li><strong>Replication factor 3</strong> → multiply raw storage × 3</li>
+              <li><strong>Index overhead</strong> ≈ 10–20% on top of data size</li>
+            </ul>
+          </div>
+
+          <div class="tips-box" id="glossary-box">
+            <div class="tips-box-head">Glossary</div>
+            <div class="glossary-list" id="glossary-list">
+              <div style="font-size:11px;color:var(--text3);padding:8px 0">Loading…</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/utils/glossary.js"></script>
+  <script>
+    (function () {
+      var list = document.getElementById('glossary-list');
+      var glossary = window.SS && window.SS.GLOSSARY;
+      if (!glossary) { list.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:8px 0">Glossary unavailable.</div>'; return; }
+
+      var terms = Object.keys(glossary).sort(function (a, b) { return a.localeCompare(b); });
+      list.innerHTML = terms.map(function (term) {
+        return '<div class="glossary-entry">' +
+          '<div class="glossary-term-label">' + term + '</div>' +
+          '<div class="glossary-def">' + glossary[term] + '</div>' +
+          '</div>';
+      }).join('');
+    })();
+  </script>
+
+</body>
+</html>

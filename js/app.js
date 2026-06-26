@@ -289,6 +289,10 @@
     S.readURL();
     S.renderAll();
 
+    if (new URLSearchParams(location.search).get('practice') === '1') {
+      S.startTimer();
+    }
+
     // Lenis smooth scroll on the two overflow-y panels
     if (window.Lenis) {
       [document.getElementById('steps-area'), document.getElementById('rp-content')].forEach(function (el) {
