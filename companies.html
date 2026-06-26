@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — Company Intel</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    /* ── Companies page ──────────────────────────────────── */
+    .companies-hero {
+      padding: 48px 0 36px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+    .companies-hero-title {
+      font-family: var(--font-head); font-size: 36px; font-weight: 800;
+      letter-spacing: -1.5px; color: var(--text); margin-bottom: 8px;
+    }
+    .companies-hero-sub { font-size: 15px; color: var(--text3); margin-bottom: 24px; }
+
+    .companies-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+    .companies-stat {
+      background: white; border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 12px 18px; box-shadow: var(--shadow-sm);
+    }
+    .companies-stat-val {
+      font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--text);
+    }
+    .companies-stat-label { font-size: 10px; font-family: var(--font-mono); font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .10em; }
+
+    /* Grid */
+    .companies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .company-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 0; overflow: hidden;
+      box-shadow: var(--shadow-sm); text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+      transition: box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), border-color var(--dur);
+    }
+    .company-card:hover {
+      box-shadow: var(--shadow-md); transform: translateY(-3px);
+      border-color: rgba(0,0,0,0.10);
+    }
+    .company-card.target-company { border-color: var(--indigo); box-shadow: 0 0 0 2px rgba(var(--indigo-rgb),0.12), var(--shadow); }
+
+    .company-card-top {
+      height: 80px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 22px;
+      position: relative; overflow: hidden;
+    }
+    .company-card-top::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0));
+    }
+    .company-card-letter {
+      font-family: var(--font-head); font-size: 36px; font-weight: 900;
+      color: rgba(255,255,255,0.95); line-height: 1; z-index: 1;
+    }
+    .company-card-emoji { font-size: 28px; z-index: 1; }
+    .target-badge {
+      background: white; color: var(--indigo);
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      padding: 3px 8px; border-radius: 20px; letter-spacing: .06em;
+      text-transform: uppercase; z-index: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .company-card-body { padding: 20px 22px 22px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+    .company-card-name {
+      font-family: var(--font-head); font-size: 20px; font-weight: 800;
+      letter-spacing: -0.5px; color: var(--text); margin: 0;
+    }
+    .company-card-tagline {
+      font-size: 12.5px; color: var(--text3); line-height: 1.55;
+      font-style: italic;
+    }
+
+    .company-card-meta {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto;
+    }
+    .company-meta-tag {
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      padding: 3px 9px; border-radius: 20px;
+      background: var(--bg2); color: var(--text3); border: 1px solid var(--border2);
+    }
+
+    .company-card-difficulty { display: flex; gap: 3px; }
+    .difficulty-pip { width: 10px; height: 10px; border-radius: 2px; background: var(--bg3); }
+    .difficulty-pip.filled { background: var(--amber); }
+
+    .company-card-cta {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; font-family: var(--font-head);
+      color: var(--indigo); padding-top: 12px;
+      border-top: 1px solid var(--border); margin-top: 4px;
+    }
+    .company-card-cta-arrow {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--indigo3); display: flex; align-items: center; justify-content: center;
+      font-size: 10px; transition: background var(--dur-fast), transform var(--dur-fast);
+    }
+    .company-card:hover .company-card-cta-arrow {
+      background: var(--indigo); color: white; transform: translateX(3px);
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 11px; font-family: var(--font-mono); font-weight: 700; color: var(--text3); }
+    .filter-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 600; font-family: var(--font-head);
+      background: white; border: 1px solid var(--border2); color: var(--text3);
+      cursor: pointer; transition: all var(--dur-fast);
+    }
+    .filter-btn:hover  { background: var(--bg2); color: var(--text); }
+    .filter-btn.active { background: var(--indigo); border-color: var(--indigo); color: white; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
+    <span class="header-sep"></span>
+    <nav class="header-nav">
+      <a href="index.html"      class="header-tab">Home</a>
+      <a href="estimator.html"  class="header-tab">Estimator</a>
+      <a href="learn.html"      class="header-tab">Learn</a>
+      <a href="practice.html"   class="header-tab active">Practice</a>
+      <a href="reference.html"  class="header-tab">Reference</a>
+    </nav>
+    <div class="header-right">
+      <span class="version-badge">v4.0</span>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-container">
+
+      <div class="companies-hero">
+        <div class="companies-hero-title">Company Intel</div>
+        <div class="companies-hero-sub">Insider guides for every FAANG interview — rounds, rubrics, top systems, and real tips.</div>
+        <div class="companies-stats">
+          <div class="companies-stat">
+            <div class="companies-stat-val" id="stat-companies">—</div>
+            <div class="companies-stat-label">Companies</div>
+          </div>
+          <div class="companies-stat">
+            <div class="companies-stat-val" id="stat-systems">—</div>
+            <div class="companies-stat-label">Systems Mapped</div>
+          </div>
+          <div class="companies-stat">
+            <div class="companies-stat-val" id="stat-tips">—</div>
+            <div class="companies-stat-label">Insider Tips</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-btn active" onclick="filterCompanies('all', this)">All</button>
+        <button class="filter-btn" onclick="filterCompanies('difficulty-5', this)">Hard (5★)</button>
+        <button class="filter-btn" onclick="filterCompanies('difficulty-4', this)">Medium (4★)</button>
+        <button class="filter-btn" onclick="filterCompanies('difficulty-3', this)">Easier (≤3★)</button>
+      </div>
+
+      <div class="companies-grid" id="companies-grid">
+        <!-- Filled by JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/core/onboarding.js"></script>
+  <script src="js/content/companies.js"></script>
+  <script>
+  (function () {
+    const intel  = window.SS.COMPANIES_INTEL || [];
+    const ob     = window.SS.onboarding;
+    const user   = ob ? ob.getUser() : null;
+    const target = user ? user.targetCompany : null;
+    const grid   = document.getElementById('companies-grid');
+
+    /* Stats */
+    const totalSystems = intel.reduce((s, c) => s + c.topSystems.length, 0);
+    const totalTips    = intel.reduce((s, c) => s + c.tips.length, 0);
+    document.getElementById('stat-companies').textContent = intel.length;
+    document.getElementById('stat-systems').textContent   = totalSystems;
+    document.getElementById('stat-tips').textContent      = totalTips + '+';
+
+    function renderCards(filter) {
+      grid.innerHTML = '';
+
+      const sorted = [...intel].sort((a, b) => {
+        if (a.id === target) return -1;
+        if (b.id === target) return  1;
+        return b.difficulty - a.difficulty;
+      });
+
+      sorted.forEach(c => {
+        if (filter === 'difficulty-5' && c.difficulty !== 5) return;
+        if (filter === 'difficulty-4' && c.difficulty !== 4) return;
+        if (filter === 'difficulty-3' && c.difficulty > 3)  return;
+
+        const isTarget = c.id === target;
+        const pips = Array.from({length: 5}, (_, i) =>
+          '<div class="difficulty-pip' + (i < c.difficulty ? ' filled' : '') + '"></div>'
+        ).join('');
+
+        const card = document.createElement('a');
+        card.href      = 'company.html?c=' + c.id;
+        card.className = 'company-card' + (isTarget ? ' target-company' : '');
+        card.innerHTML =
+          '<div class="company-card-top" style="background:' + c.color + ';">' +
+            '<div class="company-card-letter">' + c.letter + '</div>' +
+            (isTarget ? '<div class="target-badge">★ Your Target</div>' : '<div class="company-card-emoji">' + c.emoji + '</div>') +
+          '</div>' +
+          '<div class="company-card-body">' +
+            '<div class="company-card-name">' + c.name + '</div>' +
+            '<div class="company-card-tagline">' + c.tagline + '</div>' +
+            '<div class="company-card-meta">' +
+              '<div class="company-meta-tag">' + c.rounds.length + ' rounds</div>' +
+              '<div class="company-meta-tag">' + c.topSystems.length + ' systems</div>' +
+              '<div class="company-meta-tag">' + c.tips.length + ' tips</div>' +
+            '</div>' +
+            '<div class="company-card-difficulty">' + pips + '</div>' +
+            '<div class="company-card-cta">' +
+              'View Full Guide' +
+              '<div class="company-card-cta-arrow">→</div>' +
+            '</div>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    }
+
+    window.filterCompanies = function (filter, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards(filter);
+    };
+
+    renderCards('all');
+  })();
+  </script>
+
+</body>
+</html>

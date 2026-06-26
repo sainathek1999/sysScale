@@ -114,9 +114,9 @@
 
       <!-- Plan widget -->
       <div class="plan-widget" id="plan-widget">
-        <div class="plan-company-badge" id="plan-badge">SS</div>
+        <a href="#" id="plan-badge-link"><div class="plan-company-badge" id="plan-badge">SS</div></a>
         <div class="plan-info">
-          <div class="plan-company-name" id="plan-company-name">SysScale</div>
+          <a href="#" id="plan-company-link" style="text-decoration:none;"><div class="plan-company-name" id="plan-company-name">SysScale</div></a>
           <div class="plan-level" id="plan-level">Loading your plan…</div>
         </div>
         <div class="plan-stats" id="plan-stats"></div>
@@ -167,7 +167,10 @@
               <div class="mentor-eyebrow">AI Mentor · Company Insight</div>
               <div class="mentor-title" id="mentor-title">Loading insight…</div>
               <div class="mentor-insight" id="mentor-insight"></div>
-              <a href="practice.html" class="mentor-cta">Start a mock interview →</a>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <a href="practice.html" class="mentor-cta">Start a mock interview →</a>
+                <a href="#" class="mentor-cta" id="mentor-company-link" style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);">See Full Guide →</a>
+              </div>
             </div>
           </div>
 
@@ -201,6 +204,12 @@
               <div class="quick-card-title">Fundamentals</div>
               <div class="quick-card-desc">CAP theorem, consistency models, replication, load balancers — the foundations every interview tests.</div>
               <div class="quick-card-cta">Start learning →</div>
+            </a>
+            <a href="companies.html" class="quick-card">
+              <div class="quick-card-icon">🏢</div>
+              <div class="quick-card-title">Company Intel</div>
+              <div class="quick-card-desc">Interview rounds, rubrics, top systems, and insider tips for Google, Meta, Amazon, Netflix, and more.</div>
+              <div class="quick-card-cta">Explore companies →</div>
             </a>
           </div>
 
@@ -250,6 +259,7 @@
 
   <script src="js/core/onboarding.js"></script>
   <script src="js/content/tracks.js"></script>
+  <script src="js/content/companies.js"></script>
   <script src="js/core/progress.js"></script>
   <script src="js/core/mentor.js"></script>
   <script>
@@ -274,6 +284,10 @@
     var badge = document.getElementById('plan-badge');
     badge.textContent = company.letter || company.name[0];
     badge.style.background = company.color;
+
+    var companyPageUrl = 'company.html?c=' + (user.targetCompany || 'google');
+    document.getElementById('plan-badge-link').href   = companyPageUrl;
+    document.getElementById('plan-company-link').href = companyPageUrl;
 
     document.getElementById('plan-company-name').textContent = company.name;
     document.getElementById('plan-level').textContent = levelObj.label + ' — ' + levelObj.sub;
@@ -335,6 +349,7 @@
     var tip = mentor.getDailyTip(user);
     document.getElementById('mentor-title').textContent = company.name + ' Interview Insight';
     document.getElementById('mentor-insight').textContent = tip;
+    document.getElementById('mentor-company-link').href = companyPageUrl;
 
     /* ── Track readiness sidebar ── */
     var trackReadiness = mentor.calcTrackReadiness(user);
