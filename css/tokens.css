@@ -1,44 +1,44 @@
 /* ============================================================
-   tokens.css — Design system variables (light theme)
+   tokens.css — Design system variables
    ============================================================ */
 :root {
   /* Surfaces */
   --bg0: #FFFFFF;
-  --bg1: #FAFBFC;
-  --bg2: #F5F7FA;
-  --bg3: #EEF0F5;
-  --bg4: #E5E7EB;
+  --bg1: #F8F9FB;
+  --bg2: #F1F3F7;
+  --bg3: #E8EBF2;
+  --bg4: #D8DCE8;
 
   /* Borders */
-  --border:  rgba(0, 0, 0, 0.06);
-  --border2: rgba(0, 0, 0, 0.10);
-  --border3: rgba(0, 0, 0, 0.18);
+  --border:  rgba(0, 0, 0, 0.07);
+  --border2: rgba(0, 0, 0, 0.12);
+  --border3: rgba(0, 0, 0, 0.22);
 
   /* Text */
-  --text:  #111827;
-  --text2: #4B5563;
-  --text3: #9CA3AF;
-  --text4: #D1D5DB;
+  --text:  #0F1117;
+  --text2: #464E60;
+  --text3: #8B93A8;
+  --text4: #BEC5D4;
 
   /* Accent ramps */
   --indigo:  #2563EB;
   --indigo2: #1D4ED8;
-  --indigo3: #DBEAFE;
-  --teal:    #06B6D4;
-  --teal2:   #0891B2;
-  --amber:   #F59E0B;
-  --amber2:  #B45309;
-  --red:     #EF4444;
-  --red2:    #991B1B;
-  --green:   #22C55E;
-  --green2:  #15803D;
+  --indigo3: #EFF4FF;
+  --teal:    #0891B2;
+  --teal2:   #06B6D4;
+  --amber:   #D97706;
+  --amber2:  #F59E0B;
+  --red:     #DC2626;
+  --red2:    #EF4444;
+  --green:   #059669;
+  --green2:  #22C55E;
   --purple:  #7C3AED;
-  --purple2: #5B21B6;
+  --purple2: #A855F7;
 
-  /* RGB variants for rgba() */
+  /* RGB for rgba() */
   --indigo-rgb: 37, 99, 235;
-  --teal-rgb:   6, 182, 212;
-  --red-rgb:    239, 68, 68;
+  --teal-rgb:   8, 145, 178;
+  --red-rgb:    220, 38, 38;
 
   /* Typography */
   --font-head: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -55,17 +55,20 @@
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast: 0.15s;
-  --dur:      0.25s;
-  --dur-slow: 0.45s;
+  --dur-fast: 0.13s;
+  --dur:      0.22s;
+  --dur-slow: 0.40s;
 
   /* Layout */
-  --header-h:   54px;
-  --sidebar-w:  240px;
+  --header-h:   56px;
+  --sidebar-w:  248px;
   --rightbar-w: 320px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow:    0 4px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+  /* Shadows — multi-layer for depth */
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow:        0 2px 8px rgba(0,0,0,0.05), 0 4px 18px rgba(0,0,0,0.05);
+  --shadow-md:     0 4px 14px rgba(0,0,0,0.06), 0 8px 28px rgba(0,0,0,0.05);
+  --shadow-lg:     0 8px 30px rgba(0,0,0,0.08), 0 20px 48px rgba(0,0,0,0.05);
+  --shadow-indigo: 0 4px 14px rgba(37, 99, 235, 0.24);
+  --shadow-teal:   0 4px 14px rgba(8, 145, 178, 0.20);
 }

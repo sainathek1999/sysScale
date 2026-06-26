@@ -5,16 +5,16 @@
 /* ── Keyframes ───────────────────────────────────────── */
 @keyframes logo-pulse {
   0%, 100% { box-shadow: 0 2px 8px rgba(var(--indigo-rgb), 0.28); }
-  50%      { box-shadow: 0 4px 16px rgba(var(--indigo-rgb), 0.46); }
+  50%      { box-shadow: 0 4px 18px rgba(var(--indigo-rgb), 0.48); }
 }
 
 @keyframes value-flash {
-  0%   { color: var(--amber); transform: scale(1.12); }
-  100% { color: var(--teal);  transform: scale(1); }
+  0%   { background: rgba(217,119,6,0.18); color: var(--amber); transform: scale(1.14); }
+  100% { background: var(--indigo3);       color: var(--indigo); transform: scale(1); }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -24,19 +24,19 @@
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(12px); }
+  from { opacity: 0; transform: translateX(10px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes pop-in {
-  0%   { opacity: 0; transform: scale(0.94); }
-  60%  { transform: scale(1.02); }
-  100% { opacity: 1; transform: scale(1); }
+  0%   { opacity: 0; transform: scale(0.90) translateY(4px); }
+  60%  { transform: scale(1.02) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 @keyframes shake-in {
-  0%   { opacity: 0; transform: translateX(-5px); }
-  30%  { transform: translateX(3px); }
+  0%   { opacity: 0; transform: translateX(-6px); }
+  30%  { transform: translateX(4px); }
   55%  { transform: translateX(-2px); }
   75%  { transform: translateX(1px); }
   100% { opacity: 1; transform: translateX(0); }
@@ -44,7 +44,7 @@
 
 @keyframes node-pulse {
   0%, 100% { opacity: 1; }
-  50%      { opacity: 0.5; }
+  50%      { opacity: 0.45; }
 }
 
 @keyframes dash-flow {
@@ -56,10 +56,10 @@
   animation: pop-in var(--dur) var(--ease-out) backwards;
 }
 .metric-pill:nth-child(1) { animation-delay: 0.02s; }
-.metric-pill:nth-child(2) { animation-delay: 0.06s; }
-.metric-pill:nth-child(3) { animation-delay: 0.10s; }
-.metric-pill:nth-child(4) { animation-delay: 0.14s; }
-.metric-pill:nth-child(5) { animation-delay: 0.18s; }
+.metric-pill:nth-child(2) { animation-delay: 0.07s; }
+.metric-pill:nth-child(3) { animation-delay: 0.12s; }
+.metric-pill:nth-child(4) { animation-delay: 0.17s; }
+.metric-pill:nth-child(5) { animation-delay: 0.22s; }
 
 .step-card {
   animation: fade-up var(--dur) var(--ease-out) backwards;
@@ -72,7 +72,7 @@
 .steps-inner .step-card:nth-child(6) { animation-delay: 0.29s; }
 .steps-inner .step-card:nth-child(7) { animation-delay: 0.34s; }
 
-.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.30s backwards; }
+.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.28s backwards; }
 
 .system-btn { animation: slide-in-right var(--dur) var(--ease-out) backwards; }
 .system-btn:nth-child(1) { animation-delay: 0.03s; }
@@ -89,7 +89,7 @@
 
 .rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
 
-/* Architecture animated edges + bottleneck node */
+/* Architecture animated edges + bottleneck pulse */
 .arch-edge {
   stroke-dasharray: 4 4;
   animation: dash-flow 1.2s linear infinite;
@@ -98,7 +98,7 @@
   animation: node-pulse 1.4s var(--ease-in-out) infinite;
 }
 
-/* Logo */
+/* Logo glow */
 .logo-mark { animation: logo-pulse 4s var(--ease-in-out) infinite; }
 
 /* Header entrance */
