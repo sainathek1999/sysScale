@@ -5,9 +5,11 @@
 /* ── Header ──────────────────────────────────────────── */
 .header {
   height: var(--header-h);
-  background: rgba(7, 10, 20, 0.88);
+  background: rgba(255, 255, 255, 0.90);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 var(--border);
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
@@ -23,7 +25,7 @@
   font-family: var(--font-head);
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
   text-decoration: none;
   color: var(--text);
 }
@@ -35,9 +37,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  box-shadow: 0 0 16px rgba(var(--indigo-rgb), 0.4);
-  animation: logo-pulse 4s var(--ease-in-out) infinite;
+  font-size: 11px;
+  font-weight: 800;
+  color: white;
+  box-shadow: 0 2px 8px rgba(var(--indigo-rgb), 0.30);
 }
 .header-sep { width: 1px; height: 20px; background: var(--border2); }
 .header-nav { display: flex; gap: 2px; }
@@ -53,15 +56,19 @@
   transition: color var(--dur-fast), background var(--dur-fast);
   font-family: var(--font-body);
 }
-.header-tab:hover { color: var(--text2); background: var(--bg3); }
-.header-tab.active { color: var(--indigo2); background: rgba(var(--indigo-rgb), 0.12); }
+.header-tab:hover { color: var(--text2); background: var(--bg2); }
+.header-tab.active {
+  color: var(--indigo);
+  background: rgba(var(--indigo-rgb), 0.08);
+  font-weight: 600;
+}
 .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .version-badge {
   font-size: 11px;
   font-family: var(--font-mono);
   padding: 3px 8px;
   border-radius: 4px;
-  background: var(--bg3);
+  background: var(--bg2);
   color: var(--text3);
   border: 1px solid var(--border2);
 }
@@ -73,7 +80,7 @@
   overflow: hidden;
   position: relative;
   z-index: 1;
-  min-height: 0;          /* CRITICAL: lets children scroll */
+  min-height: 0;
 }
 
 /* ── Left sidebar ────────────────────────────────────── */
@@ -99,20 +106,21 @@
   min-height: 0;
 }
 
-/* ── Center panel (THE FIX) ──────────────────────────── */
+/* ── Center panel ────────────────────────────────────── */
 .center-panel {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-width: 0;           /* CRITICAL: prevents flex overflow */
+  min-width: 0;    /* CRITICAL: prevents flex overflow */
   min-height: 0;
+  background: var(--bg0);
 }
 .metric-bar {
   display: flex;
   gap: 0;
   border-bottom: 1px solid var(--border);
-  background: var(--bg1);
+  background: var(--bg0);
   flex-shrink: 0;
   overflow-x: auto;
   overflow-y: hidden;
@@ -124,8 +132,8 @@
   padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 11px;
-  min-height: 0;          /* CRITICAL: enables internal scroll */
+  gap: 10px;
+  min-height: 0;
   align-items: stretch;
 }
 .steps-inner {
@@ -134,7 +142,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 10px;
 }
 
 /* ── Right panel ─────────────────────────────────────── */
@@ -152,6 +160,7 @@
   display: flex;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  background: var(--bg0);
 }
 .rp-content {
   flex: 1;

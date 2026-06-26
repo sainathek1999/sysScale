@@ -1,66 +1,71 @@
 /* ============================================================
-   tokens.css — Design system variables
+   tokens.css — Design system variables (light theme)
    ============================================================ */
 :root {
   /* Surfaces */
-  --bg0: #070a14;
-  --bg1: #0c1122;
-  --bg2: #10162c;
-  --bg3: #161d38;
-  --bg4: #1d2545;
+  --bg0: #FFFFFF;
+  --bg1: #FAFBFC;
+  --bg2: #F5F7FA;
+  --bg3: #EEF0F5;
+  --bg4: #E5E7EB;
 
   /* Borders */
-  --border:  rgba(255, 255, 255, 0.06);
-  --border2: rgba(255, 255, 255, 0.11);
-  --border3: rgba(255, 255, 255, 0.18);
+  --border:  rgba(0, 0, 0, 0.06);
+  --border2: rgba(0, 0, 0, 0.10);
+  --border3: rgba(0, 0, 0, 0.18);
 
   /* Text */
-  --text:  #e9edfa;
-  --text2: #9aa3c4;
-  --text3: #5d6588;
-  --text4: #383f60;
+  --text:  #111827;
+  --text2: #4B5563;
+  --text3: #9CA3AF;
+  --text4: #D1D5DB;
 
   /* Accent ramps */
-  --indigo:  #6366f1;
-  --indigo2: #818cf8;
-  --indigo3: #4338ca;
-  --teal:    #14b8a6;
-  --teal2:   #5eead4;
-  --amber:   #f59e0b;
-  --amber2:  #fbbf24;
-  --red:     #ef4444;
-  --red2:    #fca5a5;
-  --green:   #22c55e;
-  --green2:  #86efac;
-  --purple:  #a855f7;
-  --purple2: #d8b4fe;
+  --indigo:  #2563EB;
+  --indigo2: #1D4ED8;
+  --indigo3: #DBEAFE;
+  --teal:    #06B6D4;
+  --teal2:   #0891B2;
+  --amber:   #F59E0B;
+  --amber2:  #B45309;
+  --red:     #EF4444;
+  --red2:    #991B1B;
+  --green:   #22C55E;
+  --green2:  #15803D;
+  --purple:  #7C3AED;
+  --purple2: #5B21B6;
 
-  /* Glow colors (rgb for rgba use) */
-  --indigo-rgb: 99, 102, 241;
-  --teal-rgb:   20, 184, 166;
+  /* RGB variants for rgba() */
+  --indigo-rgb: 37, 99, 235;
+  --teal-rgb:   6, 182, 212;
   --red-rgb:    239, 68, 68;
 
   /* Typography */
-  --font-head: 'Space Grotesk', system-ui, sans-serif;
+  --font-head: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Radii */
   --r-sm: 6px;
   --r:    10px;
-  --r-lg: 16px;
-  --r-xl: 22px;
+  --r-lg: 14px;
+  --r-xl: 20px;
 
   /* Motion */
-  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 0.15s;
-  --dur:      0.28s;
-  --dur-slow: 0.5s;
+  --dur:      0.25s;
+  --dur-slow: 0.45s;
 
   /* Layout */
-  --header-h:   52px;
-  --sidebar-w:  236px;
-  --rightbar-w: 318px;
+  --header-h:   54px;
+  --sidebar-w:  240px;
+  --rightbar-w: 320px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:    0 4px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
 }
