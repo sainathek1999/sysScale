@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — Get Started</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    /* ── Onboarding page ─────────────────────────────── */
+    body {
+      min-height: 100vh;
+      height: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: block;
+      background: var(--bg0);
+      background-image: radial-gradient(circle, rgba(99,102,241,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Animated gradient orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 500px; height: 500px; top: -120px; right: -100px; background: rgba(99,102,241,0.10); }
+    .orb-2 { width: 400px; height: 400px; bottom: -100px; left: -80px; background: rgba(139,92,246,0.08); }
+    .orb-3 { width: 300px; height: 300px; top: 40%; left: 40%; background: rgba(16,185,129,0.06); }
+
+    .onb-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Top nav ─────────────────────────────────────── */
+    .onb-nav {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 52px;
+    }
+    .onb-logo {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--font-head); font-size: 15px;
+      font-weight: 700; color: var(--text); text-decoration: none;
+    }
+    .onb-logo-mark {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: conic-gradient(from var(--logo-angle) at 50% 50%,
+        #6366F1 0deg, #8B5CF6 90deg, #EC4899 180deg, #6366F1 360deg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: white;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+      animation: logo-spin 8s linear infinite;
+    }
+    @keyframes logo-spin { to { --logo-angle: 360deg; } }
+
+    .onb-skip {
+      font-size: 12.5px; color: var(--text3); background: none;
+      border: none; cursor: pointer; padding: 6px 12px;
+      border-radius: 20px; font-family: var(--font-body);
+      transition: color var(--dur-fast), background var(--dur-fast);
+    }
+    .onb-skip:hover { color: var(--text2); background: var(--bg2); }
+
+    /* ── Progress indicator ──────────────────────────── */
+    .onb-progress {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 48px;
+    }
+    .onb-step-dot {
+      width: 32px; height: 4px; border-radius: 2px;
+      background: var(--bg3);
+      transition: background var(--dur), width var(--dur);
+    }
+    .onb-step-dot.active { background: var(--indigo); width: 48px; }
+    .onb-step-dot.done   { background: var(--teal); }
+
+    /* ── Card ────────────────────────────────────────── */
+    .onb-card {
+      background: white;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px 44px;
+      width: 100%;
+      max-width: 640px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .onb-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366F1, #8B5CF6, #EC4899);
+    }
+
+    .onb-step-label {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--indigo); margin-bottom: 10px;
+    }
+
+    .onb-card-title {
+      font-family: var(--font-head); font-size: 26px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.6px; margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .onb-card-sub {
+      font-size: 14px; color: var(--text3); margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* Step panels */
+    .onb-step { display: none; }
+    .onb-step.visible {
+      display: block;
+      animation: fade-up 0.32s var(--ease-out) backwards;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Company grid ────────────────────────────────── */
+    .company-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 480px) { .company-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .company-card {
+      border: 2px solid var(--border2);
+      border-radius: var(--r-lg);
+      padding: 16px 10px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      cursor: pointer;
+      background: white;
+      transition: border-color var(--dur), box-shadow var(--dur),
+                  transform var(--dur) var(--ease-out), background var(--dur-fast);
+      user-select: none;
+    }
+    .company-card:hover {
+      border-color: var(--border3);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .company-card.selected {
+      border-color: var(--company-color, var(--indigo));
+      background: color-mix(in srgb, var(--company-color, var(--indigo)) 6%, white);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--company-color, var(--indigo)) 15%, transparent);
+      transform: translateY(-2px);
+    }
+    .company-logo {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: white;
+      font-family: var(--font-head);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+    }
+    .company-name {
+      font-size: 11px; font-weight: 700; font-family: var(--font-head);
+      color: var(--text2); text-align: center;
+    }
+    .company-card.selected .company-name { color: var(--text); }
+
+    /* ── Level list ──────────────────────────────────── */
+    .level-list { display: flex; flex-direction: column; gap: 8px; }
+    .level-option {
+      border: 2px solid var(--border2); border-radius: var(--r-lg);
+      padding: 14px 18px; display: flex; align-items: center;
+      gap: 14px; cursor: pointer; background: white;
+      transition: border-color var(--dur), box-shadow var(--dur),
+                  transform var(--dur) var(--ease-out);
+      user-select: none;
+    }
+    .level-option:hover {
+      border-color: var(--border3);
+      transform: translateX(3px);
+      box-shadow: var(--shadow-sm);
+    }
+    .level-option.selected {
+      border-color: var(--indigo);
+      background: var(--indigo3);
+      box-shadow: var(--shadow-violet);
+    }
+    .level-icon {
+      font-size: 20px; width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg2); border-radius: var(--r);
+      border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .level-option.selected .level-icon { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.25); }
+    .level-info { flex: 1; }
+    .level-label { font-size: 14px; font-weight: 700; font-family: var(--font-head); color: var(--text); }
+    .level-sub   { font-size: 11.5px; color: var(--text3); margin-top: 1px; }
+    .level-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; color: transparent;
+      transition: all var(--dur) var(--ease-spring);
+      flex-shrink: 0;
+    }
+    .level-option.selected .level-check {
+      background: var(--indigo); border-color: var(--indigo); color: white;
+    }
+
+    /* ── Timeline buttons ────────────────────────────── */
+    .timeline-grid {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .timeline-btn {
+      padding: 10px 18px; border-radius: 20px;
+      border: 2px solid var(--border2); background: white;
+      font-size: 13px; font-weight: 600; font-family: var(--font-head);
+      color: var(--text2); cursor: pointer;
+      transition: border-color var(--dur), background var(--dur-fast),
+                  color var(--dur-fast), transform var(--dur) var(--ease-out);
+    }
+    .timeline-btn:hover { border-color: var(--border3); transform: translateY(-2px); }
+    .timeline-btn.selected {
+      border-color: var(--indigo); background: var(--indigo3); color: var(--indigo);
+    }
+
+    /* Urgency message */
+    .urgency-msg {
+      padding: 12px 16px;
+      border-radius: var(--r);
+      font-size: 12.5px; line-height: 1.6;
+      border: 1px solid; margin-bottom: 8px;
+    }
+    .urgency-critical { background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.20); color: #991B1B; }
+    .urgency-high     { background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.20); color: #92400E; }
+    .urgency-medium   { background: var(--indigo3); border-color: rgba(99,102,241,0.20); color: var(--indigo2); }
+    .urgency-low      { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.20); color: #065F46; }
+    .urgency-relaxed  { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.20); color: #065F46; }
+
+    /* ── Calibration quiz ────────────────────────────── */
+    .quiz-q { margin-bottom: 28px; }
+    .quiz-q-text {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 12px; font-family: var(--font-head);
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+    .quiz-opt {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 16px; border-radius: var(--r);
+      border: 1.5px solid var(--border2); background: white;
+      cursor: pointer; font-size: 13px; color: var(--text2);
+      transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+      user-select: none;
+    }
+    .quiz-opt:hover  { border-color: var(--border3); background: var(--bg2); }
+    .quiz-opt.selected {
+      border-color: var(--indigo); background: var(--indigo3); color: var(--indigo);
+      font-weight: 600;
+    }
+    .quiz-opt-letter {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--bg2); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; font-family: var(--font-mono);
+      flex-shrink: 0; color: var(--text3);
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .quiz-opt.selected .quiz-opt-letter {
+      background: var(--indigo); border-color: var(--indigo); color: white;
+    }
+
+    /* ── CTA / navigation ────────────────────────────── */
+    .onb-actions {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 32px; gap: 12px;
+    }
+    .onb-back {
+      padding: 10px 20px; border-radius: var(--r);
+      border: 1px solid var(--border2); background: white;
+      font-size: 13px; font-weight: 600; font-family: var(--font-head);
+      color: var(--text2); cursor: pointer;
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+    }
+    .onb-back:hover { background: var(--bg2); border-color: var(--border3); }
+    .onb-back:disabled { opacity: 0.38; cursor: not-allowed; }
+
+    .onb-next {
+      flex: 1; max-width: 260px;
+      padding: 12px 28px; border-radius: var(--r);
+      border: none; background: var(--indigo);
+      font-size: 14px; font-weight: 700; font-family: var(--font-head);
+      color: white; cursor: pointer;
+      box-shadow: var(--shadow-violet);
+      transition: background var(--dur-fast), transform var(--dur) var(--ease-out),
+                  box-shadow var(--dur), opacity var(--dur-fast);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .onb-next:hover:not(:disabled) {
+      background: var(--indigo2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.30);
+    }
+    .onb-next:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* ── Success screen ──────────────────────────────── */
+    #success-screen {
+      display: none;
+      flex-direction: column; align-items: center;
+      text-align: center;
+    }
+    #success-screen.visible { display: flex; animation: fade-up 0.5s var(--ease-out); }
+
+    .success-icon {
+      width: 88px; height: 88px; border-radius: 22px;
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; margin: 0 auto 24px;
+      box-shadow: 0 12px 40px rgba(99,102,241,0.35);
+      animation: pop-in 0.6s var(--ease-spring) 0.2s both;
+    }
+    @keyframes pop-in {
+      0%   { opacity: 0; transform: scale(0.7); }
+      65%  { transform: scale(1.08); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .success-title {
+      font-family: var(--font-head); font-size: 30px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.6px; margin-bottom: 12px;
+    }
+    .success-sub {
+      font-size: 15px; color: var(--text3); max-width: 420px;
+      line-height: 1.7; margin-bottom: 32px;
+    }
+    .success-plan {
+      background: white; border: 1px solid var(--border2);
+      border-radius: var(--r-xl); padding: 24px 28px;
+      width: 100%; max-width: 480px; margin-bottom: 32px;
+      box-shadow: var(--shadow); text-align: left;
+    }
+    .success-plan-title {
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .16em; color: var(--text4);
+      margin-bottom: 16px;
+    }
+    .success-plan-rows { display: flex; flex-direction: column; gap: 10px; }
+    .success-plan-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .success-plan-icon {
+      width: 32px; height: 32px; border-radius: var(--r);
+      background: var(--bg2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .success-plan-row-label { font-size: 11.5px; color: var(--text3); }
+    .success-plan-row-val   { font-size: 13px; font-weight: 700; color: var(--text); }
+
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 36px;
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      color: white; font-size: 15px; font-weight: 700;
+      font-family: var(--font-head); border: none;
+      border-radius: var(--r-lg); cursor: pointer;
+      box-shadow: 0 8px 32px rgba(99,102,241,0.35);
+      text-decoration: none;
+      transition: transform var(--dur) var(--ease-out), box-shadow var(--dur);
+      letter-spacing: -0.2px;
+    }
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(99,102,241,0.40);
+    }
+
+    @media (max-width: 520px) {
+      .onb-card { padding: 28px 22px; }
+      .onb-card-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="onb-wrap">
+    <!-- Nav -->
+    <nav class="onb-nav">
+      <a href="index.html" class="onb-logo">
+        <div class="onb-logo-mark">SS</div>
+        SysScale
+      </a>
+      <button class="onb-skip" onclick="skipOnboarding()">Skip for now →</button>
+    </nav>
+
+    <!-- Progress dots -->
+    <div class="onb-progress" id="progress-dots">
+      <div class="onb-step-dot active" id="dot-1"></div>
+      <div class="onb-step-dot" id="dot-2"></div>
+      <div class="onb-step-dot" id="dot-3"></div>
+      <div class="onb-step-dot" id="dot-4"></div>
+    </div>
+
+    <!-- Card -->
+    <div class="onb-card" id="onb-card">
+
+      <!-- Step 1: Target company -->
+      <div class="onb-step visible" id="step-1">
+        <div class="onb-step-label">Step 1 of 4</div>
+        <h1 class="onb-card-title">Which company is your dream destination?</h1>
+        <p class="onb-card-sub">We'll tailor your study plan with company-specific question patterns and rubrics.</p>
+        <div class="company-grid" id="company-grid"></div>
+        <div class="onb-actions">
+          <button class="onb-back" disabled>← Back</button>
+          <button class="onb-next" id="btn-next-1" disabled onclick="goToStep(2)">
+            Choose Target Level →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Target level -->
+      <div class="onb-step" id="step-2">
+        <div class="onb-step-label">Step 2 of 4</div>
+        <h1 class="onb-card-title">What level are you targeting?</h1>
+        <p class="onb-card-sub">This determines the depth and complexity of systems we'll focus on.</p>
+        <div class="level-list" id="level-list"></div>
+        <div class="onb-actions">
+          <button class="onb-back" onclick="goToStep(1)">← Back</button>
+          <button class="onb-next" id="btn-next-2" disabled onclick="goToStep(3)">
+            Set Your Timeline →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Timeline -->
+      <div class="onb-step" id="step-3">
+        <div class="onb-step-label">Step 3 of 4</div>
+        <h1 class="onb-card-title">When is your interview?</h1>
+        <p class="onb-card-sub">Be honest — we'll pace your plan to match your runway.</p>
+        <div class="timeline-grid" id="timeline-grid"></div>
+        <div id="urgency-msg-wrap"></div>
+        <div class="onb-actions">
+          <button class="onb-back" onclick="goToStep(2)">← Back</button>
+          <button class="onb-next" id="btn-next-3" disabled onclick="goToStep(4)">
+            Quick Calibration →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Calibration quiz -->
+      <div class="onb-step" id="step-4">
+        <div class="onb-step-label">Step 4 of 4</div>
+        <h1 class="onb-card-title">Quick skill check</h1>
+        <p class="onb-card-sub">3 questions to find where you shine and where to focus. No judgment.</p>
+
+        <div class="quiz-q" id="q1">
+          <div class="quiz-q-text">How do you handle 10× traffic on your app overnight?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="selectQuiz('q1', 'a', this)">
+              <span class="quiz-opt-letter">A</span> Upgrade the server CPU
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q1', 'b', this)">
+              <span class="quiz-opt-letter">B</span> Add a load balancer + horizontal scaling
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q1', 'c', this)">
+              <span class="quiz-opt-letter">C</span> Enable CDN caching for static assets only
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q1', 'd', this)">
+              <span class="quiz-opt-letter">D</span> Not sure — this is new to me
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-q" id="q2">
+          <div class="quiz-q-text">A read-heavy leaderboard needs millisecond latency for millions of users. Pick your storage?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="selectQuiz('q2', 'a', this)">
+              <span class="quiz-opt-letter">A</span> PostgreSQL with an index
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q2', 'b', this)">
+              <span class="quiz-opt-letter">B</span> Redis Sorted Sets
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q2', 'c', this)">
+              <span class="quiz-opt-letter">C</span> MongoDB with aggregation
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q2', 'd', this)">
+              <span class="quiz-opt-letter">D</span> Not sure how caches differ from databases
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-q" id="q3">
+          <div class="quiz-q-text">Your service returns HTTP 500 errors at peak. First thing you check?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="selectQuiz('q3', 'a', this)">
+              <span class="quiz-opt-letter">A</span> Application logs and error traces
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q3', 'b', this)">
+              <span class="quiz-opt-letter">B</span> Database connection pool exhaustion
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q3', 'c', this)">
+              <span class="quiz-opt-letter">C</span> Restart the server
+            </div>
+            <div class="quiz-opt" onclick="selectQuiz('q3', 'd', this)">
+              <span class="quiz-opt-letter">D</span> Not sure how to start debugging this
+            </div>
+          </div>
+        </div>
+
+        <div class="onb-actions">
+          <button class="onb-back" onclick="goToStep(3)">← Back</button>
+          <button class="onb-next" id="btn-next-4" disabled onclick="completeOnboarding()">
+            Build My Plan 🚀
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /onb-card -->
+
+    <!-- Success screen -->
+    <div id="success-screen">
+      <div class="success-icon">🎯</div>
+      <h1 class="success-title">Your plan is ready!</h1>
+      <p class="success-sub">We've built a personalised roadmap based on your goals. Time to start your journey.</p>
+      <div class="success-plan" id="success-plan"></div>
+      <a href="index.html" class="btn-cta">
+        Open My Dashboard →
+      </a>
+    </div>
+
+  </div><!-- /onb-wrap -->
+
+  <script src="js/core/onboarding.js"></script>
+  <script>
+    const ob = window.SS.onboarding;
+
+    /* ── Wizard state ── */
+    const W = {
+      targetCompany: null,
+      targetLevel:   null,
+      timeline:      null,
+      quizAnswers:   {},
+    };
+
+    let currentStep = 1;
+
+    /* ── Render company grid ── */
+    const grid = document.getElementById('company-grid');
+    ob.COMPANIES.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'company-card';
+      card.style.setProperty('--company-color', c.color);
+      card.innerHTML = `
+        <div class="company-logo" style="background:${c.color};">${c.letter}</div>
+        <div class="company-name">${c.name}</div>
+      `;
+      card.onclick = () => {
+        document.querySelectorAll('.company-card').forEach(el => el.classList.remove('selected'));
+        card.classList.add('selected');
+        W.targetCompany = c.id;
+        document.getElementById('btn-next-1').disabled = false;
+      };
+      grid.appendChild(card);
+    });
+
+    /* ── Render level list ── */
+    const levelList = document.getElementById('level-list');
+    ob.LEVELS.forEach(l => {
+      const opt = document.createElement('div');
+      opt.className = 'level-option';
+      opt.innerHTML = `
+        <div class="level-icon">${l.icon}</div>
+        <div class="level-info">
+          <div class="level-label">${l.label}</div>
+          <div class="level-sub">${l.sub}</div>
+        </div>
+        <div class="level-check">✓</div>
+      `;
+      opt.onclick = () => {
+        document.querySelectorAll('.level-option').forEach(el => el.classList.remove('selected'));
+        opt.classList.add('selected');
+        W.targetLevel = l.id;
+        document.getElementById('btn-next-2').disabled = false;
+      };
+      levelList.appendChild(opt);
+    });
+
+    /* ── Render timeline buttons ── */
+    const timelineGrid = document.getElementById('timeline-grid');
+    const URGENCY_MSG = {
+      critical: { cls: 'urgency-critical', text: '⚡ Crunch mode activated. We\'ll focus on the highest-yield topics only.' },
+      high:     { cls: 'urgency-high',     text: '🔥 Tight window. Daily 45-min sessions will cover the essentials.' },
+      medium:   { cls: 'urgency-medium',   text: '✅ Good runway. Structured daily practice will get you to interview-ready.' },
+      low:      { cls: 'urgency-low',      text: '🌱 Plenty of time. Deep-dive each topic; aim for mastery, not memorization.' },
+      relaxed:  { cls: 'urgency-relaxed',  text: '🎯 Long game. Build intuition, not just patterns. Revisit regularly.' },
+    };
+    ob.TIMELINES.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'timeline-btn';
+      btn.textContent = t.label;
+      btn.onclick = () => {
+        document.querySelectorAll('.timeline-btn').forEach(el => el.classList.remove('selected'));
+        btn.classList.add('selected');
+        W.timeline = t.id;
+        document.getElementById('btn-next-3').disabled = false;
+        const msg = URGENCY_MSG[t.urgency];
+        document.getElementById('urgency-msg-wrap').innerHTML =
+          `<div class="urgency-msg ${msg.cls}">${msg.text}</div>`;
+      };
+      timelineGrid.appendChild(btn);
+    });
+
+    /* ── Quiz selection ── */
+    function selectQuiz(qId, answer, el) {
+      el.closest('.quiz-options').querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      W.quizAnswers[qId] = answer;
+      const allAnswered = ['q1','q2','q3'].every(q => W.quizAnswers[q]);
+      document.getElementById('btn-next-4').disabled = !allAnswered;
+    }
+
+    /* ── Step navigation ── */
+    function goToStep(n) {
+      document.getElementById(`step-${currentStep}`).classList.remove('visible');
+      currentStep = n;
+      document.getElementById(`step-${n}`).classList.add('visible');
+      updateDots();
+      document.getElementById('onb-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateDots() {
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        dot.classList.remove('active', 'done');
+        if (i === currentStep) dot.classList.add('active');
+        else if (i < currentStep) dot.classList.add('done');
+      }
+    }
+
+    /* ── Derive weak areas from quiz ── */
+    function calcWeakAreas() {
+      const weak = [];
+      // q1: scaling → foundations weak if 'a' or 'd'
+      if (W.quizAnswers.q1 === 'a' || W.quizAnswers.q1 === 'd') weak.push('foundations');
+      // q2: storage → storage weak if 'a' or 'd'
+      if (W.quizAnswers.q2 === 'a' || W.quizAnswers.q2 === 'd') weak.push('storage');
+      // q3: debugging / ops → patterns weak if 'c' or 'd'
+      if (W.quizAnswers.q3 === 'c' || W.quizAnswers.q3 === 'd') weak.push('patterns');
+
+      // Determine overall experience
+      const goodAnswers = [
+        W.quizAnswers.q1 === 'b',
+        W.quizAnswers.q2 === 'b',
+        W.quizAnswers.q3 === 'a',
+      ].filter(Boolean).length;
+
+      let experienceLevel;
+      if (goodAnswers === 3) experienceLevel = 'experienced';
+      else if (goodAnswers >= 1) experienceLevel = 'some';
+      else experienceLevel = 'beginner';
+
+      return { weak, experienceLevel };
+    }
+
+    /* ── Complete onboarding ── */
+    function completeOnboarding() {
+      const { weak, experienceLevel } = calcWeakAreas();
+      const user = ob.complete({
+        targetCompany:   W.targetCompany,
+        targetLevel:     W.targetLevel,
+        timeline:        W.timeline,
+        experienceLevel,
+        weakAreas:       weak,
+      });
+
+      // Hide wizard card, show success
+      document.getElementById('onb-card').style.display = 'none';
+      document.getElementById('progress-dots').style.display = 'none';
+
+      showSuccess(user);
+    }
+
+    function showSuccess(user) {
+      const screen = document.getElementById('success-screen');
+      screen.classList.add('visible');
+
+      const company   = ob.getCompany(user.targetCompany);
+      const levelObj  = ob.LEVELS.find(l => l.id === user.targetLevel) || ob.LEVELS[0];
+      const tl        = ob.TIMELINES.find(t => t.id === user.timeline) || ob.TIMELINES[2];
+      const firstFocus = user.weakAreas.length
+        ? ({ foundations:'Scalability Fundamentals', storage:'Storage Systems', patterns:'Design Patterns', interview:'Interview Skills', systems:'Real Systems' }[user.weakAreas[0]] || 'Foundations')
+        : 'Foundations';
+
+      document.getElementById('success-plan').innerHTML = `
+        <div class="success-plan-title">Your personalised plan</div>
+        <div class="success-plan-rows">
+          <div class="success-plan-row">
+            <div class="success-plan-icon">${company.emoji}</div>
+            <div>
+              <div class="success-plan-row-label">Target Company</div>
+              <div class="success-plan-row-val">${company.name} — ${levelObj.label}</div>
+            </div>
+          </div>
+          <div class="success-plan-row">
+            <div class="success-plan-icon">📅</div>
+            <div>
+              <div class="success-plan-row-label">Interview Timeline</div>
+              <div class="success-plan-row-val">${tl.label} · ${user.daysToInterview} days to go</div>
+            </div>
+          </div>
+          <div class="success-plan-row">
+            <div class="success-plan-icon">🎯</div>
+            <div>
+              <div class="success-plan-row-label">Starting Focus</div>
+              <div class="success-plan-row-val">${firstFocus}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      screen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function skipOnboarding() {
+      // Create minimal user profile and redirect
+      const user = ob.complete({
+        targetCompany: 'other',
+        targetLevel:   'mid',
+        timeline:      '2m',
+        experienceLevel: 'some',
+        weakAreas: [],
+      });
+      window.location.href = 'index.html';
+    }
+
+    /* Redirect if already onboarded */
+    if (ob.isComplete()) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

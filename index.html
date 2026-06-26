@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SysScale — System Design Engineering</title>
-  <meta name="description" content="Master system design with 30 production systems, 18 concept modules, and interactive estimation tools.">
+  <title>SysScale — Dashboard</title>
+  <meta name="description" content="Your personalised system design interview prep dashboard.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
@@ -16,6 +16,80 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    /* Dashboard-only: streak counter in header */
+    .streak-chip {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 10px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.20);
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+      color: var(--amber);
+    }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 860px) { .dash-grid { grid-template-columns: 1fr; } }
+    .dash-sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Sidebar widget card */
+    .sidebar-widget {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .widget-title {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase; color: var(--text4);
+      margin-bottom: 14px;
+    }
+
+    /* Track readiness list */
+    .readiness-list { display: flex; flex-direction: column; gap: 10px; }
+    .readiness-row { display: flex; align-items: center; gap: 10px; }
+    .readiness-icon { font-size: 13px; width: 24px; text-align: center; flex-shrink: 0; }
+    .readiness-info { flex: 1; }
+    .readiness-name {
+      font-size: 11.5px; font-weight: 600; color: var(--text2);
+      margin-bottom: 4px; font-family: var(--font-head);
+    }
+    .readiness-track {
+      height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden;
+    }
+    .readiness-fill {
+      height: 100%; border-radius: 2px;
+      transition: width 1s var(--ease-out);
+    }
+    .readiness-pct-label {
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      color: var(--text3); flex-shrink: 0; min-width: 28px; text-align: right;
+    }
+
+    /* Company insights panel */
+    .insight-card {
+      background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(16,185,129,0.04) 100%);
+      border: 1px solid rgba(99,102,241,0.14);
+      border-radius: var(--r-xl); padding: 20px;
+    }
+    .insight-eyebrow {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase; color: var(--indigo);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .insight-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+    .insight-text {
+      font-size: 13px; color: var(--text2); line-height: 1.7; font-style: italic;
+    }
+    .insight-source {
+      margin-top: 10px; font-size: 10px; font-family: var(--font-mono);
+      color: var(--text4); font-weight: 700; letter-spacing: 0.04em;
+    }
+  </style>
 </head>
 <body>
 
@@ -30,6 +104,7 @@
       <a href="reference.html" class="header-tab">Reference</a>
     </nav>
     <div class="header-right">
+      <div class="streak-chip" id="streak-chip">🔥 0 day streak</div>
       <span class="version-badge">v4.0</span>
     </div>
   </header>
@@ -37,81 +112,288 @@
   <div class="page-wrap">
     <div class="page-container">
 
-      <!-- Hero -->
-      <div class="page-hero">
-        <div class="page-hero-eyebrow">System Design Platform</div>
-        <h1 class="page-hero-title">System Design,<br><span>Engineered.</span></h1>
-        <p class="page-hero-sub">
-          30 production systems. 18 concept modules. Interactive estimation tools.
-          Build the mental model of a principal engineer.
-        </p>
-        <div class="page-hero-actions">
-          <a href="estimator.html" class="btn-primary">→ Start Estimating</a>
-          <a href="learn.html"     class="btn-secondary">Browse Curriculum</a>
+      <!-- Plan widget -->
+      <div class="plan-widget" id="plan-widget">
+        <div class="plan-company-badge" id="plan-badge">SS</div>
+        <div class="plan-info">
+          <div class="plan-company-name" id="plan-company-name">SysScale</div>
+          <div class="plan-level" id="plan-level">Loading your plan…</div>
+        </div>
+        <div class="plan-stats" id="plan-stats"></div>
+        <div class="plan-readiness">
+          <div class="readiness-ring-wrap">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="28" fill="none" stroke="#E2E8F0" stroke-width="6"/>
+              <circle cx="36" cy="36" r="28" fill="none" stroke="#6366F1" stroke-width="6"
+                stroke-dasharray="175.93" stroke-dashoffset="175.93"
+                stroke-linecap="round" id="readiness-arc"
+                style="transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)"/>
+            </svg>
+            <div class="readiness-label">
+              <div class="readiness-pct" id="readiness-pct">0%</div>
+              <div class="readiness-text">Ready</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Learning tracks -->
-      <div class="section-label">Learning Tracks</div>
-      <div class="tracks-grid" id="tracks-grid"></div>
+      <!-- XP bar -->
+      <div class="xp-bar-wrap" id="xp-bar-wrap">
+        <div class="xp-level-badge" id="xp-badge">LV 1 · Intern</div>
+        <div class="xp-info">
+          <div class="xp-labels">
+            <span class="xp-title" id="xp-title">Level 1 — Intern</span>
+            <span class="xp-sub" id="xp-sub">0 / 100 XP</span>
+          </div>
+          <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        </div>
+      </div>
 
-      <!-- Quick actions -->
-      <div class="section-label">Quick Start</div>
-      <div class="quick-grid">
-        <a href="practice.html" class="quick-card">
-          <div class="quick-card-title">🎯 Mock Interview</div>
-          <div class="quick-card-desc">35-minute timed session. Pick a system, work from memory, then check your answer.</div>
-          <div class="quick-card-cta">Start a session →</div>
-        </a>
-        <a href="estimator.html" class="quick-card">
-          <div class="quick-card-title">⚡ Estimator</div>
-          <div class="quick-card-desc">Tune sliders and watch traffic, storage, bandwidth, and architecture update live.</div>
-          <div class="quick-card-cta">Open tool →</div>
-        </a>
-        <a href="reference.html" class="quick-card">
-          <div class="quick-card-title">📖 Reference</div>
-          <div class="quick-card-desc">Capacity constants, latency numbers, component throughput. Keep it open in another tab.</div>
-          <div class="quick-card-cta">Open reference →</div>
-        </a>
-        <a href="learn.html" class="quick-card">
-          <div class="quick-card-title">🧠 Fundamentals</div>
-          <div class="quick-card-desc">CAP theorem, consistency models, replication, load balancers — the foundations every interview tests.</div>
-          <div class="quick-card-cta">Start learning →</div>
-        </a>
+      <!-- Main grid -->
+      <div class="dash-grid">
+        <div class="dash-main">
+
+          <!-- Today's mission -->
+          <div class="mission-section">
+            <div class="section-label">Today's Mission</div>
+            <div class="mission-grid" id="mission-grid">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+
+          <!-- AI Mentor card -->
+          <div class="mentor-card" style="margin-bottom:32px;" id="mentor-card">
+            <div class="mentor-card-inner">
+              <div class="mentor-eyebrow">AI Mentor · Company Insight</div>
+              <div class="mentor-title" id="mentor-title">Loading insight…</div>
+              <div class="mentor-insight" id="mentor-insight"></div>
+              <a href="practice.html" class="mentor-cta">Start a mock interview →</a>
+            </div>
+          </div>
+
+          <!-- Learning tracks -->
+          <div class="section-label">Learning Tracks</div>
+          <div class="tracks-grid" id="tracks-grid"></div>
+
+          <!-- Quick actions -->
+          <div class="section-label">Quick Start</div>
+          <div class="quick-grid">
+            <a href="practice.html" class="quick-card">
+              <div class="quick-card-icon">🎯</div>
+              <div class="quick-card-title">Mock Interview</div>
+              <div class="quick-card-desc">35-minute timed session. Pick a system, work from memory, then check your answer.</div>
+              <div class="quick-card-cta">Start a session →</div>
+            </a>
+            <a href="estimator.html" class="quick-card">
+              <div class="quick-card-icon">⚡</div>
+              <div class="quick-card-title">Estimator</div>
+              <div class="quick-card-desc">Tune sliders and watch traffic, storage, bandwidth, and architecture update live.</div>
+              <div class="quick-card-cta">Open tool →</div>
+            </a>
+            <a href="reference.html" class="quick-card">
+              <div class="quick-card-icon">📖</div>
+              <div class="quick-card-title">Reference</div>
+              <div class="quick-card-desc">Capacity constants, latency numbers, component throughput. Keep it open in another tab.</div>
+              <div class="quick-card-cta">Open reference →</div>
+            </a>
+            <a href="learn.html" class="quick-card">
+              <div class="quick-card-icon">🧠</div>
+              <div class="quick-card-title">Fundamentals</div>
+              <div class="quick-card-desc">CAP theorem, consistency models, replication, load balancers — the foundations every interview tests.</div>
+              <div class="quick-card-cta">Start learning →</div>
+            </a>
+          </div>
+
+        </div><!-- /dash-main -->
+
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+
+          <!-- Readiness by track -->
+          <div class="sidebar-widget">
+            <div class="widget-title">Track Readiness</div>
+            <div class="readiness-list" id="readiness-list"></div>
+          </div>
+
+          <!-- Company insight chip -->
+          <div class="insight-card" id="insight-card">
+            <div class="insight-eyebrow">
+              <div class="insight-dot"></div>
+              Daily Insight
+            </div>
+            <div class="insight-text" id="insight-text">Loading…</div>
+            <div class="insight-source" id="insight-source"></div>
+          </div>
+
+          <!-- Reset / setup widget -->
+          <div class="sidebar-widget" style="border-style: dashed; box-shadow: none;">
+            <div class="widget-title">Study Plan</div>
+            <div style="font-size:11.5px; color:var(--text3); margin-bottom:12px; line-height:1.6;">
+              Restart onboarding to update your target company, level, or timeline.
+            </div>
+            <a href="onboarding.html" onclick="window.SS.onboarding && window.SS.onboarding.clear()"
+               style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+                      color:var(--indigo); text-decoration:none; padding:7px 14px;
+                      background:var(--indigo3); border:1px solid rgba(99,102,241,0.18);
+                      border-radius:var(--r); transition:background var(--dur-fast);"
+               onmouseover="this.style.background='rgba(99,102,241,0.14)'"
+               onmouseout="this.style.background='var(--indigo3)'">
+              ↺ Update my plan
+            </a>
+          </div>
+
+        </aside>
       </div>
 
     </div>
   </div>
 
+  <script src="js/core/onboarding.js"></script>
   <script src="js/content/tracks.js"></script>
   <script src="js/core/progress.js"></script>
+  <script src="js/core/mentor.js"></script>
   <script>
-    (function () {
-      var grid     = document.getElementById('tracks-grid');
-      var tracks   = (window.SS && window.SS.TRACKS) ? window.SS.TRACKS : [];
-      var progress = window.SS && window.SS.progress;
+  (function () {
+    var ob     = window.SS.onboarding;
+    var mentor = window.SS.mentor;
+    var prog   = window.SS.progress;
 
-      tracks.forEach(function (track) {
-        var prog = progress
-          ? progress.getTrackProgress(track.id)
-          : { done: 0, total: track.modules.length };
-        var pct  = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
-        var href = track.id === 'systems' ? 'estimator.html' : 'learn.html#' + track.id;
-        var totalLabel = prog.total > 0 ? prog.total : (track.id === 'systems' ? 9 : '—');
+    /* ── If not onboarded, redirect ── */
+    if (!ob.isComplete()) {
+      window.location.href = 'onboarding.html';
+      return;
+    }
 
-        var card = document.createElement('a');
-        card.href      = href;
-        card.className = 'track-card';
-        card.style.setProperty('--track-color', track.color);
-        card.innerHTML =
-          '<span class="track-card-icon">' + track.icon + '</span>' +
-          '<div class="track-card-name">'  + track.name + '</div>' +
-          '<div class="track-card-desc">'  + track.description + '</div>' +
-          '<div class="track-progress-bar"><div class="track-progress-fill" style="width:' + pct + '%"></div></div>' +
-          '<div class="track-progress-label">' + prog.done + ' / ' + totalLabel + ' complete</div>';
-        grid.appendChild(card);
-      });
-    })();
+    var user = ob.getUser();
+
+    /* ── Plan widget ── */
+    var company = ob.getCompany(user.targetCompany || 'other');
+    var levelObj = ob.LEVELS.find(function (l) { return l.id === user.targetLevel; }) || ob.LEVELS[0];
+    var daysLeft = Math.max(0, Math.round((user.interviewDate - Date.now()) / 86400000));
+
+    var badge = document.getElementById('plan-badge');
+    badge.textContent = company.letter || company.name[0];
+    badge.style.background = company.color;
+
+    document.getElementById('plan-company-name').textContent = company.name;
+    document.getElementById('plan-level').textContent = levelObj.label + ' — ' + levelObj.sub;
+
+    document.getElementById('plan-stats').innerHTML =
+      '<div class="plan-stat"><div class="plan-stat-num">' + daysLeft + '</div><div class="plan-stat-label">Days left</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-num" id="total-done">0</div><div class="plan-stat-label">Modules done</div></div>';
+
+    /* ── Readiness ring ── */
+    var readiness = mentor.calcReadiness(user);
+    document.getElementById('readiness-pct').textContent = readiness + '%';
+    var circumference = 175.93;
+    var arc = document.getElementById('readiness-arc');
+    setTimeout(function () {
+      arc.style.strokeDashoffset = circumference - (circumference * readiness / 100);
+    }, 200);
+
+    /* ── XP bar ── */
+    var xp = user.xp || 0;
+    var lvl = ob.levelFromXP(xp);
+    var TIERS = [0, 100, 300, 600, 1000, 1600, 2500];
+    var nextThreshold = TIERS[Math.min(lvl.level, TIERS.length - 1)] || TIERS[TIERS.length - 1];
+    var prevThreshold = TIERS[Math.max(lvl.level - 1, 0)];
+    var pct = Math.round(((xp - prevThreshold) / (nextThreshold - prevThreshold)) * 100);
+
+    document.getElementById('xp-badge').textContent = 'LV ' + lvl.level + ' · ' + lvl.title;
+    document.getElementById('xp-title').textContent = 'Level ' + lvl.level + ' — ' + lvl.title;
+    document.getElementById('xp-sub').textContent = xp + ' / ' + nextThreshold + ' XP';
+    setTimeout(function () {
+      document.getElementById('xp-fill').style.width = Math.min(pct, 100) + '%';
+    }, 300);
+
+    /* ── Streak ── */
+    var streak = user.streak || 0;
+    document.getElementById('streak-chip').innerHTML = '🔥 ' + streak + ' day' + (streak !== 1 ? 's' : '') + ' streak';
+
+    /* ── Today's mission ── */
+    var tasks = mentor.generateDailyTasks(user);
+    var missionGrid = document.getElementById('mission-grid');
+    var BADGES = { learn: 'type-learn', practice: 'type-practice', review: 'type-review' };
+    var BADGE_LABELS = { learn: 'LEARN', practice: 'PRACTICE', review: 'REVIEW' };
+    tasks.forEach(function (task, i) {
+      var card = document.createElement('a');
+      card.href      = task.href;
+      card.className = 'mission-card';
+      card.innerHTML =
+        '<div class="mission-card-num">' + (i + 1) + '</div>' +
+        '<div class="mission-card-body">' +
+          '<div class="mission-card-title">' + task.title + '</div>' +
+          '<div class="mission-card-desc">' + task.desc + '</div>' +
+        '</div>' +
+        '<div class="mission-card-badge ' + (BADGES[task.type] || 'type-learn') + '">' +
+          '+' + task.xp + ' XP · ' + (BADGE_LABELS[task.type] || 'LEARN') +
+        '</div>';
+      missionGrid.appendChild(card);
+    });
+
+    /* ── Mentor card ── */
+    var tip = mentor.getDailyTip(user);
+    document.getElementById('mentor-title').textContent = company.name + ' Interview Insight';
+    document.getElementById('mentor-insight').textContent = tip;
+
+    /* ── Track readiness sidebar ── */
+    var trackReadiness = mentor.calcTrackReadiness(user);
+    var TRACK_META = {
+      foundations: { icon: '⚡', name: 'Foundations',  color: '#6366F1' },
+      storage:     { icon: '🗄️', name: 'Storage',      color: '#10B981' },
+      patterns:    { icon: '🔄', name: 'Patterns',     color: '#F59E0B' },
+      systems:     { icon: '🏗️', name: 'Systems',      color: '#8B5CF6' },
+      interview:   { icon: '🎯', name: 'Interview',    color: '#EF4444' },
+    };
+    var rl = document.getElementById('readiness-list');
+    Object.entries(trackReadiness).forEach(function (entry) {
+      var trackId = entry[0], pct = entry[1];
+      var meta = TRACK_META[trackId] || { icon: '📚', name: trackId, color: '#6366F1' };
+      var row = document.createElement('div');
+      row.className = 'readiness-row';
+      row.innerHTML =
+        '<div class="readiness-icon">' + meta.icon + '</div>' +
+        '<div class="readiness-info">' +
+          '<div class="readiness-name">' + meta.name + '</div>' +
+          '<div class="readiness-track">' +
+            '<div class="readiness-fill" style="width:' + pct + '%; background:' + meta.color + ';"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="readiness-pct-label">' + pct + '%</div>';
+      rl.appendChild(row);
+    });
+
+    /* ── Company insight ── */
+    document.getElementById('insight-text').textContent = '"' + tip + '"';
+    document.getElementById('insight-source').textContent = company.name + ' Interview Pattern';
+
+    /* ── Tracks grid ── */
+    var grid   = document.getElementById('tracks-grid');
+    var tracks = (window.SS.TRACKS) ? window.SS.TRACKS : [];
+    var totalDone = 0;
+    tracks.forEach(function (track) {
+      var tp   = prog ? prog.getTrackProgress(track.id) : { done: 0, total: track.modules.length };
+      var pct  = tp.total > 0 ? Math.round((tp.done / tp.total) * 100) : 0;
+      var href = track.id === 'systems' ? 'estimator.html' : 'learn.html#' + track.id;
+      if (track.id !== 'systems') totalDone += tp.done;
+
+      var card = document.createElement('a');
+      card.href      = href;
+      card.className = 'track-card';
+      card.style.setProperty('--track-color', track.color);
+      card.innerHTML =
+        '<span class="track-card-icon">' + track.icon + '</span>' +
+        '<div class="track-card-name">' + track.name + '</div>' +
+        '<div class="track-card-desc">' + track.description + '</div>' +
+        '<div class="track-progress-bar"><div class="track-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="track-progress-label">' + tp.done + ' / ' + tp.total + ' complete</div>';
+      grid.appendChild(card);
+    });
+
+    var totalDoneEl = document.getElementById('total-done');
+    if (totalDoneEl) totalDoneEl.textContent = totalDone;
+
+  })();
   </script>
 
 </body>

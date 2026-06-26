@@ -1,39 +1,22 @@
 /* ============================================================
-   layout.css — Mission-control panel layout
+   layout.css — Light theme panel layout
    ============================================================ */
 
 /* ── Header ──────────────────────────────────────────────── */
 .header {
   height: var(--header-h);
-  background: rgba(7, 10, 16, 0.96);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid var(--border2);
-  /* Cyan glow line at bottom */
-  box-shadow: 0 1px 0 rgba(34,211,238,0.18),
-              0 4px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(15,23,42,0.04);
   display: flex;
   align-items: center;
-  padding: 0 18px;
+  padding: 0 20px;
   gap: 14px;
   flex-shrink: 0;
   z-index: 50;
   position: relative;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Subtle gradient sweep across the header bottom */
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(34,211,238,0.5) 20%,
-    rgba(34,211,238,0.8) 50%,
-    rgba(34,211,238,0.5) 80%,
-    transparent 100%);
-  pointer-events: none;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* ── Logo ────────────────────────────────────────────────── */
@@ -53,19 +36,17 @@
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  /* @property animated conic gradient */
   background: conic-gradient(from var(--logo-angle) at 50% 50%,
-    #22D3EE 0deg, #6366F1 90deg, #A78BFA 180deg, #22D3EE 360deg);
+    #6366F1 0deg, #8B5CF6 90deg, #EC4899 180deg, #6366F1 360deg);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 10px;
   font-weight: 800;
   font-family: var(--font-head);
-  color: rgba(0,0,0,0.85);
+  color: white;
   letter-spacing: -0.5px;
-  box-shadow: 0 0 16px rgba(34,211,238,0.40),
-              0 0 32px rgba(34,211,238,0.15);
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
   flex-shrink: 0;
   animation: logo-spin 8s linear infinite;
 }
@@ -80,9 +61,9 @@
 .header-nav { display: flex; gap: 2px; }
 
 .header-tab {
-  padding: 4px 13px;
+  padding: 5px 13px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text3);
   cursor: pointer;
@@ -93,13 +74,18 @@
   font-family: var(--font-body);
   letter-spacing: 0.01em;
 }
-.header-tab:hover { color: var(--text2); background: var(--bg2); border-color: var(--border); }
+.header-tab:hover { color: var(--text2); background: var(--bg2); }
 .header-tab.active {
   color: var(--indigo);
-  background: rgba(var(--indigo-rgb), 0.10);
-  border-color: rgba(var(--indigo-rgb), 0.25);
+  background: var(--indigo3);
+  border-color: rgba(var(--indigo-rgb), 0.20);
   font-weight: 600;
-  box-shadow: 0 0 12px rgba(var(--indigo-rgb), 0.12);
+}
+
+a.header-tab {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
 
 .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
@@ -138,17 +124,16 @@
   position: relative;
 }
 
-/* Cyan vertical accent — left edge */
 .left-sidebar::before {
   content: '';
   position: absolute;
   top: 0; left: 0;
-  width: 2px;
+  width: 3px;
   height: 100%;
   background: linear-gradient(180deg,
     var(--indigo) 0%,
-    rgba(34,211,238,0.4) 40%,
-    transparent 80%);
+    rgba(var(--indigo-rgb), 0.3) 50%,
+    transparent 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -165,14 +150,13 @@
   overflow-y: auto;
   min-height: 0;
 }
-
 .params-section::before {
   content: 'PARAMETERS';
   display: block;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: .18em;
-  color: var(--text3);
+  color: var(--text4);
   margin-bottom: 14px;
   font-family: var(--font-mono);
 }
@@ -188,37 +172,34 @@
   background: var(--bg0);
 }
 
-/* Metric bar — instrument row */
+/* Metric bar */
 .metric-bar {
   display: flex;
-  gap: 1px;
+  gap: 0;
   padding: 0;
-  background: var(--bg1);
+  background: white;
   border-bottom: 1px solid var(--border2);
   flex-shrink: 0;
   overflow-x: auto;
   overflow-y: hidden;
   align-items: stretch;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 0 var(--border);
 }
 
-/* Steps area — dark with grid */
+/* Steps area — dot grid signature */
 .steps-area {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 22px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-height: 0;
   align-items: stretch;
   background-color: var(--bg0);
-  /* Engineering grid — very subtle */
-  background-image:
-    linear-gradient(rgba(34,211,238,0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.028) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba(var(--indigo-rgb), 0.10) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .steps-inner {
@@ -234,16 +215,14 @@
 .right-panel {
   width: var(--rightbar-w);
   flex-shrink: 0;
-  background: var(--bg1);
+  background: white;
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
-  position: relative;
 }
 
-/* Right panel tab bar */
 .right-panel-tabs {
   display: flex;
   background: var(--bg0);
@@ -261,12 +240,11 @@
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 1180px) {
-  .right-panel  { width: 272px; }
-  .left-sidebar { width: 210px; }
+  .right-panel  { width: 280px; }
+  .left-sidebar { width: 220px; }
 }
 @media (max-width: 920px)  { .right-panel  { display: none; } }
 @media (max-width: 680px)  {
   .left-sidebar { display: none; }
   .steps-area   { padding: 12px; }
-  .metric-bar   { gap: 0; }
 }

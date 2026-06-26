@@ -1,5 +1,5 @@
 /* ============================================================
-   base.css — Reset + global dark-mode element styles
+   base.css — Light theme reset + global styles
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,51 +18,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Scanline overlay — the signature ───────────────────── */
-/* Barely perceptible horizontal banding: live instrument feel */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 2px,
-    rgba(0, 0, 0, 0.06) 2px,
-    rgba(0, 0, 0, 0.06) 3px
-  );
-  pointer-events: none;
-  z-index: 9998;
-  will-change: transform; /* promote to own layer — no repaint */
-}
-
-/* Ambient deep cyan bloom — top left, very subtle */
-body::after {
-  content: '';
-  position: fixed;
-  top: -200px;
-  left: -100px;
-  width: 600px;
-  height: 500px;
-  background: radial-gradient(ellipse,
-    rgba(34, 211, 238, 0.04) 0%,
-    transparent 65%);
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* ── Scrollbars ─────────────────────────────────────────── */
-::-webkit-scrollbar          { width: 3px; height: 3px; }
+::-webkit-scrollbar          { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track    { background: transparent; }
-::-webkit-scrollbar-thumb    { background: rgba(34,211,238,0.22); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(34,211,238,0.40); }
+::-webkit-scrollbar-thumb    { background: rgba(15,23,42,0.14); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(15,23,42,0.26); }
 
 /* ── Range slider ───────────────────────────────────────── */
 input[type=range] {
   width: 100%;
-  height: 3px;
+  height: 4px;
   appearance: none;
-  background: var(--bg4);
+  background: var(--bg3);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -72,39 +39,36 @@ input[type=range]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--bg1);
+  background: white;
   border: 2px solid var(--indigo);
-  box-shadow: 0 0 0 0 rgba(var(--indigo-rgb), 0.25),
-              0 0 8px rgba(var(--indigo-rgb), 0.35);
+  box-shadow: 0 0 0 0 rgba(var(--indigo-rgb), 0.18), var(--shadow-sm);
   transition: transform var(--dur-fast) var(--ease-spring),
               box-shadow var(--dur-fast);
 }
 input[type=range]::-webkit-slider-thumb:hover {
   transform: scale(1.25);
-  box-shadow: 0 0 0 5px rgba(var(--indigo-rgb), 0.14),
-              0 0 12px rgba(var(--indigo-rgb), 0.45);
+  box-shadow: 0 0 0 5px rgba(var(--indigo-rgb), 0.12), var(--shadow-sm);
 }
 input[type=range]:active::-webkit-slider-thumb {
   transform: scale(1.1);
-  box-shadow: 0 0 0 8px rgba(var(--indigo-rgb), 0.10),
-              0 0 16px rgba(var(--indigo-rgb), 0.50);
+  box-shadow: 0 0 0 8px rgba(var(--indigo-rgb), 0.08), var(--shadow-sm);
 }
 
 /* ── Select ─────────────────────────────────────────────── */
 select {
   width: 100%;
-  padding: 7px 10px;
-  background: var(--bg2);
+  padding: 8px 11px;
+  background: white;
   border: 1px solid var(--border2);
   border-radius: var(--r);
   color: var(--text);
-  font-size: 12px;
+  font-size: 12.5px;
   outline: none;
   cursor: pointer;
   font-family: var(--font-body);
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   padding-right: 28px;
@@ -112,16 +76,21 @@ select {
 select:hover  { border-color: var(--border3); }
 select:focus  {
   border-color: var(--indigo);
-  box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.15),
-              0 0 12px rgba(var(--indigo-rgb), 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.12);
 }
-select option { background: var(--bg2); color: var(--text); }
+select option { background: white; color: var(--text); }
 
-code { font-family: var(--font-mono); font-size: 0.88em; color: var(--indigo); }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--indigo);
+  background: var(--indigo3);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
 
 :focus-visible {
-  outline: 1px solid var(--indigo);
+  outline: 2px solid var(--indigo);
   outline-offset: 2px;
   border-radius: 3px;
-  box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.18);
 }

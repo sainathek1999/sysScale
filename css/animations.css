@@ -1,11 +1,11 @@
 /* ============================================================
-   animations.css — Keyframes + entrance effects (dark theme)
+   animations.css — Keyframes + entrance effects (light theme)
    ============================================================ */
 
 @keyframes value-flash {
-  0%   { background: rgba(245,158,11,0.20); color: var(--amber);
-         box-shadow: 0 0 12px rgba(245,158,11,0.35); transform: scale(1.12); }
-  100% { background: rgba(var(--indigo-rgb),0.10); color: var(--indigo);
+  0%   { background: rgba(245,158,11,0.16); color: var(--amber);
+         box-shadow: 0 0 0 3px rgba(245,158,11,0.12); transform: scale(1.12); }
+  100% { background: var(--indigo3); color: var(--indigo);
          box-shadow: none; transform: scale(1); }
 }
 
@@ -39,12 +39,22 @@
 }
 
 @keyframes node-pulse {
-  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px rgba(239,68,68,0.6)); }
-  50%       { opacity: 0.45; filter: drop-shadow(0 0 0px transparent); }
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px rgba(239,68,68,0.55)); }
+  50%       { opacity: 0.45; filter: none; }
 }
 
 @keyframes dash-flow {
   to { stroke-dashoffset: -16; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Metric pills — staggered pop-in */
@@ -87,7 +97,7 @@
 
 .rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
 
-/* Arch edges — flowing dashes */
+/* Arch edges */
 .arch-edge {
   stroke-dasharray: 4 4;
   animation: dash-flow 1.4s linear infinite;
@@ -108,5 +118,4 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  body::before, body::after { display: none; }
 }

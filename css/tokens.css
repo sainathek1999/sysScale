@@ -1,8 +1,7 @@
 /* ============================================================
-   tokens.css — Mission Control dark theme
+   tokens.css — Light theme (Sprint 1)
    ============================================================ */
 
-/* @property for animated conic gradient on logo */
 @property --logo-angle {
   syntax: '<angle>';
   inherits: false;
@@ -10,54 +9,63 @@
 }
 
 :root {
-  /* ── Void palette ──────────────────────────────────────── */
-  --bg0:  #070A10;   /* the void */
-  --bg1:  #0C1018;   /* primary panel */
-  --bg2:  #101620;   /* elevated surface */
-  --bg3:  #16202E;   /* hover */
-  --bg4:  #1D2A3A;   /* active border fill */
+  /* ── Light palette ─────────────────────────────────────── */
+  --bg0:  #F8FAFC;   /* page background */
+  --bg1:  #FFFFFF;   /* panel / card surface */
+  --bg2:  #F1F5F9;   /* elevated surface */
+  --bg3:  #E2E8F0;   /* hover / divider */
+  --bg4:  #CBD5E1;   /* active fill */
 
-  /* ── Borders (cyan-tinted) ─────────────────────────────── */
-  --border:  rgba(34, 211, 238, 0.07);
-  --border2: rgba(34, 211, 238, 0.13);
-  --border3: rgba(34, 211, 238, 0.28);
+  /* ── Borders ───────────────────────────────────────────── */
+  --border:  rgba(15, 23, 42, 0.07);
+  --border2: rgba(15, 23, 42, 0.12);
+  --border3: rgba(15, 23, 42, 0.22);
 
   /* ── Text ──────────────────────────────────────────────── */
-  --text:  #EFF6FF;   /* cool white */
-  --text2: #94A3B8;   /* slate-400 */
-  --text3: #475569;   /* slate-600 */
-  --text4: #1E293B;   /* almost invisible */
+  --text:  #0F172A;   /* slate-900 */
+  --text2: #334155;   /* slate-700 */
+  --text3: #64748B;   /* slate-500 */
+  --text4: #94A3B8;   /* slate-400 */
 
-  /* ── Primary: electric cyan ────────────────────────────── */
-  --indigo:  #22D3EE;   /* repurposed — this is our primary cyan */
-  --indigo2: #06B6D4;
-  --indigo3: rgba(34, 211, 238, 0.08);
-  --indigo-rgb: 34, 211, 238;
+  /* ── Primary: indigo ───────────────────────────────────── */
+  --indigo:     #6366F1;
+  --indigo2:    #4F46E5;
+  --indigo3:    rgba(99, 102, 241, 0.08);
+  --indigo-rgb: 99, 102, 241;
 
   /* ── Secondary accents ─────────────────────────────────── */
-  --teal:    #10B981;
-  --teal2:   #34D399;
+  --teal:     #10B981;
+  --teal2:    #34D399;
   --teal-rgb: 16, 185, 129;
-  --amber:   #F59E0B;
-  --amber2:  #FBBF24;
-  --red:     #EF4444;
-  --red2:    #F87171;
-  --red-rgb: 239, 68, 68;
-  --green:   #10B981;
-  --green2:  #34D399;
-  --purple:  #A78BFA;
-  --purple2: #C4B5FD;
+  --amber:    #F59E0B;
+  --amber2:   #FBBF24;
+  --red:      #EF4444;
+  --red2:     #F87171;
+  --red-rgb:  239, 68, 68;
+  --green:    #10B981;
+  --green2:   #34D399;
+  --purple:   #8B5CF6;
+  --purple2:  #A78BFA;
+
+  /* ── Company brand colors ──────────────────────────────── */
+  --google:    #4285F4;
+  --meta:      #0866FF;
+  --amazon:    #FF9900;
+  --netflix:   #E50914;
+  --microsoft: #00A4EF;
+  --apple:     #555555;
+  --uber:      #000000;
 
   /* ── Typography ────────────────────────────────────────── */
-  --font-head: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-head: 'Space Grotesk', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 
   /* ── Radii ──────────────────────────────────────────────── */
   --r-sm: 5px;
-  --r:    9px;
-  --r-lg: 13px;
-  --r-xl: 18px;
+  --r:    8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
 
   /* ── Motion ─────────────────────────────────────────────── */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
@@ -65,18 +73,18 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 0.12s;
   --dur:      0.20s;
-  --dur-slow: 0.38s;
+  --dur-slow: 0.35s;
 
   /* ── Layout ─────────────────────────────────────────────── */
-  --header-h:   54px;
-  --sidebar-w:  248px;
-  --rightbar-w: 316px;
+  --header-h:   56px;
+  --sidebar-w:  252px;
+  --rightbar-w: 320px;
 
-  /* ── Shadows = glows on dark ────────────────────────────── */
-  --shadow-sm:   0 1px 3px rgba(0,0,0,0.6),  0 0 0 1px rgba(34,211,238,0.04);
-  --shadow:      0 4px 14px rgba(0,0,0,0.7), 0 0 0 1px rgba(34,211,238,0.06);
-  --shadow-md:   0 8px 28px rgba(0,0,0,0.8), 0 0 0 1px rgba(34,211,238,0.08);
-  --shadow-lg:   0 16px 48px rgba(0,0,0,0.9),0 0 0 1px rgba(34,211,238,0.06);
-  --shadow-violet: 0 0 20px rgba(34,211,238,0.20), 0 0 40px rgba(34,211,238,0.08);
-  --shadow-teal:   0 0 16px rgba(16,185,129,0.22);
+  /* ── Shadows (real depth for light) ────────────────────── */
+  --shadow-sm:     0 1px 3px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.04);
+  --shadow:        0 4px 12px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04);
+  --shadow-md:     0 8px 24px rgba(15,23,42,0.10), 0 0 0 1px rgba(15,23,42,0.04);
+  --shadow-lg:     0 20px 48px rgba(15,23,42,0.12), 0 0 0 1px rgba(15,23,42,0.04);
+  --shadow-violet: 0 4px 16px rgba(99,102,241,0.18), 0 0 0 1px rgba(99,102,241,0.10);
+  --shadow-teal:   0 4px 12px rgba(16,185,129,0.16);
 }
