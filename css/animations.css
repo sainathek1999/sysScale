@@ -2,10 +2,9 @@
    animations.css — Keyframes + entrance/transition effects
    ============================================================ */
 
-/* ── Keyframes ───────────────────────────────────────── */
 @keyframes logo-pulse {
-  0%, 100% { box-shadow: 0 2px 8px rgba(var(--indigo-rgb), 0.28); }
-  50%      { box-shadow: 0 4px 18px rgba(var(--indigo-rgb), 0.48); }
+  0%, 100% { box-shadow: 0 2px 8px rgba(var(--indigo-rgb), 0.30); }
+  50%      { box-shadow: 0 4px 20px rgba(var(--indigo-rgb), 0.52); }
 }
 
 @keyframes value-flash {
@@ -51,19 +50,15 @@
   to { stroke-dashoffset: -16; }
 }
 
-/* ── Entrance staggering ─────────────────────────────── */
-.metric-pill {
-  animation: pop-in var(--dur) var(--ease-out) backwards;
-}
+/* ── Staggered entrances ─────────────────────────────── */
+.metric-pill { animation: pop-in var(--dur) var(--ease-out) backwards; }
 .metric-pill:nth-child(1) { animation-delay: 0.02s; }
 .metric-pill:nth-child(2) { animation-delay: 0.07s; }
 .metric-pill:nth-child(3) { animation-delay: 0.12s; }
 .metric-pill:nth-child(4) { animation-delay: 0.17s; }
 .metric-pill:nth-child(5) { animation-delay: 0.22s; }
 
-.step-card {
-  animation: fade-up var(--dur) var(--ease-out) backwards;
-}
+.step-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
 .steps-inner .step-card:nth-child(1) { animation-delay: 0.04s; }
 .steps-inner .step-card:nth-child(2) { animation-delay: 0.09s; }
 .steps-inner .step-card:nth-child(3) { animation-delay: 0.14s; }
@@ -89,7 +84,6 @@
 
 .rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
 
-/* Architecture animated edges + bottleneck pulse */
 .arch-edge {
   stroke-dasharray: 4 4;
   animation: dash-flow 1.2s linear infinite;
@@ -98,11 +92,8 @@
   animation: node-pulse 1.4s var(--ease-in-out) infinite;
 }
 
-/* Logo glow */
 .logo-mark { animation: logo-pulse 4s var(--ease-in-out) infinite; }
-
-/* Header entrance */
-.header { animation: fade-in var(--dur-slow) var(--ease-out); }
+.header    { animation: fade-in var(--dur-slow) var(--ease-out); }
 
 /* ── Reduced motion ──────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

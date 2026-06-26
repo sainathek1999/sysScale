@@ -1,29 +1,31 @@
 /* ============================================================
-   tokens.css — Design system variables
+   tokens.css — Design system variables (violet-forward theme)
    ============================================================ */
 :root {
-  /* Surfaces */
+  /* Surfaces — violet-tinted whites, not sterile pure white */
   --bg0: #FFFFFF;
-  --bg1: #F8F9FB;
-  --bg2: #F1F3F7;
-  --bg3: #E8EBF2;
-  --bg4: #D8DCE8;
+  --bg1: #F7F7FE;
+  --bg2: #EFEFF9;
+  --bg3: #E4E3F3;
+  --bg4: #D2D0E8;
 
   /* Borders */
-  --border:  rgba(0, 0, 0, 0.07);
-  --border2: rgba(0, 0, 0, 0.12);
-  --border3: rgba(0, 0, 0, 0.22);
+  --border:  rgba(109, 40, 217, 0.08);
+  --border2: rgba(109, 40, 217, 0.14);
+  --border3: rgba(109, 40, 217, 0.26);
 
-  /* Text */
-  --text:  #0F1117;
-  --text2: #464E60;
-  --text3: #8B93A8;
-  --text4: #BEC5D4;
+  /* Text — violet-dark tones */
+  --text:  #1A1035;
+  --text2: #3D3356;
+  --text3: #8B80A8;
+  --text4: #C2BCDA;
 
-  /* Accent ramps */
-  --indigo:  #2563EB;
-  --indigo2: #1D4ED8;
-  --indigo3: #EFF4FF;
+  /* Primary: deep electric violet */
+  --indigo:  #6D28D9;
+  --indigo2: #5B21B6;
+  --indigo3: #F5F3FF;
+
+  /* Secondary accents */
   --teal:    #0891B2;
   --teal2:   #06B6D4;
   --amber:   #D97706;
@@ -32,11 +34,11 @@
   --red2:    #EF4444;
   --green:   #059669;
   --green2:  #22C55E;
-  --purple:  #7C3AED;
-  --purple2: #A855F7;
+  --purple:  #8B5CF6;
+  --purple2: #A78BFA;
 
   /* RGB for rgba() */
-  --indigo-rgb: 37, 99, 235;
+  --indigo-rgb: 109, 40, 217;
   --teal-rgb:   8, 145, 178;
   --red-rgb:    220, 38, 38;
 
@@ -46,10 +48,10 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Radii */
-  --r-sm: 6px;
-  --r:    10px;
-  --r-lg: 14px;
-  --r-xl: 20px;
+  --r-sm: 7px;
+  --r:    11px;
+  --r-lg: 15px;
+  --r-xl: 22px;
 
   /* Motion */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
@@ -60,15 +62,15 @@
   --dur-slow: 0.40s;
 
   /* Layout */
-  --header-h:   56px;
-  --sidebar-w:  248px;
+  --header-h:   58px;
+  --sidebar-w:  252px;
   --rightbar-w: 320px;
 
-  /* Shadows — multi-layer for depth */
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04);
-  --shadow:        0 2px 8px rgba(0,0,0,0.05), 0 4px 18px rgba(0,0,0,0.05);
-  --shadow-md:     0 4px 14px rgba(0,0,0,0.06), 0 8px 28px rgba(0,0,0,0.05);
-  --shadow-lg:     0 8px 30px rgba(0,0,0,0.08), 0 20px 48px rgba(0,0,0,0.05);
-  --shadow-indigo: 0 4px 14px rgba(37, 99, 235, 0.24);
-  --shadow-teal:   0 4px 14px rgba(8, 145, 178, 0.20);
+  /* Shadows — violet-tinted */
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(109,40,217,0.05);
+  --shadow:        0 2px 8px rgba(0,0,0,0.04), 0 4px 18px rgba(109,40,217,0.07);
+  --shadow-md:     0 4px 14px rgba(0,0,0,0.05), 0 10px 30px rgba(109,40,217,0.09);
+  --shadow-lg:     0 8px 30px rgba(0,0,0,0.06), 0 20px 50px rgba(109,40,217,0.10);
+  --shadow-violet: 0 4px 16px rgba(109, 40, 217, 0.28);
+  --shadow-teal:   0 4px 14px rgba(8, 145, 178, 0.22);
 }
