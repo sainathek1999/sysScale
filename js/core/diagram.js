@@ -1,6 +1,7 @@
 /* ============================================================
-   diagram.js — Architecture SVG renderer
+   diagram.js — Architecture SVG renderer + 3D layered view
    window.SS.drawArch(nodes, edges) -> svg string
+   window.SS.drawArch3D(nodes, edges) -> html string
    Nodes with color '#ef4444' (red) render as animated bottleneck.
    ============================================================ */
 window.SS = window.SS || {};
@@ -57,4 +58,81 @@ window.SS.drawArch = function (nodes, edges) {
   });
 
   return s + '</svg>';
+};
+
+/* ── 3D layered architecture view ────────────────────────────
+   Groups nodes by Y proximity into "tiers", then renders each
+   tier as a CSS 3D plane floating at a different Z depth.
+   ─────────────────────────────────────────────────────────── */
+window.SS.drawArch3D = function (nodes, edges) {
+  const sorted = [...nodes].sort((a, b) => a.y - b.y);
+
+  // Cluster into tiers: nodes within 50px Y of each other = same plane
+  const tiers = [];
+  sorted.forEach(nd => {
+    const last = tiers[tiers.length - 1];
+    if (!last || nd.y - last.baseY > 50) {
+      tiers.push({ baseY: nd.y, nodes: [] });
+    }
+    tiers[tiers.length - 1].nodes.push(nd);
+  });
+
+  const n       = tiers.length;
+  const TIER_Z  = 50; // px Z-gap between tiers
+
+  // Edge labels indexed by destination node id
+  const edgeLabels = {};
+  edges.forEach(e => {
+    if (e.label && !edgeLabels[e.to]) edgeLabels[e.to] = e.label;
+  });
+
+  // Build edge label chips (show alongside scene as a legend)
+  const flowTags = edges.filter(e => e.label)
+    .map(e => `<span class="arch3d-flow-tag">${e.label}</span>`)
+    .join('');
+
+  let html = `<div class="arch3d-scene"><div class="arch3d-stage" style="--tn:${n};">`;
+
+  tiers.forEach((tier, i) => {
+    const zVal  = (n - 1 - i) * TIER_Z; // client tier = highest Z
+    const color = tier.nodes[0].color || '#6366f1';
+    const rgb   = window.SS.hexToRgb(color);
+    const isBn  = tier.nodes.some(nd => nd.color === '#ef4444');
+
+    // Collect incoming edge labels for this tier
+    const inLabels = tier.nodes
+      .map(nd => edgeLabels[nd.id])
+      .filter(Boolean);
+
+    html += `<div class="arch3d-tier${isBn ? ' arch3d-tier-bn' : ''}" style="--z:${zVal};--tc:${color};--tcr:${rgb};">`;
+
+    if (inLabels.length) {
+      html += `<div class="arch3d-edge-label">${inLabels[0]}</div>`;
+    }
+
+    html += `<div class="arch3d-tier-face">
+      <div class="arch3d-tier-nodes">`;
+
+    tier.nodes.forEach(nd => {
+      const nr   = window.SS.hexToRgb(nd.color || '#6366f1');
+      const hot  = nd.color === '#ef4444';
+      const dim  = nd.dim;
+      html += `<div class="arch3d-node${hot ? ' arch3d-node-hot' : ''}${dim ? ' arch3d-node-dim' : ''}"
+        style="--nc:${nd.color || '#6366f1'};--ncr:${nr};">
+        <div class="arch3d-node-dot"></div>
+        <span class="arch3d-node-lbl">${nd.label}</span>
+      </div>`;
+    });
+
+    html += `</div></div></div>`; // close tier-nodes, tier-face, tier
+  });
+
+  html += `</div>`; // close stage
+
+  if (flowTags) {
+    html += `<div class="arch3d-flows">${flowTags}</div>`;
+  }
+
+  html += `</div>`; // close scene
+  return html;
 };

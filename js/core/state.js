@@ -26,5 +26,6 @@ window.SS.getParams = function (sysId) {
 window.SS.cur = {
   system: 'rate-limiter',
   rpTab: 'arch',
-  mode: 'estimate'
+  mode: 'estimate',
+  arch3D: true
 };

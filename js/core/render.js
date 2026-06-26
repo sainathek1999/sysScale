@@ -55,6 +55,7 @@ window.SS = window.SS || {};
 
     // steps (with animated grid-rows wrapper)
     const steps = sys.steps(c, p);
+    const total = steps.length;
     let h = '<div class="steps-inner">';
     if (c.bottleneck) {
       h += `<div class="bottleneck-warn">⚠ <strong>Bottleneck detected:</strong> ${c.bottleneck}</div>`;
@@ -63,7 +64,10 @@ window.SS = window.SS || {};
       h += `<div class="step-card ${i < 3 ? 'open' : ''}" id="sc-${i}">
         <div class="step-head" onclick="SS.toggleStep(${i})">
           <div class="step-num-badge">${i + 1}</div>
-          <div class="step-title">${step.title}</div>
+          <div class="step-title-wrap">
+            <div class="step-title">${step.title}</div>
+            <div class="step-counter">${i + 1} of ${total}</div>
+          </div>
           <div class="step-summary">${step.summary}</div>
           <div class="chevron">▼</div>
         </div>
@@ -78,6 +82,10 @@ window.SS = window.SS || {};
     if (window.SS.applyGlossary) window.SS.applyGlossary(el('steps-area'));
   };
 
+  /* ── Arch 3D toggle ────────────────────────────────── */
+  S.setArch3D  = function () { S.cur.arch3D = true;  S.renderRightPanel(); };
+  S.setArch2D  = function () { S.cur.arch3D = false; S.renderRightPanel(); };
+
   /* ── Right panel ───────────────────────────────────── */
   S.renderRightPanel = function () {
     const sys = S.SYSTEMS[S.cur.system];
@@ -86,11 +94,34 @@ window.SS = window.SS || {};
     let h = '';
 
     if (S.cur.rpTab === 'arch') {
-      h = `<div class="rp-section-title">Live architecture</div>
-        <div class="arch-canvas">${sys.arch(c)}</div>
-        <div style="font-size:11px;color:var(--text3);line-height:1.6;">
-          Nodes update live as you change parameters. A pulsing red node means a bottleneck at the current scale.
-        </div>`;
+      // Capture nodes/edges by patching drawArch temporarily
+      let archData = null;
+      const _orig = S.drawArch;
+      S.drawArch = function (ns, es) { archData = { nodes: ns, edges: es }; return _orig(ns, es); };
+      const archSVG = sys.arch(c);
+      S.drawArch = _orig;
+
+      const is3D = S.cur.arch3D !== false;
+
+      h = `<div class="arch-tab-hd">
+        <div class="rp-section-title" style="margin-bottom:0;">Architecture</div>
+        <div class="arch-view-toggle">
+          <button class="arch-tog-btn${!is3D ? ' active' : ''}" onclick="SS.setArch2D()" title="Flat SVG view">2D</button>
+          <button class="arch-tog-btn${is3D ? ' active' : ''}" onclick="SS.setArch3D()" title="3D layered view">3D</button>
+        </div>
+      </div>`;
+
+      if (is3D && archData) {
+        h += `<div class="arch3d-wrap">${S.drawArch3D(archData.nodes, archData.edges)}</div>`;
+      } else {
+        h += `<div class="arch-canvas">${archSVG}</div>`;
+      }
+
+      h += `<div class="arch-hint">
+        ${is3D
+          ? 'Layers represent architectural tiers. Pulsing red = bottleneck.'
+          : 'Nodes update live as you change parameters. Red = bottleneck.'}
+      </div>`;
     } else if (S.cur.rpTab === 'components') {
       h = '<div class="rp-section-title">Component recommendations</div>' +
         sys.components().map(comp => `<div class="comp-card">

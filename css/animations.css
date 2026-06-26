@@ -3,14 +3,16 @@
    ============================================================ */
 
 @keyframes value-flash {
-  0%   { background: rgba(245,158,11,0.16); color: var(--amber);
-         box-shadow: 0 0 0 3px rgba(245,158,11,0.12); transform: scale(1.12); }
+  0%   { background: rgba(245,158,11,0.18); color: #92400E;
+         box-shadow: 0 0 0 4px rgba(245,158,11,0.10); transform: scale(1.14); }
+  60%  { background: rgba(245,158,11,0.06); color: var(--indigo);
+         box-shadow: none; transform: scale(1.02); }
   100% { background: var(--indigo3); color: var(--indigo);
-         box-shadow: none; transform: scale(1); }
+         transform: scale(1); }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -20,14 +22,19 @@
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(8px); }
+  from { opacity: 0; transform: translateX(12px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes pop-in {
-  0%   { opacity: 0; transform: scale(0.88) translateY(6px); }
-  65%  { transform: scale(1.02) translateY(-1px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0%   { opacity: 0; transform: scale(0.86) translateY(8px); }
+  60%  { opacity: 1; transform: scale(1.04) translateY(-2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes accent-bar-in {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
 }
 
 @keyframes shake-in {
@@ -58,42 +65,42 @@
 }
 
 /* Metric pills — staggered pop-in */
-.metric-pill { animation: pop-in var(--dur) var(--ease-out) backwards; }
-.metric-pill:nth-child(1) { animation-delay: 0.03s; }
-.metric-pill:nth-child(2) { animation-delay: 0.08s; }
-.metric-pill:nth-child(3) { animation-delay: 0.13s; }
-.metric-pill:nth-child(4) { animation-delay: 0.18s; }
-.metric-pill:nth-child(5) { animation-delay: 0.23s; }
+.metric-pill { animation: pop-in 0.28s var(--ease-out) backwards; }
+.metric-pill:nth-child(1) { animation-delay: 0.04s; }
+.metric-pill:nth-child(2) { animation-delay: 0.10s; }
+.metric-pill:nth-child(3) { animation-delay: 0.16s; }
+.metric-pill:nth-child(4) { animation-delay: 0.22s; }
+.metric-pill:nth-child(5) { animation-delay: 0.28s; }
 
 /* Step cards — staggered fade-up */
-.step-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
-.steps-inner .step-card:nth-child(1) { animation-delay: 0.05s; }
-.steps-inner .step-card:nth-child(2) { animation-delay: 0.10s; }
-.steps-inner .step-card:nth-child(3) { animation-delay: 0.15s; }
-.steps-inner .step-card:nth-child(4) { animation-delay: 0.20s; }
-.steps-inner .step-card:nth-child(5) { animation-delay: 0.25s; }
-.steps-inner .step-card:nth-child(6) { animation-delay: 0.30s; }
-.steps-inner .step-card:nth-child(7) { animation-delay: 0.35s; }
+.step-card { animation: fade-up var(--dur-slow) var(--ease-out) backwards; }
+.steps-inner .step-card:nth-child(1) { animation-delay: 0.06s; }
+.steps-inner .step-card:nth-child(2) { animation-delay: 0.12s; }
+.steps-inner .step-card:nth-child(3) { animation-delay: 0.18s; }
+.steps-inner .step-card:nth-child(4) { animation-delay: 0.24s; }
+.steps-inner .step-card:nth-child(5) { animation-delay: 0.30s; }
+.steps-inner .step-card:nth-child(6) { animation-delay: 0.36s; }
+.steps-inner .step-card:nth-child(7) { animation-delay: 0.42s; }
 
-.tips-box { animation: fade-up var(--dur) var(--ease-out) 0.30s backwards; }
+.tips-box { animation: fade-up var(--dur-slow) var(--ease-out) 0.36s backwards; }
 
 /* System buttons — slide in from right */
 .system-btn { animation: slide-in-right var(--dur) var(--ease-out) backwards; }
 .system-btn:nth-child(1) { animation-delay: 0.04s; }
-.system-btn:nth-child(2) { animation-delay: 0.08s; }
-.system-btn:nth-child(3) { animation-delay: 0.12s; }
-.system-btn:nth-child(4) { animation-delay: 0.16s; }
-.system-btn:nth-child(5) { animation-delay: 0.20s; }
-.system-btn:nth-child(6) { animation-delay: 0.24s; }
-.system-btn:nth-child(7) { animation-delay: 0.28s; }
-.system-btn:nth-child(8) { animation-delay: 0.32s; }
-.system-btn:nth-child(9) { animation-delay: 0.36s; }
+.system-btn:nth-child(2) { animation-delay: 0.09s; }
+.system-btn:nth-child(3) { animation-delay: 0.14s; }
+.system-btn:nth-child(4) { animation-delay: 0.19s; }
+.system-btn:nth-child(5) { animation-delay: 0.24s; }
+.system-btn:nth-child(6) { animation-delay: 0.29s; }
+.system-btn:nth-child(7) { animation-delay: 0.34s; }
+.system-btn:nth-child(8) { animation-delay: 0.39s; }
+.system-btn:nth-child(9) { animation-delay: 0.44s; }
 
 /* Component cards */
-.comp-card { animation: fade-up var(--dur) var(--ease-out) backwards; }
-.comp-card:nth-child(2) { animation-delay: 0.05s; }
-.comp-card:nth-child(3) { animation-delay: 0.10s; }
-.comp-card:nth-child(4) { animation-delay: 0.15s; }
+.comp-card { animation: fade-up var(--dur-slow) var(--ease-out) backwards; }
+.comp-card:nth-child(2) { animation-delay: 0.07s; }
+.comp-card:nth-child(3) { animation-delay: 0.14s; }
+.comp-card:nth-child(4) { animation-delay: 0.21s; }
 
 .rp-content > * { animation: fade-in var(--dur) var(--ease-out); }
 
@@ -110,6 +117,12 @@
 
 /* Header entrance */
 .header { animation: fade-in var(--dur-slow) var(--ease-out); }
+
+/* Page-level entrance for dashboard */
+.plan-widget    { animation: fade-up var(--dur-slow) var(--ease-out) 0.04s backwards; }
+.xp-bar-wrap    { animation: fade-up var(--dur-slow) var(--ease-out) 0.10s backwards; }
+.mission-section{ animation: fade-up var(--dur-slow) var(--ease-out) 0.16s backwards; }
+.mentor-card    { animation: fade-up var(--dur-slow) var(--ease-out) 0.22s backwards; }
 
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

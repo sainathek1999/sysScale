@@ -62,9 +62,9 @@
 .page-hero-title {
   font-family: var(--font-head);
   font-size: clamp(32px, 5.5vw, 58px);
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  line-height: 1.04;
   color: var(--text);
   margin-bottom: 18px;
 }
@@ -102,14 +102,20 @@
   font-family: var(--font-head);
   letter-spacing: -0.2px;
   text-decoration: none;
-  transition: background var(--dur-fast), box-shadow var(--dur),
+  transition: background var(--dur-micro) var(--ease-snappy),
+              box-shadow var(--dur) var(--ease-out),
               transform var(--dur) var(--ease-out);
   box-shadow: var(--shadow-violet);
+  will-change: transform;
 }
 .btn-primary:hover {
   background: var(--indigo2);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(var(--indigo-rgb), 0.30);
+  box-shadow: 0 10px 28px rgba(var(--indigo-rgb), 0.32);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-violet);
 }
 
 .btn-secondary {
@@ -155,11 +161,14 @@
   cursor: pointer;
   text-decoration: none;
   display: block;
-  transition: border-color var(--dur), box-shadow var(--dur),
-              transform var(--dur) var(--ease-out), background var(--dur);
+  transition: border-color var(--dur-micro) var(--ease-snappy),
+              box-shadow var(--dur) var(--ease-out),
+              transform var(--dur) var(--ease-out),
+              background var(--dur-micro) var(--ease-snappy);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  will-change: transform;
 }
 .track-card::before {
   content: '';
@@ -167,16 +176,18 @@
   top: 0; left: 0; right: 0;
   height: 3px;
   background: var(--track-color, var(--indigo));
-  opacity: 0.7;
-  transition: opacity var(--dur);
+  transform: scaleX(0.3);
+  transform-origin: left center;
+  opacity: 0.6;
+  transition: transform 0.28s var(--ease-out), opacity var(--dur) var(--ease-snappy);
 }
 .track-card:hover {
-  border-color: rgba(var(--indigo-rgb), 0.18);
+  border-color: rgba(var(--indigo-rgb), 0.14);
   box-shadow: var(--shadow-md);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   background: var(--bg2);
 }
-.track-card:hover::before { opacity: 1; }
+.track-card:hover::before { transform: scaleX(1); opacity: 1; }
 
 .track-card-icon { font-size: 20px; margin-bottom: 10px; display: block; }
 .track-card-name {
@@ -230,16 +241,36 @@
   flex-direction: column;
   gap: 6px;
   text-decoration: none;
-  transition: border-color var(--dur), box-shadow var(--dur),
-              transform var(--dur) var(--ease-out);
+  position: relative;
+  overflow: hidden;
   box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-micro) var(--ease-snappy),
+              box-shadow var(--dur) var(--ease-out),
+              background var(--dur-micro) var(--ease-snappy);
+}
+.quick-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--indigo);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform 0.22s var(--ease-spring);
 }
 .quick-card:hover {
-  border-color: rgba(var(--indigo-rgb), 0.18);
+  border-color: var(--border2);
   box-shadow: var(--shadow);
-  transform: translateY(-3px);
+  background: var(--bg2);
 }
-.quick-card-icon { font-size: 18px; }
+.quick-card:hover::before { transform: scaleY(1); }
+
+.quick-card-icon {
+  font-size: 20px;
+  transition: transform var(--dur) var(--ease-spring);
+}
+.quick-card:hover .quick-card-icon { transform: scale(1.15); }
+
 .quick-card-title {
   font-family: var(--font-head);
   font-size: 13.5px;
@@ -262,16 +293,27 @@
   letter-spacing: 0.03em;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  position: relative;
+}
+.quick-card-cta::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--indigo);
+  transition: width 0.20s var(--ease-out);
 }
 .quick-card:hover .quick-card-cta { color: var(--indigo2); }
+.quick-card:hover .quick-card-cta::after { width: 100%; }
 
 /* ── Page titles ─────────────────────────────────────────── */
 .page-title {
   font-family: var(--font-head);
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.8px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
   color: var(--text);
   margin-bottom: 4px;
 }
@@ -326,16 +368,21 @@
   border-radius: var(--r);
   background: white;
   border: 1px solid transparent;
+  border-left: 2px solid transparent;
   text-decoration: none;
-  transition: background var(--dur-fast), border-color var(--dur-fast),
-              transform var(--dur) var(--ease-out), box-shadow var(--dur);
+  transition: background var(--dur-micro) var(--ease-snappy),
+              border-color var(--dur-micro) var(--ease-snappy),
+              border-left-color var(--dur) var(--ease-out),
+              transform var(--dur) var(--ease-out),
+              box-shadow var(--dur) var(--ease-out);
   position: relative;
 }
 a.module-item { cursor: pointer; }
 a.module-item:hover {
   background: var(--bg2);
-  border-color: var(--border2);
-  transform: translateX(3px);
+  border-color: var(--border);
+  border-left-color: var(--indigo);
+  transform: translateX(4px);
   box-shadow: var(--shadow-sm);
 }
 .module-item.completed { border-color: rgba(16,185,129,0.16); background: rgba(16,185,129,0.03); }
@@ -459,8 +506,8 @@ a.module-item:hover .module-arrow { transform: translateX(3px); color: var(--ind
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--indigo), var(--purple), var(--teal));
+  height: 4px;
+  background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 50%, var(--teal) 100%);
 }
 
 .plan-company-badge {
@@ -474,8 +521,8 @@ a.module-item:hover .module-arrow { transform: translateX(3px); color: var(--ind
 
 .plan-info { flex: 1; min-width: 140px; }
 .plan-company-name {
-  font-family: var(--font-head); font-size: 18px; font-weight: 700;
-  color: var(--text); letter-spacing: -0.4px; margin-bottom: 3px;
+  font-family: var(--font-head); font-size: 19px; font-weight: 800;
+  color: var(--text); letter-spacing: -0.6px; margin-bottom: 3px;
 }
 .plan-level { font-size: 12px; color: var(--text3); }
 
@@ -505,21 +552,26 @@ a.module-item:hover .module-arrow { transform: translateX(3px); color: var(--ind
 .mission-card {
   background: white;
   border: 1px solid var(--border);
+  border-left: 3px solid transparent;
   border-radius: var(--r-lg);
   padding: 16px 20px;
   display: flex;
   align-items: center;
   gap: 14px;
   text-decoration: none;
-  transition: border-color var(--dur), box-shadow var(--dur),
+  transition: border-color var(--dur-micro) var(--ease-snappy),
+              border-left-color var(--dur) var(--ease-out),
+              box-shadow var(--dur) var(--ease-out),
               transform var(--dur) var(--ease-out);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
+  will-change: transform;
 }
 .mission-card:hover {
-  border-color: rgba(var(--indigo-rgb), 0.20);
+  border-color: var(--border2);
+  border-left-color: var(--indigo);
   box-shadow: var(--shadow);
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .mission-card-num {
@@ -528,6 +580,15 @@ a.module-item:hover .module-arrow { transform: translateX(3px); color: var(--ind
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-size: 12px; font-weight: 800;
   color: var(--indigo); flex-shrink: 0;
+  transition: background var(--dur-micro) var(--ease-snappy),
+              border-color var(--dur) var(--ease-out),
+              transform var(--dur) var(--ease-spring);
+}
+.mission-card:hover .mission-card-num {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: white;
+  transform: scale(1.08);
 }
 
 .mission-card-body { flex: 1; }
@@ -622,9 +683,23 @@ a.module-item:hover .module-arrow { transform: translateX(3px); color: var(--ind
 }
 .xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--indigo), var(--purple));
+  background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%);
   border-radius: 3px;
   transition: width 1s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.xp-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.20) 50%, transparent 100%);
+  animation: xp-shimmer 2.4s var(--ease-in-out) infinite;
+  background-size: 200% 100%;
+}
+@keyframes xp-shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* ── Company insight chip ────────────────────────────────── */
