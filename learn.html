@@ -47,10 +47,12 @@
 
   <script src="js/content/tracks.js"></script>
   <script src="js/core/progress.js"></script>
+  <script src="js/content/modules-foundations.js"></script>
   <script>
     (function () {
-      var tracks   = (window.SS && window.SS.TRACKS) ? window.SS.TRACKS : [];
-      var progress = window.SS && window.SS.progress;
+      var tracks    = (window.SS && window.SS.TRACKS) ? window.SS.TRACKS : [];
+      var progress  = window.SS && window.SS.progress;
+      var MODULES   = (window.SS && window.SS.MODULES) ? window.SS.MODULES : {};
       var container = document.getElementById('tracks-content');
 
       var totalModules = tracks.reduce(function (s, t) { return s + t.modules.length; }, 0);
@@ -63,24 +65,28 @@
       var hashTarget = location.hash.replace('#', '');
 
       tracks.forEach(function (track) {
-        var prog     = progress ? progress.getTrackProgress(track.id) : { done: 0, total: track.modules.length };
-        var section  = document.createElement('div');
+        var prog    = progress ? progress.getTrackProgress(track.id) : { done: 0, total: track.modules.length };
+        var section = document.createElement('div');
         section.className = 'track-section';
         section.id = track.id;
 
-        var isSystemsTrack = track.id === 'systems';
+        var isSystemsTrack    = track.id === 'systems';
+        var hasContent        = !!(MODULES[track.id] && MODULES[track.id].length);
+        var trackColor        = track.color;
 
         var headerHTML =
-          '<div class="track-section-header" style="border-color: ' + hexToAlpha(track.color, 0.20) + '">' +
+          '<div class="track-section-header" style="border-color: ' + hexToAlpha(trackColor, 0.20) + '">' +
             '<div class="track-section-icon">' + track.icon + '</div>' +
-            '<div class="track-section-name" style="color:' + track.color + '">' + track.name + '</div>' +
+            '<div class="track-section-name" style="color:' + trackColor + '">' + track.name + '</div>' +
             '<div class="track-section-meta">' + prog.done + ' / ' + prog.total + ' complete</div>' +
           '</div>' +
           '<div class="track-section-desc">' + track.description + '</div>';
 
         var modulesHTML = '<div class="module-list">';
         track.modules.forEach(function (mod) {
-          var done = progress && progress.isCompleted(mod.id);
+          var done       = progress && progress.isCompleted(mod.id);
+          var modHasContent = hasContent &&
+            MODULES[track.id].some(function (m) { return m.id === mod.id; });
 
           if (isSystemsTrack) {
             modulesHTML +=
@@ -90,14 +96,23 @@
                 '<span class="difficulty-badge ' + mod.difficulty + '">' + mod.difficulty + '</span>' +
                 '<span class="module-arrow">→</span>' +
               '</a>';
-          } else {
+          } else if (modHasContent) {
             modulesHTML +=
-              '<span class="module-item' + (done ? ' completed' : '') + '">' +
+              '<a href="module.html?t=' + track.id + '&m=' + mod.id + '" class="module-item' + (done ? ' completed' : '') + '">' +
                 '<span class="module-check">' + (done ? '✓' : '') + '</span>' +
                 '<span class="module-title">' + mod.title + '</span>' +
                 '<span class="module-time">' + mod.readingMins + ' min</span>' +
                 '<span class="difficulty-badge ' + mod.difficulty + '">' + mod.difficulty + '</span>' +
-                '<span class="module-soon">Sprint 1</span>' +
+                '<span class="module-arrow">→</span>' +
+              '</a>';
+          } else {
+            modulesHTML +=
+              '<span class="module-item">' +
+                '<span class="module-check"></span>' +
+                '<span class="module-title">' + mod.title + '</span>' +
+                '<span class="module-time">' + mod.readingMins + ' min</span>' +
+                '<span class="difficulty-badge ' + mod.difficulty + '">' + mod.difficulty + '</span>' +
+                '<span class="module-soon">Sprint 3</span>' +
               '</span>';
           }
         });

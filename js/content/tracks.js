@@ -6,7 +6,7 @@
       id: 'foundations',
       name: 'Foundations',
       icon: '⚡',
-      color: '#22D3EE',
+      color: '#6366F1',
       description: 'HTTP, scaling patterns, load balancers, CAP theorem, consistency.',
       modules: [
         { id: 'internet-basics',       title: 'How the Internet Works',    readingMins: 8,  difficulty: 'beginner'     },

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysScale — Module</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <style>
+    /* ── Page chrome ──────────────────────────────────────── */
+    body {
+      min-height: 100vh;
+      height: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg0);
+    }
+
+    /* Reading progress bar */
+    .read-progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--indigo), var(--purple));
+      z-index: 200;
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+
+    /* ── Header ───────────────────────────────────────────── */
+    .header {
+      height: var(--header-h);
+      background: rgba(255,255,255,0.92);
+      border-bottom: 1px solid var(--border2);
+      box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(15,23,42,0.04);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 14px;
+      flex-shrink: 0;
+      position: sticky; top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--font-head); font-size: 15px;
+      font-weight: 700; color: var(--text); text-decoration: none;
+    }
+    .logo-mark {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: conic-gradient(from var(--logo-angle) at 50% 50%,
+        #6366F1 0deg, #8B5CF6 90deg, #EC4899 180deg, #6366F1 360deg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: white;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+      animation: logo-spin 8s linear infinite;
+    }
+    @keyframes logo-spin { to { --logo-angle: 360deg; } }
+
+    .header-sep { width: 1px; height: 18px; background: var(--border2); }
+    .header-nav { display: flex; gap: 2px; }
+    .header-tab {
+      padding: 5px 13px; border-radius: 20px; font-size: 13px;
+      font-weight: 500; color: var(--text3); border: 1px solid transparent;
+      background: none; text-decoration: none; font-family: var(--font-body);
+      transition: color var(--dur-fast), background var(--dur-fast);
+      display: inline-flex; align-items: center;
+    }
+    .header-tab:hover  { color: var(--text2); background: var(--bg2); }
+    .header-tab.active { color: var(--indigo); background: var(--indigo3); border-color: rgba(var(--indigo-rgb),0.20); font-weight: 600; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+    /* ── Main layout ──────────────────────────────────────── */
+    .module-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 0;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      align-items: start;
+      min-height: calc(100vh - var(--header-h));
+    }
+    @media (max-width: 860px) {
+      .module-layout { grid-template-columns: 1fr; padding: 0 16px; }
+      .module-sidebar { display: none; }
+    }
+
+    /* ── Article ──────────────────────────────────────────── */
+    .module-article {
+      padding: 40px 48px 80px 0;
+      max-width: 720px;
+    }
+    @media (max-width: 860px) { .module-article { padding: 32px 0 60px; } }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11.5px; color: var(--text3); margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--text3); text-decoration: none; transition: color var(--dur-fast); }
+    .breadcrumb a:hover { color: var(--indigo); }
+    .breadcrumb-sep { color: var(--border3); font-size: 10px; }
+    .breadcrumb-current { color: var(--text2); font-weight: 600; }
+
+    /* Module header */
+    .module-header { margin-bottom: 36px; }
+    .module-track-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--indigo); background: var(--indigo3);
+      border: 1px solid rgba(var(--indigo-rgb),0.18);
+      padding: 3px 10px; border-radius: 20px; margin-bottom: 14px;
+    }
+    .module-title {
+      font-family: var(--font-head); font-size: 34px; font-weight: 800;
+      color: var(--text); letter-spacing: -1px; line-height: 1.12;
+      margin-bottom: 16px;
+    }
+    .module-meta {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .module-meta-item {
+      font-size: 12px; font-family: var(--font-mono); color: var(--text3);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .difficulty-badge {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 3px;
+    }
+    .difficulty-badge.beginner     { background: rgba(16,185,129,0.09);  color: var(--teal);   border: 1px solid rgba(16,185,129,0.18);  }
+    .difficulty-badge.intermediate { background: rgba(245,158,11,0.09);  color: var(--amber);  border: 1px solid rgba(245,158,11,0.18);  }
+    .difficulty-badge.advanced     { background: rgba(167,139,250,0.09); color: var(--purple); border: 1px solid rgba(167,139,250,0.18); }
+
+    .complete-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.20);
+      border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--teal);
+      cursor: pointer; font-family: var(--font-body);
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+      margin-left: auto;
+    }
+    .complete-btn:hover { background: rgba(16,185,129,0.14); border-color: rgba(16,185,129,0.35); }
+    .complete-btn.done { background: rgba(16,185,129,0.14); border-color: var(--teal); color: #047857; }
+
+    /* Module divider */
+    .module-divider {
+      height: 1px; background: var(--border); margin: 32px 0;
+    }
+
+    /* ── Body content ─────────────────────────────────────── */
+    .module-body h2 {
+      font-family: var(--font-head); font-size: 20px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.4px; margin: 32px 0 12px;
+    }
+    .module-body h2:first-child { margin-top: 0; }
+
+    .module-body p {
+      font-size: 15px; color: var(--text2); line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .module-body strong { color: var(--text); font-weight: 700; }
+
+    .module-body .formula-box {
+      background: white; border: 1px solid var(--border2);
+      border-left: 3px solid var(--indigo); border-radius: var(--r);
+      padding: 14px 18px; font-family: var(--font-mono); font-size: 12.5px;
+      color: var(--text2); margin: 16px 0; line-height: 2.2;
+      overflow-x: auto;
+    }
+    .module-body .formula-box .v { color: var(--indigo); font-weight: 700; }
+    .module-body .formula-box .r { color: var(--red); font-weight: 700; }
+
+    .module-body .metrics-table {
+      width: 100%; border-collapse: collapse; margin: 16px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden;
+    }
+    .module-body .metrics-table th {
+      background: var(--bg2); font-size: 10px; text-transform: uppercase;
+      letter-spacing: .10em; color: var(--text4); padding: 10px 14px;
+      text-align: left; font-weight: 700; font-family: var(--font-mono);
+    }
+    .module-body .metrics-table td {
+      padding: 10px 14px; font-size: 13px; color: var(--text2);
+      border-top: 1px solid var(--border); vertical-align: top; line-height: 1.6;
+    }
+    .module-body .metrics-table td:first-child {
+      font-weight: 500; color: var(--text); width: 40%;
+    }
+    .module-body .metrics-table td.hl  { color: var(--indigo); font-weight: 700; font-family: var(--font-mono); font-size: 12.5px; }
+    .module-body .metrics-table td.warn{ color: var(--amber);  font-weight: 700; font-family: var(--font-mono); font-size: 12.5px; }
+    .module-body .metrics-table tr:first-child td { border-top: none; }
+
+    .module-body .info-box {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: var(--r-lg); padding: 14px 18px; margin: 16px 0;
+    }
+    .module-body .info-box-title {
+      font-size: 10px; font-weight: 700; color: var(--amber);
+      text-transform: uppercase; letter-spacing: .12em;
+      margin-bottom: 6px; font-family: var(--font-mono);
+    }
+    .module-body .info-box-body {
+      font-size: 13.5px; color: var(--text2); line-height: 1.7;
+    }
+    .module-body .info-box-body strong { color: var(--text); }
+
+    code {
+      font-family: var(--font-mono); font-size: 0.88em;
+      color: var(--indigo); background: var(--indigo3);
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* ── Key points ───────────────────────────────────────── */
+    .keypoints-section {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 24px 28px;
+      margin: 40px 0; box-shadow: var(--shadow-sm);
+    }
+    .keypoints-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+    }
+    .keypoints-icon { font-size: 16px; }
+    .keypoints-title {
+      font-family: var(--font-head); font-size: 15px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.2px;
+    }
+    .keypoints-sub { font-size: 11px; color: var(--text3); margin-left: auto; font-family: var(--font-mono); }
+
+    .keypoints-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .keypoints-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13.5px; color: var(--text2); line-height: 1.65;
+    }
+    .keypoints-list li::before {
+      content: '→'; color: var(--indigo); font-weight: 700;
+      font-size: 12px; flex-shrink: 0; margin-top: 2px;
+      font-family: var(--font-mono);
+    }
+    .keypoints-list li strong { color: var(--indigo); }
+
+    /* ── Quiz ─────────────────────────────────────────────── */
+    .quiz-section {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 28px;
+      margin: 40px 0; box-shadow: var(--shadow);
+    }
+    .quiz-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+    }
+    .quiz-title {
+      font-family: var(--font-head); font-size: 18px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.3px;
+    }
+    .quiz-badge {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      padding: 3px 8px; border-radius: 20px;
+      background: rgba(245,158,11,0.08); color: var(--amber);
+      border: 1px solid rgba(245,158,11,0.18);
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+
+    .quiz-q { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+    .quiz-q:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+    .quiz-q-num {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      color: var(--text4); text-transform: uppercase; letter-spacing: .12em;
+      margin-bottom: 8px;
+    }
+    .quiz-q-text {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      margin-bottom: 14px; font-family: var(--font-head); line-height: 1.5;
+      letter-spacing: -0.2px;
+    }
+    .quiz-opts { display: flex; flex-direction: column; gap: 6px; }
+    .quiz-opt {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 16px; border-radius: var(--r);
+      border: 1.5px solid var(--border2); background: white;
+      cursor: pointer; font-size: 13.5px; color: var(--text2); line-height: 1.5;
+      transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+      user-select: none; text-align: left;
+    }
+    .quiz-opt:hover:not(.answered):not(.correct):not(.wrong) {
+      border-color: var(--border3); background: var(--bg2); color: var(--text);
+    }
+    .quiz-opt.selected:not(.answered) {
+      border-color: var(--indigo); background: var(--indigo3); color: var(--indigo); font-weight: 600;
+    }
+    .quiz-opt.correct {
+      border-color: var(--teal); background: rgba(16,185,129,0.07); color: #065F46; font-weight: 600; cursor: default;
+    }
+    .quiz-opt.wrong {
+      border-color: var(--red); background: rgba(239,68,68,0.05); color: #991B1B; cursor: default;
+    }
+    .quiz-opt-key {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--bg2); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; font-family: var(--font-mono);
+      flex-shrink: 0; color: var(--text3);
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .quiz-opt.selected:not(.answered) .quiz-opt-key { background: var(--indigo); border-color: var(--indigo); color: white; }
+    .quiz-opt.correct .quiz-opt-key { background: var(--teal); border-color: var(--teal); color: white; }
+    .quiz-opt.wrong   .quiz-opt-key { background: var(--red);  border-color: var(--red);  color: white; }
+
+    .quiz-explanation {
+      margin-top: 10px; padding: 12px 14px;
+      background: var(--bg2); border-radius: var(--r);
+      font-size: 13px; color: var(--text2); line-height: 1.65;
+      border-left: 3px solid var(--indigo); display: none;
+    }
+    .quiz-explanation.visible { display: block; animation: fade-in 0.2s var(--ease-out); }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .quiz-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .quiz-submit-btn {
+      padding: 11px 26px; border-radius: var(--r);
+      background: var(--indigo); color: white;
+      font-size: 13.5px; font-weight: 700; font-family: var(--font-head);
+      border: none; cursor: pointer;
+      box-shadow: var(--shadow-violet);
+      transition: background var(--dur-fast), transform var(--dur) var(--ease-out), opacity var(--dur-fast);
+    }
+    .quiz-submit-btn:hover:not(:disabled) { background: var(--indigo2); transform: translateY(-1px); }
+    .quiz-submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .quiz-score {
+      display: none; flex-direction: column; align-items: center;
+      text-align: center; padding: 20px 0 4px; gap: 6px;
+    }
+    .quiz-score.visible { display: flex; animation: pop-in 0.5s var(--ease-spring) both; }
+    @keyframes pop-in {
+      0%   { opacity: 0; transform: scale(0.85); }
+      65%  { transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .quiz-score-num {
+      font-family: var(--font-mono); font-size: 42px; font-weight: 800;
+      color: var(--indigo); line-height: 1;
+    }
+    .quiz-score-label { font-size: 14px; color: var(--text3); }
+    .quiz-xp {
+      font-size: 13px; font-family: var(--font-mono); font-weight: 700;
+      color: var(--teal); background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.20); border-radius: 20px;
+      padding: 4px 14px;
+    }
+
+    /* ── Module nav ───────────────────────────────────────── */
+    .module-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0; gap: 12px; flex-wrap: wrap;
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 14px 20px; border-radius: var(--r-lg);
+      border: 1px solid var(--border); background: white;
+      text-decoration: none; cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--dur), box-shadow var(--dur), transform var(--dur) var(--ease-out);
+      max-width: 260px; min-width: 160px;
+    }
+    .nav-btn:hover { border-color: rgba(var(--indigo-rgb),0.20); box-shadow: var(--shadow); transform: translateY(-1px); }
+    .nav-btn.next-btn { text-align: right; margin-left: auto; }
+    .nav-btn-label { font-size: 9.5px; font-family: var(--font-mono); font-weight: 700; color: var(--text4); letter-spacing: .10em; text-transform: uppercase; }
+    .nav-btn-title { font-size: 13px; font-weight: 700; font-family: var(--font-head); color: var(--text); letter-spacing: -0.2px; }
+    .nav-btn:hover .nav-btn-title { color: var(--indigo); }
+
+    /* ── Sidebar ──────────────────────────────────────────── */
+    .module-sidebar {
+      padding: 40px 0 80px 28px;
+      border-left: 1px solid var(--border);
+      position: sticky; top: calc(var(--header-h) + 16px);
+      max-height: calc(100vh - var(--header-h) - 32px);
+      overflow-y: auto;
+    }
+
+    .sidebar-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 16px 18px;
+      margin-bottom: 14px; box-shadow: var(--shadow-sm);
+    }
+    .sidebar-card-title {
+      font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--text4);
+      margin-bottom: 12px;
+    }
+
+    /* Track module list in sidebar */
+    .track-module-list { display: flex; flex-direction: column; gap: 2px; }
+    .track-module-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 8px; border-radius: var(--r-sm);
+      font-size: 12px; color: var(--text2);
+      text-decoration: none;
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .track-module-item:hover { background: var(--bg2); color: var(--text); }
+    .track-module-item.active { background: var(--indigo3); color: var(--indigo); font-weight: 700; }
+    .track-module-item.done { color: var(--text3); }
+    .track-module-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border2); flex-shrink: 0;
+    }
+    .track-module-item.done   .track-module-dot { background: var(--teal); }
+    .track-module-item.active .track-module-dot { background: var(--indigo); }
+
+    /* Related systems */
+    .related-system-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px; border-radius: var(--r);
+      border: 1px solid var(--border); background: white;
+      text-decoration: none; font-size: 12px; color: var(--text2);
+      margin-bottom: 6px;
+      transition: border-color var(--dur-fast), background var(--dur-fast);
+    }
+    .related-system-link:hover { border-color: rgba(var(--indigo-rgb),0.20); background: var(--indigo3); color: var(--indigo); }
+    .related-system-link:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Reading progress -->
+  <div class="read-progress-bar" id="read-progress" style="width:0%"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
+    <span class="header-sep"></span>
+    <nav class="header-nav">
+      <a href="index.html"     class="header-tab">Home</a>
+      <a href="estimator.html" class="header-tab">Estimator</a>
+      <a href="learn.html"     class="header-tab active">Learn</a>
+      <a href="practice.html"  class="header-tab">Practice</a>
+      <a href="reference.html" class="header-tab">Reference</a>
+    </nav>
+    <div class="header-right">
+      <button class="complete-btn" id="complete-btn" onclick="toggleComplete()">
+        <span id="complete-icon">○</span> Mark Complete
+      </button>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <div class="module-layout">
+
+    <!-- Article column -->
+    <article class="module-article" id="module-article">
+      <!-- Filled by JS -->
+      <div id="module-loading" style="padding:80px 0; text-align:center; color:var(--text3); font-family:var(--font-mono); font-size:13px;">
+        Loading module…
+      </div>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="module-sidebar" id="module-sidebar">
+      <!-- Filled by JS -->
+    </aside>
+
+  </div>
+
+  <script src="js/core/onboarding.js"></script>
+  <script src="js/core/progress.js"></script>
+  <script src="js/content/tracks.js"></script>
+  <script src="js/content/modules-foundations.js"></script>
+  <!-- Future: modules-storage.js, modules-patterns.js, etc. -->
+
+  <script>
+  (function () {
+    const params    = new URLSearchParams(location.search);
+    const trackId   = params.get('t') || 'foundations';
+    const moduleId  = params.get('m') || '';
+    const progress  = window.SS.progress;
+    const ob        = window.SS.onboarding;
+    const MODULES   = window.SS.MODULES || {};
+
+    /* Find the module data */
+    const trackModules = MODULES[trackId] || [];
+    const mod = trackModules.find(m => m.id === moduleId);
+
+    if (!mod) {
+      document.getElementById('module-article').innerHTML =
+        '<div style="padding:80px 0;text-align:center;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">📭</div>' +
+        '<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">Module Not Found</div>' +
+        '<div style="font-size:14px;color:var(--text3);">This module hasn\'t been published yet.</div>' +
+        '<a href="learn.html" style="display:inline-block;margin-top:24px;padding:10px 22px;background:var(--indigo);color:white;border-radius:var(--r);text-decoration:none;font-weight:700;font-family:var(--font-head);">← Back to Learn</a>' +
+        '</div>';
+      return;
+    }
+
+    /* Update page title */
+    document.title = 'SysScale — ' + mod.title;
+
+    /* Find prev/next modules in same track */
+    const idx     = trackModules.indexOf(mod);
+    const prevMod = trackModules[idx - 1] || null;
+    const nextMod = trackModules[idx + 1] || null;
+
+    /* Track name from TRACKS */
+    const trackDef = (window.SS.TRACKS || []).find(t => t.id === trackId);
+    const trackName = trackDef ? trackDef.name : trackId;
+
+    /* Check completion */
+    let isComplete = progress ? progress.isCompleted(moduleId) : false;
+
+    function updateCompleteBtn() {
+      const btn  = document.getElementById('complete-btn');
+      const icon = document.getElementById('complete-icon');
+      if (isComplete) {
+        btn.classList.add('done');
+        icon.textContent = '✓';
+        btn.querySelector('span:last-child') && (btn.lastChild.textContent = ' Completed');
+        btn.innerHTML = '<span>✓</span> Completed';
+      } else {
+        btn.classList.remove('done');
+        btn.innerHTML = '<span id="complete-icon">○</span> Mark Complete';
+      }
+    }
+
+    window.toggleComplete = function () {
+      isComplete = !isComplete;
+      if (progress) {
+        if (isComplete) {
+          progress.completeModule(moduleId);
+          if (ob) ob.addXP(25);
+        } else {
+          progress.uncompleteModule(moduleId);
+        }
+      }
+      updateCompleteBtn();
+    };
+
+    /* ── Build article ── */
+    const article = document.getElementById('module-article');
+    article.innerHTML = '';
+
+    /* Breadcrumb */
+    const bc = document.createElement('div');
+    bc.className = 'breadcrumb';
+    bc.innerHTML =
+      '<a href="index.html">Home</a>' +
+      '<span class="breadcrumb-sep">›</span>' +
+      '<a href="learn.html">Learn</a>' +
+      '<span class="breadcrumb-sep">›</span>' +
+      '<a href="learn.html#' + trackId + '">' + trackName + '</a>' +
+      '<span class="breadcrumb-sep">›</span>' +
+      '<span class="breadcrumb-current">' + mod.title + '</span>';
+    article.appendChild(bc);
+
+    /* Module header */
+    const mh = document.createElement('div');
+    mh.className = 'module-header';
+    mh.innerHTML =
+      '<div class="module-track-badge">⚡ ' + trackName + '</div>' +
+      '<h1 class="module-title">' + mod.title + '</h1>' +
+      '<div class="module-meta">' +
+        '<div class="module-meta-item">📖 ' + mod.readingMins + ' min read</div>' +
+        '<div class="difficulty-badge ' + mod.difficulty + '">' + mod.difficulty + '</div>' +
+        '<div class="module-meta-item" style="margin-left:auto;font-size:11px;color:var(--text3);">Module ' + (idx + 1) + ' of ' + trackModules.length + '</div>' +
+      '</div>';
+    article.appendChild(mh);
+
+    const divider1 = document.createElement('div');
+    divider1.className = 'module-divider';
+    article.appendChild(divider1);
+
+    /* Body content */
+    const body = document.createElement('div');
+    body.className = 'module-body';
+    body.innerHTML = mod.content || '<p>Content coming soon.</p>';
+    article.appendChild(body);
+
+    /* Key points */
+    if (mod.keyPoints && mod.keyPoints.length) {
+      const kp = document.createElement('div');
+      kp.className = 'keypoints-section';
+      kp.innerHTML =
+        '<div class="keypoints-header">' +
+          '<div class="keypoints-icon">🎯</div>' +
+          '<div class="keypoints-title">Interview Talking Points</div>' +
+          '<div class="keypoints-sub">Memorise these</div>' +
+        '</div>' +
+        '<ul class="keypoints-list">' +
+          mod.keyPoints.map(pt => '<li>' + pt + '</li>').join('') +
+        '</ul>';
+      article.appendChild(kp);
+    }
+
+    /* Quiz */
+    if (mod.quiz && mod.quiz.length) {
+      const quizEl = document.createElement('div');
+      quizEl.className = 'quiz-section';
+      quizEl.id = 'quiz-section';
+
+      const KEYS = ['A', 'B', 'C', 'D'];
+      const userAnswers = {};
+      let submitted = false;
+
+      const questionsHTML = mod.quiz.map((q, qi) =>
+        '<div class="quiz-q" id="qblock-' + qi + '">' +
+          '<div class="quiz-q-num">Question ' + (qi + 1) + '</div>' +
+          '<div class="quiz-q-text">' + q.q + '</div>' +
+          '<div class="quiz-opts" id="opts-' + qi + '">' +
+            q.opts.map((opt, oi) =>
+              '<button class="quiz-opt" data-qi="' + qi + '" data-oi="' + oi + '" onclick="selectOpt(' + qi + ',' + oi + ',this)">' +
+                '<span class="quiz-opt-key">' + KEYS[oi] + '</span>' +
+                opt +
+              '</button>'
+            ).join('') +
+          '</div>' +
+          '<div class="quiz-explanation" id="exp-' + qi + '"><strong>Explanation:</strong> ' + (q.explanation || '') + '</div>' +
+        '</div>'
+      ).join('');
+
+      quizEl.innerHTML =
+        '<div class="quiz-header">' +
+          '<div class="quiz-title">Knowledge Check</div>' +
+          '<div class="quiz-badge">' + mod.quiz.length + ' questions</div>' +
+        '</div>' +
+        questionsHTML +
+        '<div class="quiz-actions">' +
+          '<button class="quiz-submit-btn" id="quiz-submit" disabled onclick="submitQuiz()">Submit answers</button>' +
+          '<div class="quiz-score" id="quiz-score">' +
+            '<div class="quiz-score-num" id="quiz-score-num">0/' + mod.quiz.length + '</div>' +
+            '<div class="quiz-score-label" id="quiz-score-label"></div>' +
+            '<div class="quiz-xp" id="quiz-xp">+0 XP</div>' +
+          '</div>' +
+        '</div>';
+
+      article.appendChild(quizEl);
+
+      window.selectOpt = function (qi, oi, el) {
+        if (submitted) return;
+        userAnswers[qi] = oi;
+        const opts = document.querySelectorAll('[data-qi="' + qi + '"]');
+        opts.forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        const allAnswered = mod.quiz.every((_, i) => userAnswers[i] !== undefined);
+        document.getElementById('quiz-submit').disabled = !allAnswered;
+      };
+
+      window.submitQuiz = function () {
+        if (submitted) return;
+        submitted = true;
+        document.getElementById('quiz-submit').disabled = true;
+
+        let correct = 0;
+        mod.quiz.forEach((q, qi) => {
+          const chosen = userAnswers[qi];
+          const opts   = document.querySelectorAll('[data-qi="' + qi + '"]');
+          opts.forEach((o, oi) => {
+            o.classList.add('answered');
+            if (oi === q.answer)  o.classList.add('correct');
+            if (oi === chosen && chosen !== q.answer) o.classList.add('wrong');
+          });
+          const expEl = document.getElementById('exp-' + qi);
+          expEl.classList.add('visible');
+          if (chosen === q.answer) correct++;
+        });
+
+        const pct   = Math.round((correct / mod.quiz.length) * 100);
+        const xpAmt = correct * 15;
+        const label = pct === 100 ? '🏆 Perfect score!' : pct >= 75 ? '✅ Great work' : pct >= 50 ? '📚 Keep studying' : '🔄 Review the material';
+
+        document.getElementById('quiz-score-num').textContent = correct + '/' + mod.quiz.length;
+        document.getElementById('quiz-score-label').textContent = label;
+        document.getElementById('quiz-xp').textContent = '+' + xpAmt + ' XP';
+        document.getElementById('quiz-score').classList.add('visible');
+
+        if (ob) ob.addXP(xpAmt);
+        if (progress && pct >= 75) {
+          progress.saveQuizScore(moduleId, pct / 100);
+          if (!isComplete) {
+            isComplete = true;
+            progress.completeModule(moduleId);
+            updateCompleteBtn();
+          }
+        }
+      };
+    }
+
+    /* Module nav */
+    const nav = document.createElement('div');
+    nav.className = 'module-nav';
+    if (prevMod) {
+      const prev = document.createElement('a');
+      prev.href      = 'module.html?t=' + trackId + '&m=' + prevMod.id;
+      prev.className = 'nav-btn';
+      prev.innerHTML = '<div class="nav-btn-label">← Previous</div><div class="nav-btn-title">' + prevMod.title + '</div>';
+      nav.appendChild(prev);
+    } else {
+      const back = document.createElement('a');
+      back.href      = 'learn.html#' + trackId;
+      back.className = 'nav-btn';
+      back.innerHTML = '<div class="nav-btn-label">← Back</div><div class="nav-btn-title">Track Overview</div>';
+      nav.appendChild(back);
+    }
+    if (nextMod) {
+      const next = document.createElement('a');
+      next.href      = 'module.html?t=' + trackId + '&m=' + nextMod.id;
+      next.className = 'nav-btn next-btn';
+      next.innerHTML = '<div class="nav-btn-label">Next →</div><div class="nav-btn-title">' + nextMod.title + '</div>';
+      nav.appendChild(next);
+    }
+    article.appendChild(nav);
+
+    /* Update complete button state */
+    updateCompleteBtn();
+
+    /* ── Sidebar ── */
+    const sidebar = document.getElementById('module-sidebar');
+
+    /* Track module list */
+    const trackCard = document.createElement('div');
+    trackCard.className = 'sidebar-card';
+    trackCard.innerHTML = '<div class="sidebar-card-title">' + trackName + ' Track</div>';
+    const list = document.createElement('div');
+    list.className = 'track-module-list';
+    trackModules.forEach(m => {
+      const item = document.createElement('a');
+      item.href      = 'module.html?t=' + trackId + '&m=' + m.id;
+      item.className = 'track-module-item' +
+        (m.id === moduleId ? ' active' : '') +
+        (progress && progress.isCompleted(m.id) ? ' done' : '');
+      item.innerHTML = '<div class="track-module-dot"></div>' + m.title;
+      list.appendChild(item);
+    });
+    trackCard.appendChild(list);
+    sidebar.appendChild(trackCard);
+
+    /* Related systems */
+    if (mod.relatedSystems && mod.relatedSystems.length) {
+      const relCard = document.createElement('div');
+      relCard.className = 'sidebar-card';
+      relCard.innerHTML = '<div class="sidebar-card-title">Practice in Estimator</div>';
+      mod.relatedSystems.forEach(sysId => {
+        const sysName = {
+          'url-shortener': 'URL Shortener', 'rate-limiter': 'Rate Limiter',
+          'chat-service': 'Chat Service', 'notifications': 'Notifications',
+          'key-value-store': 'Key-Value Store', 'cdn': 'CDN Design',
+          'video-streaming': 'Video Streaming',
+        }[sysId] || sysId;
+        const a = document.createElement('a');
+        a.href       = 'estimator.html?s=' + sysId;
+        a.className  = 'related-system-link';
+        a.innerHTML  = '<span>⚡</span>' + sysName;
+        relCard.appendChild(a);
+      });
+      sidebar.appendChild(relCard);
+    }
+
+    /* ── Reading progress bar ── */
+    function updateProgress() {
+      const art    = document.getElementById('module-article');
+      const rect   = art.getBoundingClientRect();
+      const total  = art.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const pct   = total > 0 ? Math.min(100, (scrolled / total) * 100) : 0;
+      document.getElementById('read-progress').style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+  })();
+  </script>
+</body>
+</html>
