@@ -5,6 +5,16 @@
   const S = window.SS;
 
   /* ── Param events ──────────────────────────────────── */
+  var _computeTimer = null;
+
+  function markComputing() {
+    document.body.classList.add('is-computing');
+    clearTimeout(_computeTimer);
+    _computeTimer = setTimeout(function () {
+      document.body.classList.remove('is-computing');
+    }, 220);
+  }
+
   S.onSlide = function (key, idx) {
     const param = S.SYSTEMS[S.cur.system].params[key];
     S.getParams(S.cur.system)[key] = { i: idx, v: param.values[idx] };
@@ -15,6 +25,7 @@
       void lbl.offsetWidth;
       lbl.classList.add('flash');
     }
+    markComputing();
     S.renderCenter();
     S.renderRightPanel();
     S.pushURL();
@@ -23,6 +34,7 @@
   S.onSelect = function (key, idx) {
     const i = parseInt(idx, 10);
     S.getParams(S.cur.system)[key] = { i: i, v: i };
+    markComputing();
     S.renderCenter();
     S.renderRightPanel();
     S.pushURL();
@@ -33,11 +45,42 @@
     document.getElementById('sc-' + i).classList.toggle('open');
   };
 
+  /* ── Panel collapse ────────────────────────────────── */
+  S.togglePanel = function (side, btn) {
+    const panelId = side === 'left' ? 'left-sidebar' : 'right-panel';
+    const panel   = document.getElementById(panelId);
+    if (!panel) return;
+    const collapsed = panel.classList.toggle('panel-collapsed');
+    btn.classList.toggle('active', collapsed);
+    if (side === 'left') {
+      btn.textContent = collapsed ? '›' : '‹';
+      btn.title       = collapsed ? 'Expand parameters' : 'Collapse parameters';
+    } else {
+      btn.textContent = collapsed ? '‹' : '›';
+      btn.title       = collapsed ? 'Expand details' : 'Collapse details';
+    }
+  };
+
+  /* ── Phase switch ──────────────────────────────────── */
+  S.setPhase = function (phase, btn) {
+    S.cur.phase = phase;
+    document.querySelectorAll('.phase-btn').forEach(b =>
+      b.classList.toggle('active', b.getAttribute('data-phase') === String(phase))
+    );
+    S.renderCenter();
+  };
+
   /* ── System switch ─────────────────────────────────── */
   S.selectSystem = function (id) {
     S.cur.system = id;
     S.cur.mode = 'estimate';
     document.querySelectorAll('.header-tab').forEach((t, idx) => t.classList.toggle('active', idx === 0));
+    // sync phase nav without resetting the selected phase
+    const phase = S.cur.phase || 2;
+    document.querySelectorAll('.phase-btn').forEach(b =>
+      b.classList.toggle('active', b.getAttribute('data-phase') === String(phase))
+    );
+    if (S.gamification) S.gamification.trackSystemVisit(id);
     S.renderAll();
     S.pushURL();
   };
@@ -293,23 +336,5 @@
       S.startTimer();
     }
 
-    // Lenis smooth scroll on the two overflow-y panels
-    if (window.Lenis) {
-      [document.getElementById('steps-area'), document.getElementById('rp-content')].forEach(function (el) {
-        if (!el) return;
-        const lenis = new window.Lenis({
-          wrapper: el,
-          content: el,
-          smoothWheel: true,
-          duration: 1.1,
-          easing: function (t) { return 1 - Math.pow(1 - t, 4); },
-          gestureOrientation: 'vertical',
-          normalizeWheel: false,
-          smoothTouch: false,
-        });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-      });
-    }
   });
 })();

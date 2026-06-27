@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 
   <link rel="stylesheet" href="css/tokens.css">
@@ -61,7 +61,7 @@
   <div class="body-wrap">
 
     <!-- Left sidebar -->
-    <aside class="left-sidebar">
+    <aside class="left-sidebar" id="left-sidebar">
       <div class="sidebar-section">
         <div class="sidebar-label">Systems</div>
         <div id="system-list"></div>
@@ -71,12 +71,33 @@
 
     <!-- Center -->
     <main class="center-panel">
+      <!-- 4-phase interview framework navigator -->
+      <div class="phase-nav" id="phase-nav">
+        <button class="phase-btn" data-phase="1" onclick="SS.setPhase(1, this)">
+          <span class="phase-num">1</span><span class="phase-lbl">Requirements</span>
+        </button>
+        <span class="phase-sep">›</span>
+        <button class="phase-btn active" data-phase="2" onclick="SS.setPhase(2, this)">
+          <span class="phase-num">2</span><span class="phase-lbl">Capacity</span>
+        </button>
+        <span class="phase-sep">›</span>
+        <button class="phase-btn" data-phase="3" onclick="SS.setPhase(3, this)">
+          <span class="phase-num">3</span><span class="phase-lbl">Architecture</span>
+        </button>
+        <span class="phase-sep">›</span>
+        <button class="phase-btn" data-phase="4" onclick="SS.setPhase(4, this)">
+          <span class="phase-num">4</span><span class="phase-lbl">Deep Dive</span>
+        </button>
+        <div class="phase-nav-spacer"></div>
+        <button class="panel-toggle" id="left-panel-toggle" onclick="SS.togglePanel('left',this)" title="Collapse parameters">‹</button>
+        <button class="panel-toggle" id="right-panel-toggle" onclick="SS.togglePanel('right',this)" title="Collapse details">›</button>
+      </div>
       <div class="metric-bar" id="metric-bar"></div>
       <div class="steps-area" id="steps-area"></div>
     </main>
 
     <!-- Right panel -->
-    <aside class="right-panel">
+    <aside class="right-panel" id="right-panel">
       <div class="right-panel-tabs">
         <button class="rp-tab active" onclick="SS.setRpTab('arch', this)">Architecture</button>
         <button class="rp-tab" onclick="SS.setRpTab('components', this)">Components</button>
@@ -94,6 +115,7 @@
   <script src="js/core/diagram.js"></script>
   <script src="js/core/state.js"></script>
   <script src="js/core/render.js"></script>
+  <script src="js/content/requirements.js"></script>
 
   <script src="js/systems/rate-limiter.js"></script>
   <script src="js/systems/url-shortener.js"></script>
@@ -104,7 +126,15 @@
   <script src="js/systems/news-feed.js"></script>
   <script src="js/systems/ride-sharing.js"></script>
   <script src="js/systems/job-scheduler.js"></script>
+  <script src="js/systems/distributed-cache.js"></script>
+  <script src="js/systems/message-queue.js"></script>
+  <script src="js/systems/web-crawler.js"></script>
+  <script src="js/systems/object-storage.js"></script>
+  <script src="js/systems/cdn.js"></script>
+  <script src="js/systems/payment.js"></script>
+  <script src="js/systems/social-graph.js"></script>
 
+  <script src="js/core/gamification.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

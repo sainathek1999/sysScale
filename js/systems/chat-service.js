@@ -89,8 +89,8 @@ total = <span class="r">${fmtB(c.msgStorage)}</span></div>
 
     arch(c) {
       return drawArch([
-        { id: 'client', x: 110, y: 10, w: 140, h: 34, label: 'Clients', color: '#6366f1' },
-        { id: 'lb', x: 80, y: 72, w: 200, h: 34, label: 'Load Balancer', color: '#6366f1' },
+        { id: 'client', x: 110, y: 10, w: 140, h: 34, label: 'Clients', color: '#2BA07E' },
+        { id: 'lb', x: 80, y: 72, w: 200, h: 34, label: 'Load Balancer', color: '#2BA07E' },
         { id: 'ws', x: 45, y: 136, w: 270, h: 34, label: `WS Servers (${c.wsServers})`, color: c.wsConns > 500000 ? '#ef4444' : '#14b8a6' },
         { id: 'kafka', x: 80, y: 200, w: 200, h: 34, label: 'Kafka (queue)', color: '#f59e0b' },
         { id: 'fanout', x: 45, y: 264, w: 120, h: 34, label: `Fanout (${c.fanoutWorkers})`, color: '#a855f7' },

@@ -1,51 +1,45 @@
 /* ============================================================
-   tokens.css — Light theme (Sprint 1)
+   tokens.css — Light theme
    ============================================================ */
-
-@property --logo-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
 
 :root {
   /* ── Light palette ─────────────────────────────────────── */
-  --bg0:  #F8FAFC;   /* page background */
+  --bg0:  #EEF2EF;   /* page background — warm off-white */
   --bg1:  #FFFFFF;   /* panel / card surface */
-  --bg2:  #F1F5F9;   /* elevated surface */
-  --bg3:  #E2E8F0;   /* hover / divider */
-  --bg4:  #CBD5E1;   /* active fill */
+  --bg2:  #E5EBE8;   /* elevated surface */
+  --bg3:  #D2DAD6;   /* hover / divider */
+  --bg4:  #BDC9C4;   /* active fill */
 
   /* ── Borders ───────────────────────────────────────────── */
-  --border:  rgba(15, 23, 42, 0.07);
-  --border2: rgba(15, 23, 42, 0.12);
-  --border3: rgba(15, 23, 42, 0.22);
+  --border:  rgba(13, 30, 26, 0.07);
+  --border2: rgba(13, 30, 26, 0.12);
+  --border3: rgba(13, 30, 26, 0.22);
 
   /* ── Text ──────────────────────────────────────────────── */
-  --text:  #0F172A;   /* slate-900 */
-  --text2: #334155;   /* slate-700 */
-  --text3: #64748B;   /* slate-500 */
-  --text4: #94A3B8;   /* slate-400 */
+  --text:  #0D1E1A;   /* near-black teal */
+  --text2: #2A3F3A;   /* dark teal */
+  --text3: #527070;   /* mid teal-gray */
+  --text4: #7D9898;   /* light teal-gray */
 
-  /* ── Primary: indigo ───────────────────────────────────── */
-  --indigo:     #6366F1;
-  --indigo2:    #4F46E5;
-  --indigo3:    rgba(99, 102, 241, 0.08);
-  --indigo-rgb: 99, 102, 241;
+  /* ── Primary: teal-green ───────────────────────────────── */
+  --indigo:     #2BA07E;
+  --indigo2:    #1F7A5D;
+  --indigo3:    rgba(43, 160, 126, 0.08);
+  --indigo-rgb: 43, 160, 126;
 
   /* ── Secondary accents ─────────────────────────────────── */
-  --teal:     #10B981;
-  --teal2:    #34D399;
-  --teal-rgb: 16, 185, 129;
-  --amber:    #F59E0B;
-  --amber2:   #FBBF24;
-  --red:      #EF4444;
-  --red2:     #F87171;
-  --red-rgb:  239, 68, 68;
-  --green:    #10B981;
-  --green2:   #34D399;
-  --purple:   #8B5CF6;
-  --purple2:  #A78BFA;
+  --teal:     #2BA07E;
+  --teal2:    #3DC298;
+  --teal-rgb: 43, 160, 126;
+  --amber:    #D4820E;
+  --amber2:   #F0A020;
+  --red:      #D94848;
+  --red2:     #F07070;
+  --red-rgb:  217, 72, 72;
+  --green:    #2BA07E;
+  --green2:   #3DC298;
+  --purple:   #7C5CF6;
+  --purple2:  #9A7BFA;
 
   /* ── Company brand colors ──────────────────────────────── */
   --google:    #4285F4;
@@ -57,8 +51,8 @@
   --uber:      #000000;
 
   /* ── Typography ────────────────────────────────────────── */
-  --font-head: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-head: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   /* ── Radii ──────────────────────────────────────────────── */
@@ -78,15 +72,15 @@
   --dur-slow:  0.38s;
 
   /* ── Layout ─────────────────────────────────────────────── */
-  --header-h:   56px;
+  --header-h:   60px;
   --sidebar-w:  252px;
   --rightbar-w: 320px;
 
-  /* ── Shadows (real depth for light) ────────────────────── */
-  --shadow-sm:     0 1px 2px rgba(15,23,42,0.05), 0 0 0 1px rgba(15,23,42,0.04);
-  --shadow:        0 4px 16px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04);
-  --shadow-md:     0 8px 32px rgba(15,23,42,0.11), 0 0 0 1px rgba(15,23,42,0.04);
-  --shadow-lg:     0 20px 56px rgba(15,23,42,0.13), 0 0 0 1px rgba(15,23,42,0.04);
-  --shadow-violet: 0 4px 20px rgba(99,102,241,0.22), 0 0 0 1px rgba(99,102,241,0.10);
-  --shadow-teal:   0 4px 14px rgba(16,185,129,0.18);
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-sm:     0 1px 2px rgba(13,30,26,0.05), 0 0 0 1px rgba(13,30,26,0.04);
+  --shadow:        0 4px 16px rgba(13,30,26,0.08), 0 0 0 1px rgba(13,30,26,0.04);
+  --shadow-md:     0 8px 32px rgba(13,30,26,0.11), 0 0 0 1px rgba(13,30,26,0.04);
+  --shadow-lg:     0 20px 56px rgba(13,30,26,0.13), 0 0 0 1px rgba(13,30,26,0.04);
+  --shadow-violet: 0 4px 20px rgba(43,160,126,0.22), 0 0 0 1px rgba(43,160,126,0.10);
+  --shadow-teal:   0 4px 14px rgba(43,160,126,0.18);
 }

@@ -191,9 +191,9 @@ daily_storage = recorded_meetings × bytes/recording = <span class="r">${fmtB(c.
     arch(c) {
       const sfuOverloaded = c.sfuNodes > 10;
       return drawArch([
-        { id: 'clients',    x: 85,  y: 10,  w: 190, h: 34, label: `Clients (${fmt(c.concurUsers)})`,   color: '#6366f1' },
+        { id: 'clients',    x: 85,  y: 10,  w: 190, h: 34, label: `Clients (${fmt(c.concurUsers)})`,   color: '#2BA07E' },
         { id: 'stun',       x: 10,  y: 74,  w: 110, h: 34, label: 'STUN / TURN',                        color: '#f59e0b' },
-        { id: 'signal',     x: 140, y: 74,  w: 160, h: 34, label: 'Signaling (WS)',                      color: '#6366f1' },
+        { id: 'signal',     x: 140, y: 74,  w: 160, h: 34, label: 'Signaling (WS)',                      color: '#2BA07E' },
         { id: 'sfu',        x: 55,  y: 140, w: 250, h: 34, label: `SFU Cluster (${fmt(c.sfuNodes)} nodes)`, color: sfuOverloaded ? '#ef4444' : '#14b8a6' },
         { id: 'kafka',      x: 55,  y: 206, w: 120, h: 34, label: 'Kafka',                               color: '#f59e0b' },
         { id: 'rec',        x: 195, y: 206, w: 120, h: 34, label: 'Recording Svc',                       color: '#a855f7' },

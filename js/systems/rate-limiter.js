@@ -93,8 +93,8 @@ total (3× replication) = <span class="r">${c.redisTotal}</span></div>
     arch(c) {
       const ol = c.peak > 200000;
       return drawArch([
-        { id: 'client', x: 115, y: 14, w: 130, h: 34, label: 'Clients', color: '#6366f1' },
-        { id: 'gw', x: 85, y: 76, w: 190, h: 34, label: 'API Gateway', color: '#6366f1' },
+        { id: 'client', x: 115, y: 14, w: 130, h: 34, label: 'Clients', color: '#2BA07E' },
+        { id: 'gw', x: 85, y: 76, w: 190, h: 34, label: 'API Gateway', color: '#2BA07E' },
         { id: 'rl', x: 85, y: 140, w: 190, h: 34, label: 'Rate Limiter', color: '#14b8a6' },
         { id: 'redis', x: 45, y: 204, w: 270, h: 34, label: `Redis Cluster (${c.redisTotal})`, color: ol ? '#ef4444' : '#14b8a6' },
         { id: 'svc', x: 85, y: 272, w: 190, h: 34, label: 'Upstream Service', color: '#a855f7' },

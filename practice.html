@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
@@ -16,6 +16,240 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    /* ── Flashcard overlay ───────────────────────────────────── */
+    .drill-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(13,30,26,0.72);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .drill-overlay.active { display: flex; animation: fade-in 0.18s ease; }
+
+    .drill-modal {
+      background: var(--bg1);
+      border-radius: 20px;
+      width: 100%; max-width: 600px;
+      box-shadow: 0 24px 80px rgba(13,30,26,0.28), 0 0 0 1px rgba(13,30,26,0.06);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+
+    /* header */
+    .drill-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .drill-header-left { display: flex; align-items: center; gap: 10px; }
+    .drill-title {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      font-family: var(--font-head);
+    }
+    .drill-progress-text {
+      font-size: 11px; font-family: var(--font-mono); color: var(--text3);
+    }
+    .drill-close {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--bg2); border: none; cursor: pointer;
+      font-size: 14px; color: var(--text3);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--dur-fast);
+    }
+    .drill-close:hover { background: var(--bg3); color: var(--text); }
+
+    /* timer bar */
+    .drill-timer-bar {
+      height: 3px; background: var(--bg3);
+      position: relative; overflow: hidden;
+    }
+    .drill-timer-fill {
+      height: 100%; background: var(--indigo);
+      width: 100%;
+      transition: width linear, background 0.5s;
+    }
+    .drill-timer-fill.warn { background: var(--amber); }
+    .drill-timer-fill.crit { background: var(--red); }
+
+    /* card body */
+    .drill-body {
+      padding: 28px 28px 0;
+      min-height: 260px;
+      display: flex; flex-direction: column;
+      perspective: 1000px;
+    }
+
+    .drill-cat-badge {
+      display: inline-flex; align-items: center;
+      font-size: 9px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; font-family: var(--font-mono);
+      color: var(--indigo); background: var(--indigo3);
+      border: 1px solid rgba(var(--indigo-rgb),0.18);
+      border-radius: 4px; padding: 3px 8px;
+      margin-bottom: 18px; align-self: flex-start;
+    }
+
+    .drill-card {
+      flex: 1;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.46s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .drill-card.flipped { transform: rotateY(180deg); }
+
+    .drill-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex; flex-direction: column;
+    }
+    .drill-face-back { transform: rotateY(180deg); }
+
+    .drill-question {
+      font-size: 22px; font-weight: 700; line-height: 1.35;
+      color: var(--text); font-family: var(--font-head);
+      letter-spacing: -0.4px;
+    }
+    .drill-answer {
+      font-size: 18px; font-weight: 700; color: var(--indigo);
+      font-family: var(--font-mono); line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .drill-answer-note {
+      font-size: 12px; color: var(--text3); line-height: 1.6;
+    }
+
+    /* static card area — shows front until flipped */
+    .drill-static { flex: 1; display: flex; flex-direction: column; }
+    .drill-question-area { flex: 1; }
+    .drill-answer-area { display: none; }
+    .drill-answer-area.visible { display: block; }
+
+    /* footer */
+    .drill-footer {
+      padding: 20px 28px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    .drill-timer-sec {
+      font-size: 11px; font-family: var(--font-mono);
+      color: var(--text4); text-align: center;
+    }
+    .drill-timer-sec.warn { color: var(--amber); }
+    .drill-timer-sec.crit { color: var(--red); }
+
+    .drill-btn-row { display: flex; gap: 10px; }
+    .drill-btn {
+      flex: 1; padding: 12px 0; border-radius: 10px;
+      font-size: 13px; font-weight: 600; font-family: var(--font-head);
+      border: none; cursor: pointer; transition: all var(--dur-fast);
+    }
+    .drill-btn-reveal {
+      background: var(--indigo); color: white;
+      box-shadow: 0 2px 12px rgba(var(--indigo-rgb),0.24);
+    }
+    .drill-btn-reveal:hover { background: var(--indigo2); }
+    .drill-btn-got {
+      background: rgba(43,160,126,0.10); color: var(--indigo);
+      border: 1.5px solid rgba(var(--indigo-rgb),0.22);
+    }
+    .drill-btn-got:hover { background: rgba(43,160,126,0.18); }
+    .drill-btn-miss {
+      background: rgba(217,72,72,0.08); color: var(--red);
+      border: 1.5px solid rgba(var(--red-rgb),0.22);
+    }
+    .drill-btn-miss:hover { background: rgba(217,72,72,0.15); }
+    .drill-btn-skip {
+      background: var(--bg2); color: var(--text3);
+      border: 1px solid var(--border2);
+    }
+    .drill-btn-skip:hover { background: var(--bg3); color: var(--text2); }
+
+    /* results screen */
+    .drill-results {
+      padding: 40px 28px;
+      text-align: center;
+      display: none;
+    }
+    .drill-results.active { display: block; }
+    .drill-results-icon { font-size: 52px; margin-bottom: 16px; }
+    .drill-results-title {
+      font-size: 22px; font-weight: 800; color: var(--text);
+      font-family: var(--font-head); margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .drill-results-sub {
+      font-size: 13px; color: var(--text3); margin-bottom: 24px;
+    }
+    .drill-results-stats {
+      display: flex; gap: 16px; justify-content: center; margin-bottom: 28px;
+    }
+    .drill-stat {
+      background: var(--bg0); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px; min-width: 90px;
+    }
+    .drill-stat-val {
+      font-size: 24px; font-weight: 800; font-family: var(--font-head);
+      color: var(--text); letter-spacing: -0.5px;
+    }
+    .drill-stat-lbl {
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .10em; text-transform: uppercase; color: var(--text4);
+      margin-top: 2px;
+    }
+    .drill-stat.green .drill-stat-val { color: var(--green); }
+    .drill-stat.red .drill-stat-val { color: var(--red); }
+
+    .drill-results-btns { display: flex; gap: 10px; justify-content: center; }
+    .drill-results-btn {
+      padding: 11px 24px; border-radius: 10px; font-size: 13px;
+      font-weight: 600; font-family: var(--font-head); border: none; cursor: pointer;
+      transition: all var(--dur-fast);
+    }
+    .drill-results-btn.primary {
+      background: var(--indigo); color: white;
+      box-shadow: 0 2px 10px rgba(var(--indigo-rgb),0.22);
+    }
+    .drill-results-btn.primary:hover { background: var(--indigo2); }
+    .drill-results-btn.secondary {
+      background: var(--bg2); color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    .drill-results-btn.secondary:hover { background: var(--bg3); }
+
+    /* category filter */
+    .drill-cat-filter {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 14px 24px; border-bottom: 1px solid var(--border);
+      background: var(--bg0);
+    }
+    .drill-cat-btn {
+      font-size: 10px; font-weight: 700; letter-spacing: .10em;
+      text-transform: uppercase; font-family: var(--font-mono);
+      padding: 5px 10px; border-radius: 6px;
+      border: 1.5px solid var(--border2); background: var(--bg1);
+      color: var(--text3); cursor: pointer; transition: all var(--dur-fast);
+    }
+    .drill-cat-btn.active {
+      background: var(--indigo); border-color: var(--indigo); color: white;
+    }
+    .drill-cat-btn:hover:not(.active) { background: var(--bg2); color: var(--text2); }
+
+    /* progress dots */
+    .drill-dots {
+      display: flex; gap: 3px; flex-wrap: wrap; padding: 10px 24px 0;
+    }
+    .drill-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--bg3);
+      transition: background 0.2s;
+    }
+    .drill-dot.got { background: var(--green); }
+    .drill-dot.miss { background: var(--red); }
+    .drill-dot.current { background: var(--indigo); }
+  </style>
 </head>
 <body>
 
@@ -34,6 +268,98 @@
     </div>
   </header>
 
+  <!-- ── Flashcard Overlay ───────────────────────────────────── -->
+  <div class="drill-overlay" id="drill-overlay">
+    <div class="drill-modal" id="drill-modal">
+
+      <!-- category filter (start screen) -->
+      <div id="drill-start-screen">
+        <div style="padding:28px 28px 0">
+          <div style="font-size:18px;font-weight:800;font-family:var(--font-head);color:var(--text);letter-spacing:-0.4px;margin-bottom:6px">⚡ Estimation Drills</div>
+          <div style="font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6">60 cards. 30 seconds each. Numbers you need to know cold in any system design interview.</div>
+        </div>
+        <div class="drill-cat-filter" id="drill-cat-filter">
+          <button class="drill-cat-btn active" data-cat="all" onclick="toggleCat(this)">All (60)</button>
+          <button class="drill-cat-btn" data-cat="powers" onclick="toggleCat(this)">Powers of 2 (10)</button>
+          <button class="drill-cat-btn" data-cat="latency" onclick="toggleCat(this)">Latency (15)</button>
+          <button class="drill-cat-btn" data-cat="throughput" onclick="toggleCat(this)">Throughput (15)</button>
+          <button class="drill-cat-btn" data-cat="storage" onclick="toggleCat(this)">Storage (10)</button>
+          <button class="drill-cat-btn" data-cat="time" onclick="toggleCat(this)">Time & Traffic (10)</button>
+        </div>
+        <div style="padding:20px 28px 28px">
+          <button class="drill-btn drill-btn-reveal" style="width:100%;padding:14px 0;font-size:14px" onclick="startDrills()">Start Drills →</button>
+        </div>
+      </div>
+
+      <!-- active drill screen -->
+      <div id="drill-active-screen" style="display:none">
+        <div class="drill-header">
+          <div class="drill-header-left">
+            <div class="drill-title">⚡ Estimation Drills</div>
+            <div class="drill-progress-text" id="drill-prog-text">Card 1 of 60</div>
+          </div>
+          <button class="drill-close" onclick="closeDrills()">✕</button>
+        </div>
+        <div class="drill-timer-bar">
+          <div class="drill-timer-fill" id="drill-timer-fill"></div>
+        </div>
+        <div class="drill-dots" id="drill-dots"></div>
+
+        <div class="drill-body" style="min-height:220px">
+          <div class="drill-cat-badge" id="drill-cat-badge"></div>
+          <div class="drill-static" id="drill-static">
+            <div class="drill-question-area">
+              <div class="drill-question" id="drill-question"></div>
+            </div>
+            <div class="drill-answer-area" id="drill-answer-area">
+              <div class="drill-answer" id="drill-answer"></div>
+              <div class="drill-answer-note" id="drill-answer-note"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="drill-footer">
+          <div class="drill-timer-sec" id="drill-timer-sec">30s</div>
+          <div class="drill-btn-row" id="drill-action-row">
+            <button class="drill-btn drill-btn-reveal" onclick="revealCard()">Show Answer</button>
+            <button class="drill-btn drill-btn-skip" onclick="skipCard()">Skip →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- results screen -->
+      <div class="drill-results" id="drill-results-screen">
+        <div class="drill-results-icon" id="results-icon">🎯</div>
+        <div class="drill-results-title" id="results-title">Nice work!</div>
+        <div class="drill-results-sub" id="results-sub">Here's how you did.</div>
+        <div class="drill-results-stats">
+          <div class="drill-stat green">
+            <div class="drill-stat-val" id="results-got">0</div>
+            <div class="drill-stat-lbl">Got It</div>
+          </div>
+          <div class="drill-stat red">
+            <div class="drill-stat-val" id="results-miss">0</div>
+            <div class="drill-stat-lbl">Review</div>
+          </div>
+          <div class="drill-stat">
+            <div class="drill-stat-val" id="results-skip">0</div>
+            <div class="drill-stat-lbl">Skipped</div>
+          </div>
+          <div class="drill-stat">
+            <div class="drill-stat-val" id="results-pct">0%</div>
+            <div class="drill-stat-lbl">Score</div>
+          </div>
+        </div>
+        <div class="drill-results-btns">
+          <button class="drill-results-btn primary" onclick="restartMissed()">Retry Missed Cards</button>
+          <button class="drill-results-btn secondary" onclick="closeDrills()">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Page content ────────────────────────────────────────── -->
   <div class="page-wrap">
     <div class="page-container">
 
@@ -61,6 +387,13 @@
             <option value="news-feed">News Feed</option>
             <option value="ride-sharing">Ride Sharing</option>
             <option value="job-scheduler">Job Scheduler</option>
+            <option value="distributed-cache">Distributed Cache</option>
+            <option value="message-queue">Message Queue</option>
+            <option value="web-crawler">Web Crawler</option>
+            <option value="object-storage">Object Storage</option>
+            <option value="cdn">CDN</option>
+            <option value="payment">Payment System</option>
+            <option value="social-graph">Social Graph</option>
           </select>
           <button class="btn-primary" onclick="startMockInterview()">→ Start Session</button>
           <button class="btn-secondary" onclick="startRandomInterview()">🎲 Random</button>
@@ -76,13 +409,13 @@
       <!-- Secondary cards -->
       <div class="practice-secondary-grid">
 
-        <div class="practice-secondary-card">
+        <div class="practice-secondary-card" style="cursor:pointer" onclick="openDrills()">
           <div class="practice-secondary-title">⚡ Estimation Drills</div>
           <div class="practice-secondary-desc">
             Flashcard mode. 60 cards covering powers of 2, latency numbers,
             throughput benchmarks, storage sizes. 30 seconds per card.
           </div>
-          <span class="coming-pill">Coming Sprint 7</span>
+          <button class="btn-primary" style="margin-top:12px;font-size:12px;padding:8px 18px" onclick="openDrills(); event.stopPropagation()">Start Drills →</button>
         </div>
 
         <div class="practice-secondary-card">
@@ -91,7 +424,7 @@
             5 questions per module. Multiple choice with inline feedback.
             Wrong answer shows the explanation. Score saved to progress.
           </div>
-          <span class="coming-pill">Coming Sprint 1</span>
+          <span class="coming-pill">Coming Sprint 8</span>
         </div>
 
         <div class="practice-secondary-card">
@@ -109,7 +442,7 @@
             Pick two systems and see their architecture, metrics, and tradeoffs
             side by side. Great for spotting patterns.
           </div>
-          <span class="coming-pill">Coming Sprint 8</span>
+          <span class="coming-pill">Coming Sprint 9</span>
         </div>
 
       </div>
@@ -118,9 +451,12 @@
   </div>
 
   <script>
+    /* ── System list (all 16) ───────────────────────────────── */
     var SYSTEMS = [
       'rate-limiter','url-shortener','chat-service','notifications',
-      'typeahead','zoom','news-feed','ride-sharing','job-scheduler'
+      'typeahead','zoom','news-feed','ride-sharing','job-scheduler',
+      'distributed-cache','message-queue','web-crawler','object-storage',
+      'cdn','payment','social-graph'
     ];
 
     function startMockInterview() {
@@ -132,6 +468,296 @@
       var sys = SYSTEMS[Math.floor(Math.random() * SYSTEMS.length)];
       window.location.href = 'estimator.html?s=' + sys + '&practice=1';
     }
+
+    /* ── Flashcard data (60 cards) ──────────────────────────── */
+    var CARDS = [
+      /* ── Powers of 2 ── */
+      { cat:'powers', q:'2¹⁰ = ?', a:'1,024', note:'≈ 1K. Memorize: 2^10 ≈ 10^3' },
+      { cat:'powers', q:'2²⁰ = ?', a:'1,048,576', note:'≈ 1 million. 2^20 ≈ 10^6' },
+      { cat:'powers', q:'2³⁰ = ?', a:'~1.07 billion', note:'≈ 1 billion. 2^30 ≈ 10^9. Also = 1 GB in bytes.' },
+      { cat:'powers', q:'2³² = ?', a:'~4.3 billion', note:'Max value of a 32-bit unsigned integer. IPv4 address space.' },
+      { cat:'powers', q:'2⁴⁰ = ?', a:'~1.1 trillion', note:'≈ 10^12. Also = 1 TB in bytes.' },
+      { cat:'powers', q:'How many bytes in 1 KB?', a:'1,024 bytes', note:'Often approximated as 10^3 = 1,000 for back-of-envelope.' },
+      { cat:'powers', q:'How many bytes in 1 MB?', a:'1,048,576 bytes', note:'≈ 10^6. Use 10^6 for estimates.' },
+      { cat:'powers', q:'How many bytes in 1 GB?', a:'~1.07 × 10⁹ bytes', note:'Use 10^9 for estimation. A 4K movie ≈ 40 GB.' },
+      { cat:'powers', q:'How many bytes in 1 TB?', a:'~1.1 × 10¹² bytes', note:'Use 10^12 for estimation. A data warehouse column often holds PBs.' },
+      { cat:'powers', q:'How many bytes in 1 PB?', a:'~10¹⁵ bytes', note:'1 PB = 10^3 TB. Google processes ~100 PB/day in BigQuery.' },
+
+      /* ── Latency ── */
+      { cat:'latency', q:'L1 cache reference latency?', a:'~0.5 ns', note:'Fastest memory access. 200× faster than RAM.' },
+      { cat:'latency', q:'L2 cache reference latency?', a:'~7 ns', note:'Still on-chip but slower than L1. Often 14× slower than L1.' },
+      { cat:'latency', q:'Main memory (RAM) reference latency?', a:'~100 ns', note:'The "floor" for in-memory operations. Redis: ~1 µs (network adds overhead).' },
+      { cat:'latency', q:'SSD random read latency?', a:'~150 µs', note:'1,500× slower than RAM. NVMe SSDs: ~20–100 µs. Crucial for DB index lookups.' },
+      { cat:'latency', q:'HDD seek time (random read)?', a:'~10 ms', note:'67× slower than SSD. Disk I/O is the classic bottleneck — always avoid random disk reads at scale.' },
+      { cat:'latency', q:'Same-datacenter network round trip?', a:'~0.5 ms (500 µs)', note:'Used for service-to-service calls in one AZ. gRPC P99 often 1–5 ms with serialization.' },
+      { cat:'latency', q:'US-East to US-West network RTT?', a:'~60–80 ms', note:'Speed of light across the continent. Cross-region synchronous replication adds this to every write.' },
+      { cat:'latency', q:'US to Europe network RTT?', a:'~100–150 ms', note:'Transatlantic cable. Why CDNs and edge caches exist: avoid this for every user request.' },
+      { cat:'latency', q:'US to Asia Pacific RTT?', a:'~150–250 ms', note:'Transpacific cable. A user in Tokyo hitting a US-only server adds 200ms before processing even starts.' },
+      { cat:'latency', q:'Full recursive DNS lookup latency?', a:'~20–120 ms', note:'Resolver cache misses hit root → TLD → authoritative nameserver. TTL controls cache duration.' },
+      { cat:'latency', q:'DNS resolution with cache hit latency?', a:'~1–5 ms', note:'OS/browser cache hit is ~0 ms. Resolver cache hit is 1–5 ms. Design DNS TTL carefully for failover.' },
+      { cat:'latency', q:'TCP handshake overhead before first byte?', a:'1.5 RTTs', note:'SYN → SYN-ACK → ACK. Connection pooling eliminates repeated handshakes — critical for DB clients.' },
+      { cat:'latency', q:'TLS 1.3 overhead vs plain TCP?', a:'+1 RTT', note:'TLS 1.3: +1 RTT. TLS 1.2: +2 RTT. QUIC (HTTP/3): 0-RTT for returning clients.' },
+      { cat:'latency', q:'Mutex lock/unlock cost?', a:'~25 ns', note:'50× faster than RAM access. Context switch (thread blocked on lock): ~1–10 µs. Lock contention is subtle but real.' },
+      { cat:'latency', q:'Redis GET/SET latency (over network)?', a:'~100–500 µs', note:'~0.1–0.5 ms with network. In-memory: ~1 µs. Use Redis when DB query latency is a bottleneck.' },
+
+      /* ── Throughput ── */
+      { cat:'throughput', q:'Redis single-node throughput?', a:'~100K–500K ops/s', note:'In-process: ~1M ops/s. Network-bound: ~100–500K. Cluster mode scales linearly.' },
+      { cat:'throughput', q:'MySQL / PostgreSQL write throughput (single primary)?', a:'~5K–10K writes/s', note:'With indexes, WAL, and fsync. Tune innodb_flush_log_at_trx_commit for 10–50× boost (durability trade-off).' },
+      { cat:'throughput', q:'MySQL / PostgreSQL read throughput (with index)?', a:'~10K–50K reads/s', note:'Index reads from buffer pool (in-memory) approach 50K+. Cold reads hitting disk: ~1K–5K/s.' },
+      { cat:'throughput', q:'Cassandra single-node write throughput?', a:'~50K writes/s', note:'Writes go to in-memory memtable + commit log (sequential). SSTable compaction happens async. Scales near-linearly with nodes.' },
+      { cat:'throughput', q:'Kafka single-broker throughput?', a:'~500K–1M msgs/s', note:'Sequential disk I/O + zero-copy. In practice, 100–300 MB/s sustained. Scales with partitions across brokers.' },
+      { cat:'throughput', q:'SSD random IOPS?', a:'~100K IOPS', note:'SATA SSD: ~50–100K IOPS. NVMe: ~500K–1M IOPS. HDD: only ~200 IOPS.' },
+      { cat:'throughput', q:'HDD sequential throughput?', a:'~100–200 MB/s', note:'Sequential I/O is HDD\'s strength. Random HDD I/O: only ~1–2 MB/s (200 IOPS × 8KB pages).' },
+      { cat:'throughput', q:'SSD sequential throughput?', a:'~500 MB/s – 3 GB/s', note:'SATA SSD: ~550 MB/s. NVMe SSD: 3–7 GB/s. Critical for Kafka, ClickHouse, analytics systems.' },
+      { cat:'throughput', q:'1 GbE network throughput?', a:'~125 MB/s', note:'1 Gbps ÷ 8 bits = 125 MB/s. Typical EC2 baseline. 10 GbE = 1.25 GB/s. 100 GbE in modern DCs.' },
+      { cat:'throughput', q:'One mid-tier app server RPS (typical web)?', a:'~1,000–5,000 RPS', note:'CPU/network bound. CPU-intensive: lower end. Cache-heavy reads: higher end. Always state your assumption.' },
+      { cat:'throughput', q:'Nginx static file serving throughput?', a:'~50K–100K RPS', note:'Static files with kernel-level zero-copy (sendfile). Becomes network-bound before CPU-bound.' },
+      { cat:'throughput', q:'Elasticsearch indexing throughput?', a:'~10K–100K docs/s', note:'Depends on doc size and field count. Bulk index API is 10–100× faster than single-doc API. Segment merges are I/O-intensive.' },
+      { cat:'throughput', q:'gRPC vs REST throughput advantage?', a:'~5–10× faster', note:'Binary Protobuf (3–10× smaller) + HTTP/2 multiplexing. Serialization ~6× faster than JSON. Use for internal service-to-service.' },
+      { cat:'throughput', q:'WebSocket connections per server?', a:'~100K–1M concurrent', note:'Each connection is a file descriptor. Tune ulimit and kernel tcp settings. Used in chat, gaming, collab tools.' },
+      { cat:'throughput', q:'S3 / object storage PUT throughput?', a:'~3,500 PUTs/s per prefix', note:'S3 limits: 3,500 PUTs/s and 5,500 GETs/s per prefix. Use multiple prefixes for high-throughput uploads.' },
+
+      /* ── Storage ── */
+      { cat:'storage', q:'Typical user profile record size?', a:'~1 KB', note:'Name, email, avatar URL, prefs, metadata. Use 1 KB for back-of-envelope storage estimates.' },
+      { cat:'storage', q:'Average tweet / short message size?', a:'~200–500 bytes', note:'280 chars UTF-8 + metadata ≈ 500 bytes. 1 year of tweets at 500B/tweet × Twitter volume ≈ ~1.5 PB.' },
+      { cat:'storage', q:'Compressed JPEG photo size?', a:'~300 KB', note:'Social media sizes. Original 12MP photo ≈ 3–5 MB. After compression/resize: 100–500 KB.' },
+      { cat:'storage', q:'1 minute of 720p video size?', a:'~50 MB', note:'Compressed H.264. 1 hour ≈ 3 GB. Netflix streams 720p at ~3 Mbps = 1.35 GB/hr.' },
+      { cat:'storage', q:'Redis key overhead?', a:'~60–100 bytes', note:'Each key in Redis needs ~64 bytes of metadata plus the key string. Design key naming to minimize length.' },
+      { cat:'storage', q:'MySQL / PostgreSQL row overhead?', a:'~100–200 bytes', note:'Row header, null bitmap, alignment padding. Impacts wide tables with many sparse columns.' },
+      { cat:'storage', q:'B-tree index page (node) size?', a:'~4–16 KB', note:'Default PostgreSQL page: 8 KB. One page holds hundreds of index entries. Page cache is key to read performance.' },
+      { cat:'storage', q:'Bloom filter size for 1M items at 1% false positive rate?', a:'~1.14 MB (9.6 bits/item)', note:'Formula: m = -n·ln(p) / (ln2)². FPR of 0.1%: ~14.4 bits/item. Used in Cassandra, HBase, Bigtable to avoid disk lookups.' },
+      { cat:'storage', q:'Typical microservice memory footprint?', a:'~100–500 MB', note:'JVM-based (Spring Boot): 256–512 MB. Go/Node: 50–200 MB. Factor in per-pod overhead for k8s scheduling.' },
+      { cat:'storage', q:'HyperLogLog memory for counting unique visitors?', a:'~12 KB', note:'Counts up to 10^18 unique items with ~0.81% error. vs. exact set: grows with N. Redis HLL: fixed 12 KB.' },
+
+      /* ── Time & Traffic ── */
+      { cat:'time', q:'Seconds in 1 day?', a:'86,400 seconds', note:'Exactly 24 × 60 × 60. The fundamental unit for RPS calculation: DAU × events/day ÷ 86,400 = avg RPS.' },
+      { cat:'time', q:'Seconds in 1 month?', a:'~2.5 million seconds', note:'30 × 86,400 = 2,592,000 ≈ 2.5M. Use for monthly storage estimates.' },
+      { cat:'time', q:'Seconds in 1 year?', a:'~31.5 million seconds', note:'365 × 86,400 = 31,536,000 ≈ 31.5M. "The year has about 3×10^7 seconds" — commit this to memory.' },
+      { cat:'time', q:'Peak traffic multiplier over daily average?', a:'5× for consumer APIs; 10× for events/notifications', note:'Design capacity for peak, not average. Notification burst (viral tweet) can be 100×. State your multiplier assumption.' },
+      { cat:'time', q:'Concurrent users as % of DAU at any moment?', a:'~10%', note:'Rule of thumb: concurrent = DAU × 10%. At 10M DAU: ~1M concurrent. Varies by app (gaming: higher; email: lower).' },
+      { cat:'time', q:'"Three nines" (99.9%) availability means how much downtime/year?', a:'~8.7 hours/year', note:'1 - 0.999 = 0.001 × 31.5M seconds = 31,500 seconds = 8.75 hours. Most SaaS targets 99.9%–99.99%.' },
+      { cat:'time', q:'"Four nines" (99.99%) availability?', a:'~52 minutes/year', note:'31,500 × 0.1 = 3,150 seconds ≈ 52 minutes. Requires redundancy at every layer. Typical enterprise SLA.' },
+      { cat:'time', q:'"Five nines" (99.999%) availability?', a:'~5 minutes/year', note:'3,150 × 0.1 = 315 seconds ≈ 5 minutes. Extremely hard — telecom and financial systems. Requires zero-downtime deploys.' },
+      { cat:'time', q:'Traffic calculation: 1B users, 5 tweets/day average. Peak RPS?', a:'~58K avg RPS → ~290K peak RPS', note:'1B × 5 ÷ 86,400 ≈ 57,870 avg RPS. × 5× peak = ~290K peak RPS. Twitter\'s actual scale.' },
+      { cat:'time', q:'Storage for 1B users posting 1 photo/week for 5 years?', a:'~78 PB', note:'1B × 52 photos × 5 years × 300 KB = 78 PB. At this scale: multi-region S3-equivalent + CDN caching.' },
+    ];
+
+    /* ── Drill state ────────────────────────────────────────── */
+    var drill = {
+      deck: [],
+      index: 0,
+      got: 0,
+      miss: 0,
+      skip: 0,
+      missedCards: [],
+      timerInterval: null,
+      secondsLeft: 30,
+      revealed: false,
+      selectedCat: 'all',
+    };
+
+    var CAT_LABELS = {
+      powers: 'Powers of 2',
+      latency: 'Latency',
+      throughput: 'Throughput',
+      storage: 'Storage',
+      time: 'Time & Traffic',
+    };
+
+    function toggleCat(btn) {
+      document.querySelectorAll('.drill-cat-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      drill.selectedCat = btn.getAttribute('data-cat');
+    }
+
+    function openDrills() {
+      document.getElementById('drill-start-screen').style.display = '';
+      document.getElementById('drill-active-screen').style.display = 'none';
+      document.getElementById('drill-results-screen').classList.remove('active');
+      document.getElementById('drill-overlay').classList.add('active');
+    }
+
+    function closeDrills() {
+      stopTimer();
+      document.getElementById('drill-overlay').classList.remove('active');
+    }
+
+    function startDrills() {
+      var filtered = drill.selectedCat === 'all'
+        ? CARDS.slice()
+        : CARDS.filter(function(c){ return c.cat === drill.selectedCat; });
+
+      // shuffle
+      for (var i = filtered.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = filtered[i]; filtered[i] = filtered[j]; filtered[j] = tmp;
+      }
+      drill.deck = filtered;
+      drill.index = 0;
+      drill.got = 0;
+      drill.miss = 0;
+      drill.skip = 0;
+      drill.missedCards = [];
+
+      document.getElementById('drill-start-screen').style.display = 'none';
+      document.getElementById('drill-active-screen').style.display = '';
+      document.getElementById('drill-results-screen').classList.remove('active');
+
+      buildDots();
+      showCard();
+    }
+
+    function buildDots() {
+      var dots = document.getElementById('drill-dots');
+      dots.innerHTML = '';
+      drill.deck.forEach(function(_, i){
+        var d = document.createElement('div');
+        d.className = 'drill-dot' + (i === 0 ? ' current' : '');
+        d.id = 'dot-' + i;
+        dots.appendChild(d);
+      });
+    }
+
+    function updateDot(idx, state) {
+      var d = document.getElementById('dot-' + idx);
+      if (d) { d.className = 'drill-dot ' + state; }
+      var next = document.getElementById('dot-' + (idx + 1));
+      if (next) { next.classList.add('current'); }
+    }
+
+    function showCard() {
+      if (drill.index >= drill.deck.length) { showResults(); return; }
+      var card = drill.deck[drill.index];
+      drill.revealed = false;
+
+      document.getElementById('drill-prog-text').textContent =
+        'Card ' + (drill.index + 1) + ' of ' + drill.deck.length;
+      document.getElementById('drill-cat-badge').textContent =
+        CAT_LABELS[card.cat] || card.cat;
+      document.getElementById('drill-question').textContent = card.q;
+      document.getElementById('drill-answer').textContent = card.a;
+      document.getElementById('drill-answer-note').textContent = card.note || '';
+      document.getElementById('drill-answer-area').classList.remove('visible');
+
+      document.getElementById('drill-action-row').innerHTML =
+        '<button class="drill-btn drill-btn-reveal" onclick="revealCard()">Show Answer</button>' +
+        '<button class="drill-btn drill-btn-skip" onclick="skipCard()">Skip →</button>';
+
+      startTimer();
+    }
+
+    function revealCard() {
+      if (drill.revealed) return;
+      drill.revealed = true;
+      stopTimer();
+      document.getElementById('drill-answer-area').classList.add('visible');
+      document.getElementById('drill-timer-sec').textContent = '';
+      document.getElementById('drill-timer-fill').style.width = '100%';
+      document.getElementById('drill-timer-fill').style.background = 'var(--indigo)';
+      document.getElementById('drill-action-row').innerHTML =
+        '<button class="drill-btn drill-btn-got" onclick="markGot()">✓ Got it</button>' +
+        '<button class="drill-btn drill-btn-miss" onclick="markMiss()">✗ Review again</button>';
+    }
+
+    function markGot() {
+      updateDot(drill.index, 'got');
+      drill.got++;
+      drill.index++;
+      showCard();
+    }
+
+    function markMiss() {
+      updateDot(drill.index, 'miss');
+      drill.miss++;
+      drill.missedCards.push(drill.deck[drill.index]);
+      drill.index++;
+      showCard();
+    }
+
+    function skipCard() {
+      stopTimer();
+      updateDot(drill.index, '');
+      drill.skip++;
+      drill.index++;
+      showCard();
+    }
+
+    function startTimer() {
+      stopTimer();
+      drill.secondsLeft = 30;
+      updateTimerDisplay();
+      drill.timerInterval = setInterval(function(){
+        drill.secondsLeft--;
+        updateTimerDisplay();
+        if (drill.secondsLeft <= 0) {
+          stopTimer();
+          if (!drill.revealed) revealCard();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(drill.timerInterval);
+      drill.timerInterval = null;
+    }
+
+    function updateTimerDisplay() {
+      var s = drill.secondsLeft;
+      var fill = document.getElementById('drill-timer-fill');
+      var sec = document.getElementById('drill-timer-sec');
+      var pct = (s / 30) * 100;
+      fill.style.width = pct + '%';
+      fill.className = 'drill-timer-fill' + (s <= 10 ? ' crit' : s <= 20 ? ' warn' : '');
+      sec.textContent = s + 's';
+      sec.className = 'drill-timer-sec' + (s <= 10 ? ' crit' : s <= 20 ? ' warn' : '');
+    }
+
+    function showResults() {
+      stopTimer();
+      document.getElementById('drill-active-screen').style.display = 'none';
+      var rs = document.getElementById('drill-results-screen');
+      rs.classList.add('active');
+      var total = drill.got + drill.miss + drill.skip;
+      var pct = total > 0 ? Math.round((drill.got / (drill.got + drill.miss || 1)) * 100) : 0;
+      var icon = pct >= 80 ? '🏆' : pct >= 60 ? '📈' : '💪';
+      var title = pct >= 80 ? 'Excellent!' : pct >= 60 ? 'Good progress' : 'Keep drilling';
+      document.getElementById('results-icon').textContent = icon;
+      document.getElementById('results-title').textContent = title;
+      document.getElementById('results-sub').textContent =
+        'Reviewed ' + (drill.got + drill.miss) + ' of ' + drill.deck.length + ' cards.';
+      document.getElementById('results-got').textContent = drill.got;
+      document.getElementById('results-miss').textContent = drill.miss;
+      document.getElementById('results-skip').textContent = drill.skip;
+      document.getElementById('results-pct').textContent = pct + '%';
+
+      var retryBtn = document.querySelector('.drill-results-btn.primary');
+      if (drill.missedCards.length === 0) {
+        retryBtn.textContent = 'Restart Deck';
+        retryBtn.onclick = function(){ startDrills(); };
+      } else {
+        retryBtn.textContent = 'Retry ' + drill.missedCards.length + ' Missed Cards';
+        retryBtn.onclick = restartMissed;
+      }
+    }
+
+    function restartMissed() {
+      if (drill.missedCards.length === 0) { openDrills(); return; }
+      drill.deck = drill.missedCards.slice();
+      drill.index = 0;
+      drill.got = 0;
+      drill.miss = 0;
+      drill.skip = 0;
+      drill.missedCards = [];
+      document.getElementById('drill-results-screen').classList.remove('active');
+      document.getElementById('drill-active-screen').style.display = '';
+      buildDots();
+      showCard();
+    }
+
+    // Close overlay on backdrop click
+    document.getElementById('drill-overlay').addEventListener('click', function(e){
+      if (e.target === this) closeDrills();
+    });
   </script>
 
 </body>

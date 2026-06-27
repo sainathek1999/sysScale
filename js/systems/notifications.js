@@ -79,7 +79,7 @@ queue_memory = ${fmt(c.peak)} × 200B = <span class="r">${fmtB(c.queueMem)}</spa
 
     arch(c) {
       return drawArch([
-        { id: 'api', x: 80, y: 10, w: 200, h: 34, label: 'Notification API', color: '#6366f1' },
+        { id: 'api', x: 80, y: 10, w: 200, h: 34, label: 'Notification API', color: '#2BA07E' },
         { id: 'kafka', x: 80, y: 72, w: 200, h: 34, label: 'Kafka Queue', color: '#f59e0b' },
         { id: 'worker', x: 45, y: 136, w: 270, h: 34, label: `Workers (${c.workers})`, color: c.peak > 100000 ? '#ef4444' : '#a855f7' },
         { id: 'push', x: 14, y: 210, w: 100, h: 34, label: 'APNs/FCM', color: '#14b8a6' },

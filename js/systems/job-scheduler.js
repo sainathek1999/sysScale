@@ -185,9 +185,9 @@ effective_rate = submission_rate × (1 + failure_rate × max_retries)<br>
     arch(c) {
       const queueHot   = c.queueDepth > 500000;
       const retryHot   = c.retryAmplification > 2.0;
-      const queueColors = ['#14b8a6', '#f59e0b', '#6366f1', '#dc2626'];
+      const queueColors = ['#14b8a6', '#f59e0b', '#2BA07E', '#dc2626'];
       return drawArch([
-        { id: 'api',      x: 75,  y: 10,  w: 210, h: 34, label: 'Job Submission API',                      color: '#6366f1' },
+        { id: 'api',      x: 75,  y: 10,  w: 210, h: 34, label: 'Job Submission API',                      color: '#2BA07E' },
         { id: 'queue',    x: 75,  y: 74,  w: 210, h: 34, label: `Queue (${['Redis','Kafka','SQS','DB'][c.queueType]})`, color: queueHot ? '#ef4444' : queueColors[c.queueType] },
         { id: 'sched',    x: 20,  y: 140, w: 130, h: 34, label: 'Cron Scheduler',                          color: '#6D28D9' },
         { id: 'workers',  x: 210, y: 140, w: 130, h: 34, label: `Worker Pool (${fmt(c.workersNeeded)})`,   color: retryHot ? '#ef4444' : '#14b8a6' },

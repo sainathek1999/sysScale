@@ -12,7 +12,7 @@
     { id: 'microsoft', name: 'Microsoft', color: '#00A4EF', letter: 'M', emoji: '🔵' },
     { id: 'apple',     name: 'Apple',     color: '#555555', letter: '', emoji: '🍎' },
     { id: 'uber',      name: 'Uber',      color: '#000000', letter: 'U', emoji: '⚫' },
-    { id: 'other',     name: 'Other',     color: '#6366F1', letter: '?', emoji: '🚀' },
+    { id: 'other',     name: 'Other',     color: '#2BA07E', letter: '?', emoji: '🚀' },
   ];
 
   const LEVELS = [

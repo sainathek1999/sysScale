@@ -83,9 +83,9 @@ redis top-K = ${fmt(c.corpus)} prefixes × 30B = <span class="r">${fmtB(c.redisM
 
     arch(c) {
       return drawArch([
-        { id: 'client', x: 100, y: 10, w: 160, h: 34, label: 'Browser / App', color: '#6366f1' },
+        { id: 'client', x: 100, y: 10, w: 160, h: 34, label: 'Browser / App', color: '#2BA07E' },
         { id: 'cdn', x: 60, y: 72, w: 240, h: 34, label: 'CDN (prefix cache)', color: '#f59e0b' },
-        { id: 'api', x: 80, y: 136, w: 200, h: 34, label: 'Typeahead API', color: c.keystrokeRps > 1e6 ? '#ef4444' : '#6366f1' },
+        { id: 'api', x: 80, y: 136, w: 200, h: 34, label: 'Typeahead API', color: c.keystrokeRps > 1e6 ? '#ef4444' : '#2BA07E' },
         { id: 'redis', x: 45, y: 200, w: 120, h: 34, label: 'Redis top-K', color: '#14b8a6' },
         { id: 'trie', x: 195, y: 200, w: 130, h: 34, label: 'Trie Service', color: '#a855f7' },
         { id: 'kafka', x: 80, y: 264, w: 200, h: 34, label: 'Kafka (query log)', color: '#f59e0b' },

@@ -39,52 +39,229 @@ window.SS = window.SS || {};
     el('params-panel').innerHTML = h;
   };
 
-  /* ── Center: metric bar + steps ────────────────────── */
+  /* ── Center: metric bar + phase-dispatched content ─── */
   S.renderCenter = function () {
     const sys = S.SYSTEMS[S.cur.system];
-    const p = S.getParams(S.cur.system);
-    const c = sys.compute(p);
+    const p   = S.getParams(S.cur.system);
+    const c   = sys.compute(p);
 
-    // metric bar
-    el('metric-bar').innerHTML = sys.metrics(c).map(m =>
-      `<div class="metric-pill ${m.cls}">
-        <div class="metric-pill-val">${m.val}</div>
-        <div class="metric-pill-lbl">${m.lbl}</div>
-      </div>`
-    ).join('');
+    const phase = S.cur.phase || 2;
 
-    // steps (with animated grid-rows wrapper)
-    const steps = sys.steps(c, p);
-    const total = steps.length;
+    // metric bar — only on Capacity phase
+    const metricBarEl = el('metric-bar');
+    if (phase === 2) {
+      metricBarEl.style.display = '';
+      metricBarEl.innerHTML = sys.metrics(c).map(m =>
+        `<div class="metric-pill ${m.cls}">
+          <div class="metric-pill-val">${m.val}</div>
+          <div class="metric-pill-lbl">${m.lbl}</div>
+        </div>`
+      ).join('');
+    } else {
+      metricBarEl.style.display = 'none';
+      metricBarEl.innerHTML = '';
+    }
+    if (phase === 1) {
+      el('steps-area').innerHTML = S._renderRequirements(sys, c, p);
+    } else if (phase === 3) {
+      el('steps-area').innerHTML = S._renderHLD(sys, c);
+    } else if (phase === 4) {
+      el('steps-area').innerHTML = S._renderDeepDive(sys, c);
+    } else {
+      // Phase 2 — capacity estimation (original behaviour)
+      const steps = sys.steps(c, p);
+      const total = steps.length;
+      let h = '<div class="steps-inner">';
+      if (c.bottleneck) {
+        h += `<div class="bottleneck-warn">⚠ <strong>Bottleneck detected:</strong> ${c.bottleneck}</div>`;
+      }
+      steps.forEach((step, i) => {
+        h += `<div class="step-card ${i < 3 ? 'open' : ''}" id="sc-${i}">
+          <div class="step-head" onclick="SS.toggleStep(${i})">
+            <div class="step-num-badge">${i + 1}</div>
+            <div class="step-title-wrap">
+              <div class="step-title">${step.title}</div>
+              <div class="step-counter">${i + 1} of ${total}</div>
+            </div>
+            <div class="step-summary">${step.summary}</div>
+            <div class="chevron">▼</div>
+          </div>
+          <div class="step-body-wrap"><div class="step-body-inner"><div class="step-body">${step.body}</div></div></div>
+        </div>`;
+      });
+      h += `<div class="tips-box"><div class="tips-box-head">💡 Interview talking points</div>
+        <ul class="tips-list">${sys.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+      h += '</div>';
+      el('steps-area').innerHTML = h;
+      if (window.SS.applyGlossary) window.SS.applyGlossary(el('steps-area'));
+    }
+  };
+
+  /* ── Phase 1: Requirements ─────────────────────────── */
+  S._renderRequirements = function (sys, c, p) {
+    const sysId = S.cur.system;
+    const req   = (window.SS.REQUIREMENTS && window.SS.REQUIREMENTS[sysId]) || {};
+    const metrics = sys.metrics(c);
     let h = '<div class="steps-inner">';
+
     if (c.bottleneck) {
       h += `<div class="bottleneck-warn">⚠ <strong>Bottleneck detected:</strong> ${c.bottleneck}</div>`;
     }
-    steps.forEach((step, i) => {
-      h += `<div class="step-card ${i < 3 ? 'open' : ''}" id="sc-${i}">
-        <div class="step-head" onclick="SS.toggleStep(${i})">
-          <div class="step-num-badge">${i + 1}</div>
-          <div class="step-title-wrap">
-            <div class="step-title">${step.title}</div>
-            <div class="step-counter">${i + 1} of ${total}</div>
-          </div>
-          <div class="step-summary">${step.summary}</div>
-          <div class="chevron">▼</div>
-        </div>
-        <div class="step-body-wrap"><div class="step-body-inner"><div class="step-body">${step.body}</div></div></div>
+
+    if (req.functional && req.functional.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Functional Requirements</div>
+        <ul class="req-list">${req.functional.map(f => `<li>${f}</li>`).join('')}</ul>
       </div>`;
-    });
-    h += `<div class="tips-box"><div class="tips-box-head">💡 Interview talking points</div>
-      <ul class="tips-list">${sys.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+    }
+
+    h += `<div class="req-section">
+      <div class="req-section-title">Non-Functional Requirements</div>
+      <table class="metrics-table">
+        ${metrics.map(m => `<tr><td>${m.lbl}</td><td class="hl">${m.val}</td></tr>`).join('')}
+        ${req.latencySLO  ? `<tr><td>P99 Latency SLO</td><td class="hl">${req.latencySLO}</td></tr>`  : ''}
+        ${req.readWrite   ? `<tr><td>Read : Write Ratio</td><td class="hl">${req.readWrite}</td></tr>` : ''}
+        ${req.consistency ? `<tr><td>Consistency Model</td><td class="hl">${req.consistency}</td></tr>` : ''}
+      </table>
+    </div>`;
+
+    if (req.assumptions && req.assumptions.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Clarify With Interviewer</div>
+        <ul class="req-list req-list-q">${req.assumptions.map(a => `<li>${a}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    if (req.outOfScope && req.outOfScope.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Out of Scope</div>
+        <ul class="req-list req-list-oos">${req.outOfScope.map(o => `<li>${o}</li>`).join('')}</ul>
+      </div>`;
+    }
+
     h += '</div>';
-    el('steps-area').innerHTML = h;
-    // Inject glossary tooltips after render
-    if (window.SS.applyGlossary) window.SS.applyGlossary(el('steps-area'));
+    return h;
   };
 
-  /* ── Arch 3D toggle ────────────────────────────────── */
-  S.setArch3D  = function () { S.cur.arch3D = true;  S.renderRightPanel(); };
-  S.setArch2D  = function () { S.cur.arch3D = false; S.renderRightPanel(); };
+  /* ── Phase 3: High-Level Design ────────────────────── */
+  S._renderHLD = function (sys, c) {
+    const sysId = S.cur.system;
+    const req   = (window.SS.REQUIREMENTS && window.SS.REQUIREMENTS[sysId]) || {};
+
+    function stepChain(path, direction) {
+      const steps = path.split(/\s*→\s*/);
+      return `<div class="hld-step-chain">
+        ${steps.map((s, i) => `
+          <div class="hld-step" style="animation-delay:${i * 70}ms">
+            <div class="hld-step-num">${i + 1}</div>
+            <div class="hld-step-label">${s}</div>
+          </div>
+          ${i < steps.length - 1 ? '<div class="hld-step-connector"></div>' : ''}
+        `).join('')}
+      </div>`;
+    }
+
+    let h = '<div class="steps-inner">';
+
+    // Hero: arch diagram
+    h += `<div class="req-section hld-arch-hero">
+      <div class="hld-arch-header">
+        <span class="req-section-title">Architecture — ${sys.name}</span>
+      </div>
+      <div class="arch-canvas arch-canvas-lg">${sys.arch(c)}</div>
+    </div>`;
+
+    // Write + Read paths side by side
+    if (req.writePath || req.readPath) {
+      h += '<div class="hld-flows">';
+      if (req.writePath) {
+        h += `<div class="req-section hld-flow-card">
+          <div class="req-section-title hld-flow-title hld-write">↑ Write Path</div>
+          ${stepChain(req.writePath, 'write')}
+        </div>`;
+      }
+      if (req.readPath) {
+        h += `<div class="req-section hld-flow-card">
+          <div class="req-section-title hld-flow-title hld-read">↓ Read Path</div>
+          ${stepChain(req.readPath, 'read')}
+        </div>`;
+      }
+      h += '</div>';
+    }
+
+    // APIs
+    if (req.apis && req.apis.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Key API Contracts</div>
+        <div class="hld-api-list">
+          ${req.apis.map((a, i) => {
+            const method = a.match(/^(GET|POST|PUT|DELETE|PATCH|WS|RPC)/)?.[1] || '';
+            const cls = { GET:'api-get', POST:'api-post', DELETE:'api-del', WS:'api-ws', PUT:'api-put', PATCH:'api-put', RPC:'api-rpc' }[method] || '';
+            return `<div class="hld-api-item ${cls}" style="animation-delay:${i * 60}ms">
+              ${method ? `<span class="api-method">${method}</span>` : ''}
+              <span class="api-sig">${a.replace(/^(GET|POST|PUT|DELETE|PATCH|WS|RPC)\s+/, '')}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    h += '</div>';
+    return h;
+  };
+
+  /* ── Phase 4: Deep Dive ────────────────────────────── */
+  S._renderDeepDive = function (sys, c) {
+    const sysId = S.cur.system;
+    const req   = (window.SS.REQUIREMENTS && window.SS.REQUIREMENTS[sysId]) || {};
+    let h = '<div class="steps-inner">';
+
+    if (c.bottleneck) {
+      h += `<div class="bottleneck-warn">⚠ <strong>Bottleneck detected:</strong> ${c.bottleneck}</div>`;
+    }
+
+    if (req.designDecisions && req.designDecisions.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Critical Design Decisions</div>
+        <ul class="req-list">${req.designDecisions.map(d => `<li>${d}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    if (req.failureModes && req.failureModes.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Failure Modes</div>
+        <ul class="req-list req-list-warn">${req.failureModes.map(f => `<li>${f}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    if (req.monitoring && req.monitoring.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Monitoring & Alerting</div>
+        <ul class="req-list">${req.monitoring.map(m => `<li>${m}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    const tradeoffs = sys.tradeoffs(c);
+    if (tradeoffs && tradeoffs.length) {
+      h += `<div class="req-section">
+        <div class="req-section-title">Algorithm Tradeoffs</div>
+        <table class="tradeoff-table">
+          <thead><tr><th>Option</th><th>Pro / Con</th></tr></thead>
+          <tbody>${tradeoffs.map(t =>
+            `<tr><td>${t.algo}</td><td><span class="pro">✓ ${t.pro}</span><br><span class="con">✗ ${t.con}</span></td></tr>`
+          ).join('')}</tbody>
+        </table>
+      </div>`;
+    }
+
+    if (sys.tips && sys.tips.length) {
+      h += `<div class="tips-box"><div class="tips-box-head">💡 Interview talking points</div>
+        <ul class="tips-list">${sys.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+    }
+
+    h += '</div>';
+    return h;
+  };
 
   /* ── Right panel ───────────────────────────────────── */
   S.renderRightPanel = function () {
@@ -94,34 +271,10 @@ window.SS = window.SS || {};
     let h = '';
 
     if (S.cur.rpTab === 'arch') {
-      // Capture nodes/edges by patching drawArch temporarily
-      let archData = null;
-      const _orig = S.drawArch;
-      S.drawArch = function (ns, es) { archData = { nodes: ns, edges: es }; return _orig(ns, es); };
       const archSVG = sys.arch(c);
-      S.drawArch = _orig;
-
-      const is3D = S.cur.arch3D !== false;
-
-      h = `<div class="arch-tab-hd">
-        <div class="rp-section-title" style="margin-bottom:0;">Architecture</div>
-        <div class="arch-view-toggle">
-          <button class="arch-tog-btn${!is3D ? ' active' : ''}" onclick="SS.setArch2D()" title="Flat SVG view">2D</button>
-          <button class="arch-tog-btn${is3D ? ' active' : ''}" onclick="SS.setArch3D()" title="3D layered view">3D</button>
-        </div>
-      </div>`;
-
-      if (is3D && archData) {
-        h += `<div class="arch3d-wrap">${S.drawArch3D(archData.nodes, archData.edges)}</div>`;
-      } else {
-        h += `<div class="arch-canvas">${archSVG}</div>`;
-      }
-
-      h += `<div class="arch-hint">
-        ${is3D
-          ? 'Layers represent architectural tiers. Pulsing red = bottleneck.'
-          : 'Nodes update live as you change parameters. Red = bottleneck.'}
-      </div>`;
+      h = `<div class="rp-section-title">Architecture</div>`;
+      h += `<div class="arch-canvas">${archSVG}</div>`;
+      h += `<div class="arch-hint">Nodes update live as you change parameters. Red = bottleneck.</div>`;
     } else if (S.cur.rpTab === 'components') {
       h = '<div class="rp-section-title">Component recommendations</div>' +
         sys.components().map(comp => `<div class="comp-card">

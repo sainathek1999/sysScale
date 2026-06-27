@@ -124,6 +124,32 @@
 .mission-section{ animation: fade-up var(--dur-slow) var(--ease-out) 0.16s backwards; }
 .mentor-card    { animation: fade-up var(--dur-slow) var(--ease-out) 0.22s backwards; }
 
+/* ── Slider / param-change mode — fast reactive update ───── */
+/* System switch keeps full stagger; slider/select uses these. */
+
+@keyframes metric-update {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+
+@keyframes content-fade {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+
+body.is-computing .metric-pill {
+  animation: metric-update 0.13s var(--ease-out) !important;
+}
+body.is-computing .step-card {
+  animation: content-fade 0.10s var(--ease-snappy) !important;
+}
+body.is-computing .comp-card {
+  animation: content-fade 0.08s var(--ease-snappy) !important;
+}
+body.is-computing .rp-content > * {
+  animation: content-fade 0.08s var(--ease-snappy) !important;
+}
+
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -27,5 +27,6 @@ window.SS.cur = {
   system: 'rate-limiter',
   rpTab: 'arch',
   mode: 'estimate',
-  arch3D: true
+  arch3D: true,
+  phase: 2,   // 1=Requirements  2=Capacity  3=Architecture  4=Deep Dive
 };

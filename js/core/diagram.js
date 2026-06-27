@@ -15,6 +15,7 @@ window.SS.hexToRgb = function (h) {
 };
 
 window.SS.drawArch = function (nodes, edges) {
+  window.SS._lastArchArgs = { nodes: nodes, edges: edges };
   const W = 360;
   const maxY = Math.max(...nodes.map(n => n.y + n.h)) + 30;
   const cx = {}, cy = {};
@@ -34,25 +35,28 @@ window.SS.drawArch = function (nodes, edges) {
     const x1 = cx[e.from], y1 = cy[e.from] + ndFrom.h / 2;
     const x2 = cx[e.to],   y2 = cy[e.to]   - ndTo.h / 2;
     s += `<path class="arch-edge" d="M${x1} ${y1} C${x1} ${y1 + 18},${x2} ${y2 - 18},${x2} ${y2}"
-      fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" marker-end="url(#ah)"/>`;
+      fill="none" stroke="rgba(43,160,126,0.42)" stroke-width="1.5" marker-end="url(#ah)"/>`;
     if (e.label) {
-      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-      s += `<text x="${mx + 4}" y="${my}" font-size="9" fill="rgba(255,255,255,0.3)"
-        font-family="JetBrains Mono,monospace" dominant-baseline="central">${e.label}</text>`;
+      const mx = (x1 + x2) / 2 + 4, my = (y1 + y2) / 2;
+      const lw = e.label.length * 5.2 + 10;
+      s += `<rect x="${mx - lw / 2}" y="${my - 8}" width="${lw}" height="16" rx="3"
+        fill="rgba(255,255,255,0.94)" stroke="rgba(43,160,126,0.18)" stroke-width="0.5"/>`;
+      s += `<text x="${mx}" y="${my}" font-size="8.5" fill="rgba(51,65,85,0.80)"
+        font-family="JetBrains Mono,monospace" dominant-baseline="central" text-anchor="middle">${e.label}</text>`;
     }
   });
 
   // nodes
   nodes.forEach(n => {
-    const color = n.color || '#6366f1';
+    const color = n.color || '#2BA07E';
     const rgb = window.SS.hexToRgb(color);
     const isBottleneck = color === '#ef4444';
     const cls = isBottleneck ? ' class="arch-node-bottleneck"' : '';
     s += `<g${cls}>
       <rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="7"
-        fill="rgba(${rgb},0.1)" stroke="${color}" stroke-width="1" opacity="${n.dim ? 0.3 : 1}"/>
+        fill="rgba(${rgb},0.13)" stroke="${color}" stroke-width="1.5" opacity="${n.dim ? 0.3 : 1}"/>
       <text x="${n.x + n.w / 2}" y="${n.y + n.h / 2}" text-anchor="middle" dominant-baseline="central"
-        font-size="11" font-weight="500" fill="${color}"
+        font-size="11" font-weight="600" fill="${color}"
         font-family="Inter,system-ui,sans-serif">${n.label}</text>
     </g>`;
   });
@@ -95,7 +99,7 @@ window.SS.drawArch3D = function (nodes, edges) {
 
   tiers.forEach((tier, i) => {
     const zVal  = (n - 1 - i) * TIER_Z; // client tier = highest Z
-    const color = tier.nodes[0].color || '#6366f1';
+    const color = tier.nodes[0].color || '#2BA07E';
     const rgb   = window.SS.hexToRgb(color);
     const isBn  = tier.nodes.some(nd => nd.color === '#ef4444');
 
@@ -114,11 +118,11 @@ window.SS.drawArch3D = function (nodes, edges) {
       <div class="arch3d-tier-nodes">`;
 
     tier.nodes.forEach(nd => {
-      const nr   = window.SS.hexToRgb(nd.color || '#6366f1');
+      const nr   = window.SS.hexToRgb(nd.color || '#2BA07E');
       const hot  = nd.color === '#ef4444';
       const dim  = nd.dim;
       html += `<div class="arch3d-node${hot ? ' arch3d-node-hot' : ''}${dim ? ' arch3d-node-dim' : ''}"
-        style="--nc:${nd.color || '#6366f1'};--ncr:${nr};">
+        style="--nc:${nd.color || '#2BA07E'};--ncr:${nr};">
         <div class="arch3d-node-dot"></div>
         <span class="arch3d-node-lbl">${nd.label}</span>
       </div>`;

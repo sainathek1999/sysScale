@@ -185,8 +185,8 @@ timeline_cache = DAU × 200 posts × 450 B/entry<br>
     arch(c) {
       const dbHot = c.dbWriteQPS > 100000;
       return drawArch([
-        { id: 'clients',  x: 75,  y: 10,  w: 210, h: 34, label: `Users (${fmt(c.dau)} DAU)`,            color: '#6366f1' },
-        { id: 'api',      x: 75,  y: 74,  w: 210, h: 34, label: 'API Gateway / Load Balancer',           color: '#6366f1' },
+        { id: 'clients',  x: 75,  y: 10,  w: 210, h: 34, label: `Users (${fmt(c.dau)} DAU)`,            color: '#2BA07E' },
+        { id: 'api',      x: 75,  y: 74,  w: 210, h: 34, label: 'API Gateway / Load Balancer',           color: '#2BA07E' },
         { id: 'feed-svc', x: 20,  y: 140, w: 150, h: 34, label: 'Feed Service',                          color: '#6D28D9' },
         { id: 'fanout',   x: 190, y: 140, w: 150, h: 34, label: 'Fanout Worker',                         color: dbHot ? '#ef4444' : '#f59e0b' },
         { id: 'redis',    x: 20,  y: 206, w: 150, h: 34, label: `Timeline Cache (Redis)`,                 color: '#14b8a6' },

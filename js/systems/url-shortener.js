@@ -90,9 +90,9 @@ cache = 20% × ${fmt(c.totalUrls)} × ${c.urlLen + 30}B = <span class="r">${fmtB
 
     arch(c) {
       return drawArch([
-        { id: 'client', x: 110, y: 14, w: 140, h: 34, label: 'Client', color: '#6366f1' },
+        { id: 'client', x: 110, y: 14, w: 140, h: 34, label: 'Client', color: '#2BA07E' },
         { id: 'cdn', x: 45, y: 76, w: 270, h: 34, label: 'CDN (popular redirects)', color: '#f59e0b' },
-        { id: 'api', x: 85, y: 140, w: 190, h: 34, label: 'API Servers', color: '#6366f1' },
+        { id: 'api', x: 85, y: 140, w: 190, h: 34, label: 'API Servers', color: '#2BA07E' },
         { id: 'cache', x: 45, y: 204, w: 115, h: 34, label: 'Redis Cache', color: '#14b8a6' },
         { id: 'db', x: 185, y: 204, w: 135, h: 34, label: `DB (${c.dbNodes} shards)`, color: c.dbNodes > 3 ? '#ef4444' : '#14b8a6' },
         { id: 'kgen', x: 85, y: 272, w: 190, h: 34, label: 'Key Generator', color: '#a855f7' },

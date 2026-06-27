@@ -181,9 +181,9 @@ write_pressure = drivers × Hz × geo_cells<br>
     arch(c) {
       const locHot = c.locUpdatesPerSec > 200000;
       return drawArch([
-        { id: 'riders',   x: 20,  y: 10,  w: 120, h: 34, label: `Riders (${fmt(c.dau)})`,              color: '#6366f1' },
+        { id: 'riders',   x: 20,  y: 10,  w: 120, h: 34, label: `Riders (${fmt(c.dau)})`,              color: '#2BA07E' },
         { id: 'drivers',  x: 220, y: 10,  w: 120, h: 34, label: `Drivers (${fmt(c.activeDrivers)})`,   color: '#f59e0b' },
-        { id: 'api',      x: 95,  y: 74,  w: 170, h: 34, label: 'API Gateway',                          color: '#6366f1' },
+        { id: 'api',      x: 95,  y: 74,  w: 170, h: 34, label: 'API Gateway',                          color: '#2BA07E' },
         { id: 'match',    x: 20,  y: 140, w: 120, h: 34, label: 'Match Service',                        color: '#6D28D9' },
         { id: 'location', x: 220, y: 140, w: 120, h: 34, label: 'Location Service',                     color: locHot ? '#ef4444' : '#14b8a6' },
         { id: 'redis',    x: 20,  y: 206, w: 120, h: 34, label: `Redis GEO (${fmt(c.activeDrivers)} drivers)`, color: '#14b8a6' },
