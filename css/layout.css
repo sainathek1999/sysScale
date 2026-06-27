@@ -5,7 +5,7 @@
 /* ── Header ──────────────────────────────────────────────── */
 .header {
   height: var(--header-h);
-  background: #ffffff;
+  background: var(--bg1);
   border-bottom: 1px solid var(--border2);
   box-shadow: 0 1px 3px rgba(15,23,42,0.05);
   display: flex;
@@ -82,6 +82,38 @@ a.header-tab {
 
 .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 
+/* ── Shared header controls ──────────────────────────────── */
+#theme-btn {
+  width: 30px; height: 30px; border-radius: 7px;
+  border: 1px solid var(--border2); background: none;
+  cursor: pointer; font-size: 14px; color: var(--text3);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background var(--dur-fast), border-color var(--dur-fast);
+  font-family: inherit;
+}
+#theme-btn:hover { background: var(--bg2); border-color: var(--border3); }
+
+#nav-auth { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.nav-user-name {
+  font-size: 11px; font-family: var(--font-mono); color: var(--text3);
+  max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.nav-signout-btn {
+  font-size: 11px; font-weight: 600; color: var(--text3); background: none;
+  border: 1px solid var(--border2); cursor: pointer; padding: 4px 10px;
+  border-radius: 6px; font-family: var(--font-body);
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  white-space: nowrap;
+}
+.nav-signout-btn:hover { background: var(--bg2); color: var(--text); border-color: var(--border3); }
+.nav-signin-link {
+  font-size: 11px; font-weight: 600; color: var(--indigo); padding: 4px 12px;
+  background: var(--indigo3); border: 1px solid rgba(var(--indigo-rgb),0.2);
+  border-radius: 20px; text-decoration: none; white-space: nowrap;
+  transition: background var(--dur-fast);
+}
+.nav-signin-link:hover { background: rgba(var(--indigo-rgb),0.14); }
+
 .version-badge {
   font-size: 10px;
   font-family: var(--font-mono);
@@ -155,7 +187,7 @@ a.header-tab {
   display: flex;
   gap: 0;
   padding: 0;
-  background: white;
+  background: var(--bg1);
   border-bottom: 1px solid var(--border2);
   flex-shrink: 0;
   overflow-x: auto;
@@ -192,7 +224,7 @@ a.header-tab {
 .right-panel {
   width: var(--rightbar-w);
   flex-shrink: 0;
-  background: white;
+  background: var(--bg1);
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -230,7 +262,7 @@ a.header-tab {
 .phase-nav {
   display: flex;
   align-items: center;
-  background: white;
+  background: var(--bg1);
   border-bottom: 1px solid var(--border2);
   flex-shrink: 0;
   padding: 0 16px;

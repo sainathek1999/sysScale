@@ -39,7 +39,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: white;
+  background: var(--bg1);
   border: 2px solid var(--indigo);
   box-shadow: 0 0 0 0 rgba(var(--indigo-rgb), 0.18), var(--shadow-sm);
   transition: transform var(--dur-fast) var(--ease-spring),
@@ -58,7 +58,7 @@ input[type=range]:active::-webkit-slider-thumb {
 select {
   width: 100%;
   padding: 8px 11px;
-  background: white;
+  background: var(--bg1);
   border: 1px solid var(--border2);
   border-radius: var(--r);
   color: var(--text);
@@ -78,7 +78,7 @@ select:focus  {
   border-color: var(--indigo);
   box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.12);
 }
-select option { background: white; color: var(--text); }
+select option { background: var(--bg1); color: var(--text); }
 
 code {
   font-family: var(--font-mono);

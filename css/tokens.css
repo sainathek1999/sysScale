@@ -84,3 +84,26 @@
   --shadow-violet: 0 4px 20px rgba(43,160,126,0.22), 0 0 0 1px rgba(43,160,126,0.10);
   --shadow-teal:   0 4px 14px rgba(43,160,126,0.18);
 }
+
+/* ── Dark theme override ───────────────────────────────────── */
+html[data-theme="dark"] {
+  --bg0:  #0B1419;
+  --bg1:  #111F28;
+  --bg2:  #192C38;
+  --bg3:  #223545;
+  --bg4:  #2D4455;
+
+  --border:  rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.10);
+  --border3: rgba(255,255,255,0.20);
+
+  --text:  #E2EDE8;
+  --text2: #AFC5BD;
+  --text3: #6FA090;
+  --text4: #4A7878;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow:    0 4px 16px rgba(0,0,0,0.5);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.6);
+  --shadow-lg: 0 20px 56px rgba(0,0,0,0.7);
+}

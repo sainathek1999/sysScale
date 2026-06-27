@@ -37,14 +37,56 @@
       writePath: 'Client → API Gateway → Rate Limiter sidecar (Redis MULTI/EXEC: INCR key + EXPIRE) → compare result to limit → allow or return 429',
       readPath: 'GET /limits/:clientId → Rate Limiter service → Redis HGETALL → format and return remaining quota',
       designDecisions: [
-        'Token bucket vs sliding window log: token bucket stores only {tokens, refill_ts} — 20 bytes/user; sliding window log stores every request timestamp in a sorted set — ~5 KB/user at 100 req/min — 250× more memory; choose token bucket for large user bases, sliding window only when boundary-burst fairness is a hard requirement',
-        'Centralized Redis vs local in-process counter: in-process is sub-millisecond with zero network hops but allows N× over-counting across N replicas; Redis adds ~1 ms RTT but gives exact global counts — tolerable when P99 SLO is 5 ms',
-        'Lua script vs MULTI/EXEC: Lua runs atomically on the Redis primary without round-trips (INCR + compare + conditional EXPIRE in one call); MULTI/EXEC requires two round-trips; at 500 K ops/s the difference is ~50 ms aggregate latency per second — use Lua',
+        {
+          title: 'Rate Limiting Algorithm',
+          problem: 'Need per-user request tracking with minimal memory overhead and atomic operations across distributed nodes.',
+          options: [
+            { name: 'Token bucket', pro: '20 bytes/user; handles bursts natively; constant memory per user', con: 'Slight boundary-burst exploitation possible near window edges (~5% overage)' },
+            { name: 'Sliding window log', pro: 'Perfectly accurate at window boundaries; zero burst exploitation', con: '~5 KB/user at 100 req/min — 250× more memory than token bucket' },
+          ],
+          choice: 'Token bucket',
+          rationale: 'At 100M users, sliding window log requires 500 GB Redis memory vs 2 GB for token bucket. The ~5% boundary overage is acceptable for most APIs — choose sliding window only when boundary fairness is a hard SLA.',
+        },
+        {
+          title: 'Counter Storage',
+          problem: 'Choosing between in-process counters (fast, zero network) and centralized Redis (exact global counts, ~1 ms RTT).',
+          options: [
+            { name: 'In-process counter', pro: 'Sub-millisecond; zero network hops per request', con: 'N× over-counting across N replicas — clients can exceed limits by 10× on 10 replicas' },
+            { name: 'Centralized Redis', pro: 'Exact global counts; 1 ms RTT fits within the 5 ms P99 SLO', con: 'Single point of failure; one network round-trip on every request' },
+          ],
+          choice: 'Centralized Redis',
+          rationale: '1 ms Redis RTT stays within the 5 ms SLO, and in-process counters allow N× over-counting which defeats the purpose of rate limiting at any meaningful scale.',
+        },
+        {
+          title: 'Atomic Redis Operation',
+          problem: 'Atomically incrementing a counter, checking the limit, and setting expiry in one round-trip to avoid race conditions.',
+          options: [
+            { name: 'Lua script', pro: 'Single atomic round-trip: INCR + compare + EXPIRE in one call; no intermediate state exposed', con: 'Scripts must be loaded/cached on Redis; harder to debug than standard commands' },
+            { name: 'MULTI/EXEC', pro: 'Standard Redis commands; straightforward to reason about', con: 'Two round-trips required; at 500 K ops/s the extra RTT costs ~50 ms aggregate latency per second' },
+          ],
+          choice: 'Lua script',
+          rationale: 'At 500 K ops/s, eliminating one round-trip saves ~50 ms aggregate latency per second. Lua runs atomically on the Redis primary with no intermediate state visible to other commands.',
+        },
       ],
       failureModes: [
-        'Redis primary outage: fail-open (allow all traffic) if the service is user-facing to protect UX; fail-closed if protecting a paid API from abuse — circuit-breaker trips after 3 consecutive timeouts and switches to in-memory approximation with 30 s auto-reset',
-        'Clock skew across nodes: sliding window correctness depends on synchronized clocks; use NTP + cross-check with Redis server time via TIME command; drift > 100 ms triggers an alert',
-        'Hot-key thundering herd: a single popular API key hammering one Redis shard can saturate it; partition counters by {clientId + time_bucket} across multiple keys and SUM them on read to spread load',
+        {
+          scenario: 'Redis primary outage',
+          impact: 'Rate limiting stops — all requests bypass the limiter; abuse window opens; paid API quotas are unenforced',
+          mitigation: 'Circuit breaker trips after 3 consecutive Redis timeouts; switch to in-memory per-replica approximation; fail-open for user-facing services, fail-closed for paid APIs',
+          recovery: 'Redis Sentinel promotes a replica within 30 s; circuit breaker resets; in-memory counters are discarded and global counts restart from zero',
+        },
+        {
+          scenario: 'Clock skew across scheduler nodes',
+          impact: 'Sliding window accuracy degrades — nodes disagree on the current time bucket; users are unfairly throttled or allowed to over-consume',
+          mitigation: 'Enforce NTP across all nodes; cross-check with Redis server time via the TIME command; drift > 100 ms triggers an alert before it affects window accuracy',
+          recovery: 'NTP sync corrects drift automatically; restart any node with extreme skew to force a fresh NTP sync',
+        },
+        {
+          scenario: 'Hot-key thundering herd on a single API key',
+          impact: 'One popular API key hammers a single Redis shard; that shard CPU-saturates and P99 latency spikes for all keys on it',
+          mitigation: 'Partition counters by {clientId + time_bucket} across multiple Redis keys and SUM them on read; this spreads load across multiple shards',
+          recovery: 'Traffic redistributes once the hot key is partitioned; partial counts are summed correctly at read time with no data loss',
+        },
       ],
       monitoring: [
         '429 rate as % of total requests — alert if > 5% sustained over 1 min (indicates either a misconfigured limit or an abuse spike)',

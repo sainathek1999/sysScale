@@ -11,11 +11,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/tokens.css">
+  <script>!function(){var t=localStorage.getItem("ss_theme")||"light";document.documentElement.setAttribute("data-theme",t)}();</script>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/pages.css">
+
+  <!-- module data for Concept Quizzes -->
+  <script>window.SS = window.SS || {};</script>
+  <script src="js/content/modules-storage.js"></script>
+  <script src="js/content/modules-patterns.js"></script>
+  <script src="js/content/modules-interview.js"></script>
 
   <style>
     /* ── Flashcard overlay ───────────────────────────────────── */
@@ -249,7 +256,209 @@
     .drill-dot.got { background: var(--green); }
     .drill-dot.miss { background: var(--red); }
     .drill-dot.current { background: var(--indigo); }
+
+    /* ── Quiz overlay ─────────────────────────────────────────── */
+    .quiz-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(13,30,26,0.72);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .quiz-overlay.active { display: flex; animation: fade-in 0.18s ease; }
+
+    .quiz-modal {
+      background: var(--bg1);
+      border-radius: 20px;
+      width: 100%; max-width: 640px;
+      box-shadow: 0 24px 80px rgba(13,30,26,0.28), 0 0 0 1px rgba(13,30,26,0.06);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      max-height: 92vh;
+    }
+
+    .quiz-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .quiz-header-left { display: flex; align-items: center; gap: 10px; }
+    .quiz-title { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-head); }
+    .quiz-prog-text { font-size: 11px; font-family: var(--font-mono); color: var(--text3); }
+    .quiz-close {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--bg2); border: none; cursor: pointer;
+      font-size: 14px; color: var(--text3);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--dur-fast);
+    }
+    .quiz-close:hover { background: var(--bg3); color: var(--text); }
+
+    .quiz-progress-bar { height: 3px; background: var(--bg3); flex-shrink: 0; }
+    .quiz-progress-fill { height: 100%; background: var(--indigo); transition: width 0.3s ease; }
+
+    .quiz-body {
+      padding: 24px 28px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .quiz-track-badge {
+      display: inline-flex; align-items: center;
+      font-size: 9px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; font-family: var(--font-mono);
+      color: var(--teal); background: rgba(20,184,166,0.10);
+      border: 1px solid rgba(20,184,166,0.20);
+      border-radius: 4px; padding: 3px 8px;
+      margin-bottom: 16px; align-self: flex-start; display: inline-flex;
+    }
+
+    .quiz-question {
+      font-size: 18px; font-weight: 700; line-height: 1.4;
+      color: var(--text); font-family: var(--font-head);
+      letter-spacing: -0.3px; margin-bottom: 20px;
+    }
+
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+
+    .quiz-opt {
+      padding: 13px 16px; border-radius: 10px;
+      border: 1.5px solid var(--border2); background: var(--bg0);
+      font-size: 13.5px; color: var(--text2); cursor: pointer;
+      text-align: left; font-family: var(--font-body);
+      transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--indigo); background: var(--indigo3); color: var(--text); }
+    .quiz-opt.correct { border-color: var(--green) !important; background: rgba(16,185,129,0.10) !important; color: var(--text) !important; }
+    .quiz-opt.wrong { border-color: var(--red) !important; background: rgba(217,72,72,0.08) !important; color: var(--text2) !important; }
+    .quiz-opt:disabled { cursor: default; }
+
+    .quiz-opt-letter {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      background: var(--bg3); color: var(--text3);
+      font-size: 10px; font-weight: 700; font-family: var(--font-mono);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .quiz-opt.correct .quiz-opt-letter { background: var(--green); color: white; }
+    .quiz-opt.wrong .quiz-opt-letter { background: var(--red); color: white; }
+
+    .quiz-explanation {
+      margin-top: 16px; padding: 14px 16px;
+      background: var(--indigo3); border: 1px solid rgba(var(--indigo-rgb),0.18);
+      border-radius: 10px; font-size: 12.5px; color: var(--text2); line-height: 1.6;
+      display: none;
+    }
+    .quiz-explanation.visible { display: block; animation: fade-in 0.2s ease; }
+
+    .quiz-footer {
+      padding: 16px 28px 22px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end; gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .quiz-btn {
+      padding: 10px 22px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; font-family: var(--font-head);
+      border: none; cursor: pointer; transition: all var(--dur-fast);
+    }
+    .quiz-btn-next { background: var(--indigo); color: white; display: none; }
+    .quiz-btn-next:hover { background: var(--indigo2); }
+
+    /* quiz start screen */
+    .quiz-start { padding: 28px; }
+    .quiz-start-title { font-size: 18px; font-weight: 800; font-family: var(--font-head); color: var(--text); letter-spacing: -0.4px; margin-bottom: 6px; }
+    .quiz-start-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; line-height: 1.6; }
+    .quiz-track-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .quiz-track-card {
+      padding: 14px; border-radius: 12px;
+      border: 2px solid var(--border2); background: var(--bg0);
+      cursor: pointer; transition: all var(--dur-fast);
+      text-align: left;
+    }
+    .quiz-track-card:hover { border-color: var(--indigo); background: var(--indigo3); }
+    .quiz-track-card.selected { border-color: var(--indigo); background: var(--indigo3); }
+    .quiz-track-card-name { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--font-head); margin-bottom: 2px; }
+    .quiz-track-card-count { font-size: 11px; font-family: var(--font-mono); color: var(--text3); }
+
+    /* quiz results */
+    .quiz-results { padding: 40px 28px; text-align: center; }
+    .quiz-results-icon { font-size: 52px; margin-bottom: 16px; }
+    .quiz-results-title { font-size: 22px; font-weight: 800; color: var(--text); font-family: var(--font-head); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .quiz-results-sub { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+    .quiz-results-stats { display: flex; gap: 16px; justify-content: center; margin-bottom: 28px; }
+    .quiz-results-btns { display: flex; gap: 10px; justify-content: center; }
+
+    /* ── Progress dashboard card ──────────────────────────────── */
+    .progress-stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin: 16px 0;
+    }
+    .progress-stat-cell {
+      background: var(--bg0); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 10px; text-align: center;
+    }
+    .progress-stat-val {
+      font-size: 22px; font-weight: 800; font-family: var(--font-head);
+      color: var(--text); letter-spacing: -0.5px; line-height: 1;
+    }
+    .progress-stat-lbl {
+      font-size: 9.5px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--text4);
+      margin-top: 3px;
+    }
+    .progress-xp-bar-wrap { margin: 12px 0 4px; }
+    .progress-xp-track {
+      height: 6px; border-radius: 3px; background: var(--bg3);
+      overflow: hidden; margin-bottom: 4px;
+    }
+    .progress-xp-fill {
+      height: 100%; border-radius: 3px; background: var(--indigo);
+      transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+    .progress-xp-label {
+      font-size: 10.5px; font-family: var(--font-mono); color: var(--text3);
+      display: flex; justify-content: space-between;
+    }
+    .progress-level-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+      padding: 3px 10px; border-radius: 20px;
+      background: var(--indigo3); color: var(--indigo);
+      border: 1px solid rgba(var(--indigo-rgb),0.20);
+      margin-bottom: 10px;
+    }
+
+    /* ── Comparison mode ──────────────────────────────────────── */
+    .compare-selects {
+      display: flex; gap: 8px; align-items: center; margin: 14px 0;
+    }
+    .compare-selects select { flex: 1; }
+    .compare-vs {
+      font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+      color: var(--text4); flex-shrink: 0;
+    }
+    .compare-table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+      margin-top: 10px;
+    }
+    .compare-table th {
+      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--text4);
+      text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border);
+    }
+    .compare-table td {
+      padding: 7px 8px; border-bottom: 1px solid var(--border2);
+      color: var(--text2); vertical-align: top;
+    }
+    .compare-table td:first-child { color: var(--text3); font-family: var(--font-mono); font-size: 10.5px; width: 30%; }
+    .compare-table td.hl { color: var(--indigo); font-weight: 600; font-family: var(--font-mono); }
   </style>
+  <script src="js/utils/theme.js"></script>
 </head>
 <body>
 
@@ -264,9 +473,88 @@
       <a href="reference.html" class="header-tab">Reference</a>
     </nav>
     <div class="header-right">
+      <button id="theme-btn" onclick="SS.toggleTheme()" title="Dark mode">🌙</button>
+      <div id="nav-auth"></div>
       <span class="version-badge">v4.0</span>
     </div>
   </header>
+
+  <!-- ── Concept Quiz Overlay ──────────────────────────────────── -->
+  <div class="quiz-overlay" id="quiz-overlay">
+    <div class="quiz-modal" id="quiz-modal">
+
+      <!-- start screen -->
+      <div id="quiz-start-screen">
+        <div class="quiz-start">
+          <div class="quiz-start-title">📝 Concept Quizzes</div>
+          <div class="quiz-start-sub">Multiple choice questions from the learning modules. Pick a track or mix all of them.</div>
+          <div class="quiz-track-grid" id="quiz-track-grid">
+            <button class="quiz-track-card selected" data-track="all" onclick="selectQuizTrack(this)">
+              <div class="quiz-track-card-name">All Tracks</div>
+              <div class="quiz-track-card-count" id="qt-all-count">— questions</div>
+            </button>
+            <button class="quiz-track-card" data-track="interview" onclick="selectQuizTrack(this)">
+              <div class="quiz-track-card-name">Interview Skills</div>
+              <div class="quiz-track-card-count" id="qt-interview-count">— questions</div>
+            </button>
+            <button class="quiz-track-card" data-track="storage" onclick="selectQuizTrack(this)">
+              <div class="quiz-track-card-name">Storage & Databases</div>
+              <div class="quiz-track-card-count" id="qt-storage-count">— questions</div>
+            </button>
+            <button class="quiz-track-card" data-track="patterns" onclick="selectQuizTrack(this)">
+              <div class="quiz-track-card-name">System Patterns</div>
+              <div class="quiz-track-card-count" id="qt-patterns-count">— questions</div>
+            </button>
+          </div>
+          <button class="quiz-btn quiz-btn-next" style="display:block;width:100%;padding:14px 0;font-size:14px" onclick="startQuiz()">Start Quiz →</button>
+        </div>
+      </div>
+
+      <!-- active question screen -->
+      <div id="quiz-active-screen" style="display:none">
+        <div class="quiz-header">
+          <div class="quiz-header-left">
+            <div class="quiz-title">📝 Concept Quiz</div>
+            <div class="quiz-prog-text" id="quiz-prog-text">Q 1 of 10</div>
+          </div>
+          <button class="quiz-close" onclick="closeQuiz()">✕</button>
+        </div>
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+        </div>
+
+        <div class="quiz-body">
+          <div class="quiz-track-badge" id="quiz-track-badge">Track</div>
+          <div class="quiz-question" id="quiz-question">Question text</div>
+          <div class="quiz-opts" id="quiz-opts"></div>
+          <div class="quiz-explanation" id="quiz-explanation"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <button class="quiz-btn quiz-btn-next" id="quiz-next-btn" onclick="nextQuestion()">Next →</button>
+        </div>
+      </div>
+
+      <!-- results screen -->
+      <div id="quiz-results-screen" style="display:none">
+        <div class="quiz-results">
+          <div class="quiz-results-icon" id="quiz-results-icon">🎯</div>
+          <div class="quiz-results-title" id="quiz-results-title">Quiz Complete!</div>
+          <div class="quiz-results-sub" id="quiz-results-sub"></div>
+          <div class="quiz-results-stats">
+            <div class="drill-stat green"><div class="drill-stat-val" id="quiz-r-correct">0</div><div class="drill-stat-lbl">Correct</div></div>
+            <div class="drill-stat red"><div class="drill-stat-val" id="quiz-r-wrong">0</div><div class="drill-stat-lbl">Wrong</div></div>
+            <div class="drill-stat"><div class="drill-stat-val" id="quiz-r-pct">0%</div><div class="drill-stat-lbl">Score</div></div>
+          </div>
+          <div class="quiz-results-btns">
+            <button class="drill-results-btn primary" onclick="restartQuiz()">Try Again</button>
+            <button class="drill-results-btn secondary" onclick="closeQuiz()">Done</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ── Flashcard Overlay ───────────────────────────────────── -->
   <div class="drill-overlay" id="drill-overlay">
@@ -418,31 +706,68 @@
           <button class="btn-primary" style="margin-top:12px;font-size:12px;padding:8px 18px" onclick="openDrills(); event.stopPropagation()">Start Drills →</button>
         </div>
 
-        <div class="practice-secondary-card">
+        <div class="practice-secondary-card" style="cursor:pointer" onclick="openQuiz()">
           <div class="practice-secondary-title">📝 Concept Quizzes</div>
           <div class="practice-secondary-desc">
-            5 questions per module. Multiple choice with inline feedback.
-            Wrong answer shows the explanation. Score saved to progress.
+            Multiple choice questions from all learning modules. Interview Skills,
+            Storage & Databases, System Patterns. Inline explanations for every answer.
           </div>
-          <span class="coming-pill">Coming Sprint 8</span>
+          <button class="btn-primary" style="margin-top:12px;font-size:12px;padding:8px 18px" onclick="openQuiz(); event.stopPropagation()">Start Quiz →</button>
         </div>
 
-        <div class="practice-secondary-card">
-          <div class="practice-secondary-title">📊 Progress Dashboard</div>
-          <div class="practice-secondary-desc">
-            Track completed modules, quiz scores, and practice sessions.
-            Visual progress per learning track.
+        <div class="practice-secondary-card" id="progress-card">
+          <div class="practice-secondary-title">📊 Your Progress</div>
+          <div id="progress-card-body">
+            <!-- filled by JS -->
           </div>
-          <span class="coming-pill">Coming Sprint 8</span>
         </div>
 
         <div class="practice-secondary-card">
           <div class="practice-secondary-title">⚖️ Comparison Mode</div>
           <div class="practice-secondary-desc">
-            Pick two systems and see their architecture, metrics, and tradeoffs
-            side by side. Great for spotting patterns.
+            Pick two systems and compare their key metrics side by side.
           </div>
-          <span class="coming-pill">Coming Sprint 9</span>
+          <div class="compare-selects">
+            <select id="cmp-a">
+              <option value="rate-limiter">Rate Limiter</option>
+              <option value="url-shortener">URL Shortener</option>
+              <option value="chat-service">Chat Service</option>
+              <option value="notifications">Notifications</option>
+              <option value="typeahead">Typeahead</option>
+              <option value="zoom">Video Conf.</option>
+              <option value="news-feed">News Feed</option>
+              <option value="ride-sharing">Ride Sharing</option>
+              <option value="job-scheduler">Job Scheduler</option>
+              <option value="distributed-cache">Dist. Cache</option>
+              <option value="message-queue">Msg Queue</option>
+              <option value="web-crawler">Web Crawler</option>
+              <option value="object-storage">Object Storage</option>
+              <option value="cdn">CDN</option>
+              <option value="payment">Payment</option>
+              <option value="social-graph">Social Graph</option>
+            </select>
+            <span class="compare-vs">vs</span>
+            <select id="cmp-b">
+              <option value="url-shortener">URL Shortener</option>
+              <option value="rate-limiter">Rate Limiter</option>
+              <option value="chat-service">Chat Service</option>
+              <option value="notifications">Notifications</option>
+              <option value="typeahead">Typeahead</option>
+              <option value="zoom">Video Conf.</option>
+              <option value="news-feed">News Feed</option>
+              <option value="ride-sharing">Ride Sharing</option>
+              <option value="job-scheduler">Job Scheduler</option>
+              <option value="distributed-cache">Dist. Cache</option>
+              <option value="message-queue">Msg Queue</option>
+              <option value="web-crawler">Web Crawler</option>
+              <option value="object-storage">Object Storage</option>
+              <option value="cdn">CDN</option>
+              <option value="payment">Payment</option>
+              <option value="social-graph">Social Graph</option>
+            </select>
+          </div>
+          <div id="compare-result"></div>
+          <button class="btn-primary" style="font-size:12px;padding:8px 18px" onclick="runComparison()">Compare →</button>
         </div>
 
       </div>
@@ -758,7 +1083,287 @@
     document.getElementById('drill-overlay').addEventListener('click', function(e){
       if (e.target === this) closeDrills();
     });
+
+    /* ═══════════════════════════════════════════════════════════
+       CONCEPT QUIZZES
+    ═══════════════════════════════════════════════════════════ */
+    var TRACK_LABELS = {
+      interview: 'Interview Skills',
+      storage:   'Storage & Databases',
+      patterns:  'System Patterns',
+      foundations: 'Foundations',
+    };
+
+    var quiz = {
+      deck: [],
+      index: 0,
+      correct: 0,
+      wrong: 0,
+      answered: false,
+      selectedTrack: 'all',
+    };
+
+    function _buildQuizDeck(track) {
+      var MODS = (window.SS && window.SS.MODULES) || {};
+      var questions = [];
+      Object.keys(MODS).forEach(function(trackKey) {
+        if (track !== 'all' && trackKey !== track) return;
+        var modules = MODS[trackKey] || [];
+        modules.forEach(function(mod) {
+          (mod.quiz || []).forEach(function(q) {
+            questions.push({ track: trackKey, module: mod.title, q: q.q, opts: q.opts, answer: q.answer, explanation: q.explanation });
+          });
+        });
+      });
+      // shuffle
+      for (var i = questions.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = questions[i]; questions[i] = questions[j]; questions[j] = tmp;
+      }
+      return questions;
+    }
+
+    function _updateQuizCounts() {
+      var MODS = (window.SS && window.SS.MODULES) || {};
+      var counts = { all: 0 };
+      Object.keys(MODS).forEach(function(k) {
+        var n = 0;
+        (MODS[k] || []).forEach(function(m){ n += (m.quiz || []).length; });
+        counts[k] = n;
+        counts.all += n;
+      });
+      var allEl = document.getElementById('qt-all-count');
+      var iEl   = document.getElementById('qt-interview-count');
+      var sEl   = document.getElementById('qt-storage-count');
+      var pEl   = document.getElementById('qt-patterns-count');
+      if (allEl) allEl.textContent = counts.all + ' questions';
+      if (iEl)   iEl.textContent   = (counts.interview || 0) + ' questions';
+      if (sEl)   sEl.textContent   = (counts.storage || 0) + ' questions';
+      if (pEl)   pEl.textContent   = (counts.patterns || 0) + ' questions';
+    }
+
+    function selectQuizTrack(btn) {
+      document.querySelectorAll('.quiz-track-card').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      quiz.selectedTrack = btn.getAttribute('data-track');
+    }
+
+    function openQuiz() {
+      _updateQuizCounts();
+      document.getElementById('quiz-start-screen').style.display = '';
+      document.getElementById('quiz-active-screen').style.display = 'none';
+      document.getElementById('quiz-results-screen').style.display = 'none';
+      document.getElementById('quiz-overlay').classList.add('active');
+    }
+
+    function closeQuiz() {
+      document.getElementById('quiz-overlay').classList.remove('active');
+    }
+
+    function startQuiz() {
+      quiz.deck = _buildQuizDeck(quiz.selectedTrack);
+      if (!quiz.deck.length) return;
+      quiz.index = 0;
+      quiz.correct = 0;
+      quiz.wrong = 0;
+      document.getElementById('quiz-start-screen').style.display = 'none';
+      document.getElementById('quiz-active-screen').style.display = '';
+      document.getElementById('quiz-results-screen').style.display = 'none';
+      showQuizQuestion();
+    }
+
+    function showQuizQuestion() {
+      if (quiz.index >= quiz.deck.length) { showQuizResults(); return; }
+      var item = quiz.deck[quiz.index];
+      quiz.answered = false;
+
+      var pct = (quiz.index / quiz.deck.length) * 100;
+      document.getElementById('quiz-progress-fill').style.width = pct + '%';
+      document.getElementById('quiz-prog-text').textContent = 'Q ' + (quiz.index + 1) + ' of ' + quiz.deck.length;
+      document.getElementById('quiz-track-badge').textContent = TRACK_LABELS[item.track] || item.track;
+      document.getElementById('quiz-question').textContent = item.q;
+      document.getElementById('quiz-explanation').className = 'quiz-explanation';
+      document.getElementById('quiz-explanation').textContent = '';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      var letters = ['A', 'B', 'C', 'D'];
+      var optsEl = document.getElementById('quiz-opts');
+      optsEl.innerHTML = item.opts.map(function(opt, i) {
+        return '<button class="quiz-opt" onclick="answerQuiz(' + i + ')">' +
+          '<span class="quiz-opt-letter">' + letters[i] + '</span>' +
+          '<span>' + opt + '</span>' +
+        '</button>';
+      }).join('');
+    }
+
+    function answerQuiz(idx) {
+      if (quiz.answered) return;
+      quiz.answered = true;
+      var item = quiz.deck[quiz.index];
+      var correct = idx === item.answer;
+      if (correct) quiz.correct++; else quiz.wrong++;
+
+      var opts = document.querySelectorAll('#quiz-opts .quiz-opt');
+      opts.forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === item.answer) btn.classList.add('correct');
+        else if (i === idx && !correct) btn.classList.add('wrong');
+      });
+
+      var expEl = document.getElementById('quiz-explanation');
+      expEl.textContent = item.explanation || '';
+      expEl.className = 'quiz-explanation visible';
+
+      document.getElementById('quiz-next-btn').style.display = '';
+      document.getElementById('quiz-next-btn').textContent =
+        quiz.index + 1 >= quiz.deck.length ? 'See Results →' : 'Next →';
+    }
+
+    function nextQuestion() {
+      quiz.index++;
+      showQuizQuestion();
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-active-screen').style.display = 'none';
+      document.getElementById('quiz-results-screen').style.display = '';
+      var total = quiz.correct + quiz.wrong;
+      var pct   = total > 0 ? Math.round((quiz.correct / total) * 100) : 0;
+      var icon  = pct >= 80 ? '🏆' : pct >= 60 ? '📈' : '💪';
+      var title = pct >= 80 ? 'Excellent!' : pct >= 60 ? 'Good progress' : 'Keep studying';
+      document.getElementById('quiz-results-icon').textContent = icon;
+      document.getElementById('quiz-results-title').textContent = title;
+      document.getElementById('quiz-results-sub').textContent = 'Answered ' + total + ' of ' + quiz.deck.length + ' questions.';
+      document.getElementById('quiz-r-correct').textContent = quiz.correct;
+      document.getElementById('quiz-r-wrong').textContent   = quiz.wrong;
+      document.getElementById('quiz-r-pct').textContent     = pct + '%';
+      document.getElementById('quiz-progress-fill').style.width = '100%';
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-results-screen').style.display = 'none';
+      document.getElementById('quiz-start-screen').style.display = '';
+    }
+
+    document.getElementById('quiz-overlay').addEventListener('click', function(e){
+      if (e.target === this) closeQuiz();
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       PROGRESS DASHBOARD CARD
+    ═══════════════════════════════════════════════════════════ */
+    (function renderProgressCard() {
+      var body = document.getElementById('progress-card-body');
+      if (!body) return;
+
+      var LEVEL_TIERS = [
+        { min: 0, level: 1, title: 'Intern' },
+        { min: 100, level: 2, title: 'Junior SDE' },
+        { min: 300, level: 3, title: 'SDE I' },
+        { min: 600, level: 4, title: 'SDE II' },
+        { min: 1100, level: 5, title: 'Senior SDE' },
+        { min: 2000, level: 6, title: 'Staff SDE' },
+        { min: 3500, level: 7, title: 'Principal' },
+        { min: 6000, level: 8, title: 'Distinguished' },
+        { min: 10000, level: 9, title: 'Fellow' },
+        { min: 16000, level: 10, title: 'Legend' },
+      ];
+
+      var user = {};
+      var prog = { completedModules: [], quizScores: {} };
+      try { user = JSON.parse(localStorage.getItem('ss_user_v1')) || {}; } catch(_){}
+      try { prog = JSON.parse(localStorage.getItem('ss_progress_v1')) || prog; } catch(_){}
+
+      var xp = user.xp || 0;
+      var streak = user.streak || 0;
+      var systems = (user.systemsVisited || []).length;
+      var mods = (prog.completedModules || []).length;
+
+      var tier = LEVEL_TIERS[0];
+      for (var i = LEVEL_TIERS.length - 1; i >= 0; i--) {
+        if (xp >= LEVEL_TIERS[i].min) { tier = LEVEL_TIERS[i]; break; }
+      }
+      var nextTier = LEVEL_TIERS[Math.min(tier.level, LEVEL_TIERS.length - 1)];
+      var prev = tier.min;
+      var next = nextTier ? nextTier.min : prev + 1000;
+      var xpPct = next > prev ? Math.round(((xp - prev) / (next - prev)) * 100) : 100;
+      xpPct = Math.max(0, Math.min(100, xpPct));
+
+      var scores = Object.values(prog.quizScores || {});
+      var avgScore = scores.length ? Math.round(scores.reduce(function(a,b){return a+b;},0) / scores.length) : null;
+
+      body.innerHTML =
+        '<div class="progress-level-badge">LV ' + tier.level + ' · ' + tier.title + '</div>' +
+        '<div class="progress-stats-grid">' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + xp + '</div><div class="progress-stat-lbl">XP</div></div>' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + (streak > 0 ? '🔥 ' : '') + streak + '</div><div class="progress-stat-lbl">Day Streak</div></div>' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + mods + '</div><div class="progress-stat-lbl">Modules</div></div>' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + systems + '</div><div class="progress-stat-lbl">Systems</div></div>' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + (avgScore !== null ? avgScore + '%' : '—') + '</div><div class="progress-stat-lbl">Avg Quiz</div></div>' +
+          '<div class="progress-stat-cell"><div class="progress-stat-val">' + (user.targetCompany ? user.targetCompany.toUpperCase().slice(0,2) : '—') + '</div><div class="progress-stat-lbl">Target</div></div>' +
+        '</div>' +
+        '<div class="progress-xp-bar-wrap">' +
+          '<div class="progress-xp-track"><div class="progress-xp-fill" id="prog-xp-fill" style="width:0%"></div></div>' +
+          '<div class="progress-xp-label"><span>' + xp + ' XP</span><span>' + next + ' XP</span></div>' +
+        '</div>' +
+        '<a href="index.html" style="display:inline-block;margin-top:6px;font-size:12px;color:var(--indigo);text-decoration:none;font-weight:600">View full dashboard →</a>';
+
+      setTimeout(function(){
+        var fill = document.getElementById('prog-xp-fill');
+        if (fill) fill.style.width = xpPct + '%';
+      }, 120);
+    })();
+
+    /* ═══════════════════════════════════════════════════════════
+       COMPARISON MODE
+    ═══════════════════════════════════════════════════════════ */
+    var SYSTEM_PROFILES = {
+      'rate-limiter':    { storage:'Redis (sorted sets)', scale:'~100K RPS', consistency:'Eventual', bottleneck:'Token bucket memory', pattern:'Token bucket / Sliding window' },
+      'url-shortener':  { storage:'Cassandra + Redis cache', scale:'~100K reads/s', consistency:'Eventual', bottleneck:'DB write throughput', pattern:'Hash + Base62 encoding' },
+      'chat-service':   { storage:'Cassandra (messages)', scale:'~1M concurrent WS', consistency:'Causal', bottleneck:'WebSocket connections', pattern:'Fan-out on read' },
+      'notifications':  { storage:'Kafka + Redis', scale:'~10K msgs/s', consistency:'At-least-once', bottleneck:'Delivery at peak', pattern:'Pub/Sub + queue' },
+      'typeahead':      { storage:'Redis sorted sets / Trie', scale:'~50K QPS', consistency:'Eventual', bottleneck:'Trie memory', pattern:'Prefix trie + cache' },
+      'zoom':           { storage:'S3 (recordings)', scale:'~1M concurrent', consistency:'Best effort', bottleneck:'Media relay bandwidth', pattern:'P2P / SFU media' },
+      'news-feed':      { storage:'Redis (feed cache)', scale:'~1M DAU', consistency:'Eventual', bottleneck:'Celebrity fan-out', pattern:'Fan-out on write' },
+      'ride-sharing':   { storage:'PostGIS + Redis', scale:'~1M rides/day', consistency:'Strong (bookings)', bottleneck:'Geospatial query', pattern:'Geohash partitioning' },
+      'job-scheduler':  { storage:'Postgres + Redis', scale:'~100K jobs/day', consistency:'Exactly-once', bottleneck:'Lock contention', pattern:'Master election + polling' },
+      'distributed-cache': { storage:'DRAM', scale:'~500K ops/s', consistency:'Eventual', bottleneck:'Memory per node', pattern:'Consistent hashing' },
+      'message-queue':  { storage:'Kafka log (disk)', scale:'~1M msgs/s', consistency:'At-least-once', bottleneck:'Consumer lag', pattern:'Append-only log' },
+      'web-crawler':    { storage:'S3 + Bloom filter', scale:'~10B URLs', consistency:'Eventual', bottleneck:'URL frontier memory', pattern:'BFS + politeness' },
+      'object-storage': { storage:'Erasure-coded disks', scale:'~1 EB total', consistency:'Eventual', bottleneck:'Single-object throughput', pattern:'Chunked upload + CDN' },
+      'cdn':            { storage:'Edge SSDs', scale:'~1Tbps egress', consistency:'Eventual (TTL)', bottleneck:'Cache miss → origin', pattern:'Pull / push caching' },
+      'payment':        { storage:'Postgres (ACID)', scale:'~10K TPS', consistency:'Strong (ACID)', bottleneck:'DB lock contention', pattern:'Idempotency key + 2PC' },
+      'social-graph':   { storage:'Graph DB (Neo4j/JanusGraph)', scale:'~1B edges', consistency:'Eventual', bottleneck:'Graph traversal depth', pattern:'Adjacency list + BFS' },
+    };
+
+    var CMP_ROWS = [
+      { key:'storage',     label:'Primary Storage' },
+      { key:'scale',       label:'Target Scale' },
+      { key:'consistency', label:'Consistency' },
+      { key:'pattern',     label:'Core Pattern' },
+      { key:'bottleneck',  label:'Main Bottleneck' },
+    ];
+
+    function runComparison() {
+      var a = document.getElementById('cmp-a').value;
+      var b = document.getElementById('cmp-b').value;
+      var pa = SYSTEM_PROFILES[a] || {};
+      var pb = SYSTEM_PROFILES[b] || {};
+      var nameA = document.getElementById('cmp-a').options[document.getElementById('cmp-a').selectedIndex].text;
+      var nameB = document.getElementById('cmp-b').options[document.getElementById('cmp-b').selectedIndex].text;
+
+      var h = '<table class="compare-table">' +
+        '<thead><tr><th>Dimension</th><th>' + nameA + '</th><th>' + nameB + '</th></tr></thead><tbody>';
+      CMP_ROWS.forEach(function(row){
+        h += '<tr><td>' + row.label + '</td><td class="hl">' + (pa[row.key]||'—') + '</td><td class="hl">' + (pb[row.key]||'—') + '</td></tr>';
+      });
+      h += '</tbody></table>';
+      document.getElementById('compare-result').innerHTML = h;
+    }
+    // run default comparison on load
+    runComparison();
   </script>
 
+  <script src="js/auth/firebase-init.js"></script>
 </body>
 </html>

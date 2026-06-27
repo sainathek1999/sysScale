@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/tokens.css">
+  <script>!function(){var t=localStorage.getItem("ss_theme")||"light";document.documentElement.setAttribute("data-theme",t)}();</script>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
@@ -18,7 +19,7 @@
   <link rel="stylesheet" href="css/pages.css">
 
   <style>
-    /* Dashboard-only: streak counter in header */
+    /* ── Dashboard layout ───────────────────────────────── */
     .streak-chip {
       display: flex; align-items: center; gap: 5px;
       padding: 4px 10px;
@@ -28,70 +29,117 @@
       font-size: 11px; font-weight: 700; font-family: var(--font-mono);
       color: var(--amber);
     }
-    .dash-grid {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 24px;
-      align-items: start;
-    }
-    @media (max-width: 860px) { .dash-grid { grid-template-columns: 1fr; } }
-    .dash-sidebar { display: flex; flex-direction: column; gap: 16px; }
 
-    /* Sidebar widget card */
+    /* Hero strip: company + level + XP in one bar */
+    .dash-hero {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .dash-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 50%, var(--teal) 100%);
+    }
+    .dash-hero-company { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .dash-hero-badge {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: white;
+      font-family: var(--font-head); flex-shrink: 0;
+      box-shadow: var(--shadow-md);
+    }
+    .dash-hero-name {
+      font-size: 17px; font-weight: 800; color: var(--text);
+      letter-spacing: -.4px; line-height: 1.1;
+    }
+    .dash-hero-level { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .dash-hero-sep { width: 1px; height: 40px; background: var(--border2); flex-shrink: 0; }
+    .dash-hero-stats { display: flex; gap: 20px; }
+    .dash-hero-stat { text-align: center; }
+    .dash-hero-stat-num {
+      font-family: var(--font-mono); font-size: 20px; font-weight: 800;
+      color: var(--indigo); line-height: 1;
+    }
+    .dash-hero-stat-label { font-size: 9px; color: var(--text3); font-weight: 500; margin-top: 2px; }
+    .dash-hero-ring { flex-shrink: 0; margin-left: auto; }
+
+    /* XP bar — now inside hero */
+    .dash-xp {
+      width: 100%; padding-top: 14px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px;
+      flex-basis: 100%;
+    }
+    .dash-xp-badge {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+      color: white; border-radius: var(--r-sm); padding: 4px 9px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .dash-xp-info { flex: 1; }
+    .dash-xp-labels { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .dash-xp-title { font-size: 11.5px; font-weight: 700; color: var(--text); font-family: var(--font-head); }
+    .dash-xp-sub   { font-size: 9.5px; color: var(--text3); font-family: var(--font-mono); }
+    .dash-xp-track { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+    .dash-xp-fill  {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #1F7A5D 0%, #2BA07E 55%, #3DC298 100%);
+      transition: width 1s var(--ease-out);
+    }
+
+    /* Main 2-column grid */
+    .dash-grid { display: grid; grid-template-columns: 1fr 296px; gap: 20px; align-items: start; }
+    @media (max-width: 860px) { .dash-grid { grid-template-columns: 1fr; } }
+    .dash-sidebar { display: flex; flex-direction: column; gap: 14px; }
+
+    /* Sidebar widget */
     .sidebar-widget {
-      background: white; border: 1px solid var(--border);
-      border-radius: var(--r-xl); padding: 20px;
+      background: var(--bg1); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 18px;
       box-shadow: var(--shadow-sm);
     }
     .widget-title {
       font-size: 9px; font-family: var(--font-mono); font-weight: 700;
       letter-spacing: .16em; text-transform: uppercase; color: var(--text4);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    /* Track readiness list */
+    /* Track readiness */
     .readiness-list { display: flex; flex-direction: column; gap: 10px; }
-    .readiness-row { display: flex; align-items: center; gap: 10px; }
-    .readiness-icon { font-size: 13px; width: 24px; text-align: center; flex-shrink: 0; }
+    .readiness-row  { display: flex; align-items: center; gap: 10px; }
+    .readiness-icon { font-size: 13px; width: 22px; text-align: center; flex-shrink: 0; }
     .readiness-info { flex: 1; }
-    .readiness-name {
-      font-size: 11.5px; font-weight: 600; color: var(--text2);
-      margin-bottom: 4px; font-family: var(--font-head);
-    }
-    .readiness-track {
-      height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden;
-    }
-    .readiness-fill {
-      height: 100%; border-radius: 2px;
-      transition: width 1s var(--ease-out);
-    }
+    .readiness-name { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+    .readiness-track { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+    .readiness-fill  { height: 100%; border-radius: 2px; transition: width 1s var(--ease-out); }
     .readiness-pct-label {
-      font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+      font-size: 9.5px; font-family: var(--font-mono); font-weight: 700;
       color: var(--text3); flex-shrink: 0; min-width: 28px; text-align: right;
     }
 
-    /* Company insights panel */
+    /* Insight card */
     .insight-card {
-      background: linear-gradient(135deg, rgba(43,160,126,0.06) 0%, rgba(43,160,126,0.03) 100%);
-      border: 1px solid rgba(43,160,126,0.14);
-      border-radius: var(--r-xl); padding: 20px;
+      background: linear-gradient(135deg, rgba(43,160,126,0.07) 0%, rgba(43,160,126,0.03) 100%);
+      border: 1px solid rgba(43,160,126,0.16);
+      border-radius: var(--r-xl); padding: 18px;
     }
     .insight-eyebrow {
       font-size: 9px; font-family: var(--font-mono); font-weight: 700;
       letter-spacing: .16em; text-transform: uppercase; color: var(--indigo);
       margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
     }
-    .insight-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
-    .insight-text {
-      font-size: 13px; color: var(--text2); line-height: 1.7; font-style: italic;
-    }
-    .insight-source {
-      margin-top: 10px; font-size: 10px; font-family: var(--font-mono);
-      color: var(--text4); font-weight: 700; letter-spacing: 0.04em;
-    }
+    .insight-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .insight-text { font-size: 12.5px; color: var(--text2); line-height: 1.7; font-style: italic; }
+    .insight-source { margin-top: 8px; font-size: 9.5px; font-family: var(--font-mono); color: var(--text4); font-weight: 700; }
   </style>
+  <script src="js/utils/theme.js"></script>
 </head>
-<body>
+<body data-auth-required="true">
 
   <header class="header">
     <a href="index.html" class="logo"><span class="logo-mark">SS</span>SysScale</a>
@@ -105,6 +153,8 @@
     </nav>
     <div class="header-right">
       <div class="streak-chip" id="streak-chip">🔥 0 day streak</div>
+      <button id="theme-btn" onclick="SS.toggleTheme()" title="Dark mode">🌙</button>
+      <div id="nav-auth"></div>
       <span class="version-badge">v4.0</span>
     </div>
   </header>
@@ -112,22 +162,32 @@
   <div class="page-wrap">
     <div class="page-container">
 
-      <!-- Plan widget -->
-      <div class="plan-widget" id="plan-widget">
-        <a href="#" id="plan-badge-link"><div class="plan-company-badge" id="plan-badge">SS</div></a>
-        <div class="plan-info">
-          <a href="#" id="plan-company-link" style="text-decoration:none;"><div class="plan-company-name" id="plan-company-name">SysScale</div></a>
-          <div class="plan-level" id="plan-level">Loading your plan…</div>
+      <!-- Hero: company + stats + XP in one card -->
+      <div class="dash-hero" id="plan-widget">
+        <div class="dash-hero-company">
+          <a href="#" id="plan-badge-link">
+            <div class="dash-hero-badge" id="plan-badge">SS</div>
+          </a>
+          <div>
+            <a href="#" id="plan-company-link" style="text-decoration:none;">
+              <div class="dash-hero-name" id="plan-company-name">SysScale</div>
+            </a>
+            <div class="dash-hero-level" id="plan-level">Loading…</div>
+          </div>
         </div>
-        <div class="plan-stats" id="plan-stats"></div>
-        <div class="plan-readiness">
+
+        <div class="dash-hero-sep"></div>
+
+        <div class="dash-hero-stats" id="plan-stats"></div>
+
+        <div class="dash-hero-ring">
           <div class="readiness-ring-wrap">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="28" fill="none" stroke="#E2E8F0" stroke-width="6"/>
+            <svg width="64" height="64" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="28" fill="none" stroke="var(--bg3)" stroke-width="6"/>
               <circle cx="36" cy="36" r="28" fill="none" stroke="#2BA07E" stroke-width="6"
                 stroke-dasharray="175.93" stroke-dashoffset="175.93"
                 stroke-linecap="round" id="readiness-arc"
-                style="transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)"/>
+                style="transition:stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)"/>
             </svg>
             <div class="readiness-label">
               <div class="readiness-pct" id="readiness-pct">0%</div>
@@ -135,103 +195,88 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- XP bar -->
-      <div class="xp-bar-wrap" id="xp-bar-wrap">
-        <div class="xp-level-badge" id="xp-badge">LV 1 · Intern</div>
-        <div class="xp-info">
-          <div class="xp-labels">
-            <span class="xp-title" id="xp-title">Level 1 — Intern</span>
-            <span class="xp-sub" id="xp-sub">0 / 100 XP</span>
+        <!-- XP row spans full width inside hero -->
+        <div class="dash-xp" id="xp-bar-wrap">
+          <div class="dash-xp-badge" id="xp-badge">LV 1</div>
+          <div class="dash-xp-info">
+            <div class="dash-xp-labels">
+              <span class="dash-xp-title" id="xp-title">Level 1 — Intern</span>
+              <span class="dash-xp-sub"   id="xp-sub">0 / 100 XP</span>
+            </div>
+            <div class="dash-xp-track"><div class="dash-xp-fill" id="xp-fill" style="width:0%"></div></div>
           </div>
-          <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
         </div>
       </div>
 
-      <!-- Main grid -->
+      <!-- Main 2-col grid -->
       <div class="dash-grid">
         <div class="dash-main">
 
-          <!-- Today's mission -->
+          <!-- Today's Mission -->
           <div class="mission-section">
             <div class="section-label">Today's Mission</div>
-            <div class="mission-grid" id="mission-grid">
-              <!-- Filled by JS -->
-            </div>
+            <div class="mission-grid" id="mission-grid"></div>
           </div>
 
-          <!-- AI Mentor card -->
-          <div class="mentor-card" style="margin-bottom:32px;" id="mentor-card">
-            <div class="mentor-card-inner">
-              <div class="mentor-eyebrow">AI Mentor · Company Insight</div>
-              <div class="mentor-title" id="mentor-title">Loading insight…</div>
-              <div class="mentor-insight" id="mentor-insight"></div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <a href="practice.html" class="mentor-cta">Start a mock interview →</a>
-                <a href="#" class="mentor-cta" id="mentor-company-link" style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);">See Full Guide →</a>
-              </div>
-            </div>
+          <!-- Quick Start -->
+          <div class="section-label" style="margin-top:32px;">Quick Start</div>
+          <div class="quick-grid" style="margin-bottom:32px;">
+            <a href="practice.html" class="quick-card">
+              <div class="quick-card-icon">🎯</div>
+              <div class="quick-card-title">Mock Interview</div>
+              <div class="quick-card-desc">35-min timed session. Pick a system, work from memory, check your answer.</div>
+              <div class="quick-card-cta">Start session →</div>
+            </a>
+            <a href="estimator.html" class="quick-card">
+              <div class="quick-card-icon">⚡</div>
+              <div class="quick-card-title">Estimator</div>
+              <div class="quick-card-desc">Tune sliders — watch traffic, storage, bandwidth, and architecture update live.</div>
+              <div class="quick-card-cta">Open tool →</div>
+            </a>
+            <a href="learn.html" class="quick-card">
+              <div class="quick-card-icon">🧠</div>
+              <div class="quick-card-title">Fundamentals</div>
+              <div class="quick-card-desc">CAP theorem, consistency, replication, load balancers — foundations every interview tests.</div>
+              <div class="quick-card-cta">Start learning →</div>
+            </a>
+            <a href="reference.html" class="quick-card">
+              <div class="quick-card-icon">📖</div>
+              <div class="quick-card-title">Reference</div>
+              <div class="quick-card-desc">Capacity constants, latency numbers, throughput limits. Keep open in another tab.</div>
+              <div class="quick-card-cta">Open reference →</div>
+            </a>
+            <a href="companies.html" class="quick-card">
+              <div class="quick-card-icon">🏢</div>
+              <div class="quick-card-title">Company Intel</div>
+              <div class="quick-card-desc">Rubrics, top systems, insider tips for Google, Meta, Amazon, Netflix and more.</div>
+              <div class="quick-card-cta">Explore →</div>
+            </a>
           </div>
 
           <!-- Learning tracks -->
           <div class="section-label">Learning Tracks</div>
           <div class="tracks-grid" id="tracks-grid"></div>
 
-          <!-- Quick actions -->
-          <div class="section-label">Quick Start</div>
-          <div class="quick-grid">
-            <a href="practice.html" class="quick-card">
-              <div class="quick-card-icon">🎯</div>
-              <div class="quick-card-title">Mock Interview</div>
-              <div class="quick-card-desc">35-minute timed session. Pick a system, work from memory, then check your answer.</div>
-              <div class="quick-card-cta">Start a session →</div>
-            </a>
-            <a href="estimator.html" class="quick-card">
-              <div class="quick-card-icon">⚡</div>
-              <div class="quick-card-title">Estimator</div>
-              <div class="quick-card-desc">Tune sliders and watch traffic, storage, bandwidth, and architecture update live.</div>
-              <div class="quick-card-cta">Open tool →</div>
-            </a>
-            <a href="reference.html" class="quick-card">
-              <div class="quick-card-icon">📖</div>
-              <div class="quick-card-title">Reference</div>
-              <div class="quick-card-desc">Capacity constants, latency numbers, component throughput. Keep it open in another tab.</div>
-              <div class="quick-card-cta">Open reference →</div>
-            </a>
-            <a href="learn.html" class="quick-card">
-              <div class="quick-card-icon">🧠</div>
-              <div class="quick-card-title">Fundamentals</div>
-              <div class="quick-card-desc">CAP theorem, consistency models, replication, load balancers — the foundations every interview tests.</div>
-              <div class="quick-card-cta">Start learning →</div>
-            </a>
-            <a href="companies.html" class="quick-card">
-              <div class="quick-card-icon">🏢</div>
-              <div class="quick-card-title">Company Intel</div>
-              <div class="quick-card-desc">Interview rounds, rubrics, top systems, and insider tips for Google, Meta, Amazon, Netflix, and more.</div>
-              <div class="quick-card-cta">Explore companies →</div>
-            </a>
-          </div>
-
         </div><!-- /dash-main -->
 
         <!-- Sidebar -->
         <aside class="dash-sidebar">
 
-          <!-- Readiness by track -->
-          <div class="sidebar-widget">
-            <div class="widget-title">Track Readiness</div>
-            <div class="readiness-list" id="readiness-list"></div>
-          </div>
-
-          <!-- Company insight chip -->
+          <!-- Company insight -->
           <div class="insight-card" id="insight-card">
             <div class="insight-eyebrow">
               <div class="insight-dot"></div>
-              Daily Insight
+              Company Insight
             </div>
             <div class="insight-text" id="insight-text">Loading…</div>
             <div class="insight-source" id="insight-source"></div>
+          </div>
+
+          <!-- Track Readiness -->
+          <div class="sidebar-widget">
+            <div class="widget-title">Track Readiness</div>
+            <div class="readiness-list" id="readiness-list"></div>
           </div>
 
           <!-- Achievements -->
@@ -240,17 +285,17 @@
             <div class="ach-grid" id="ach-grid"></div>
           </div>
 
-          <!-- Reset / setup widget -->
-          <div class="sidebar-widget" style="border-style: dashed; box-shadow: none;">
+          <!-- Update Plan -->
+          <div class="sidebar-widget" style="border-style:dashed;box-shadow:none;">
             <div class="widget-title">Study Plan</div>
-            <div style="font-size:11.5px; color:var(--text3); margin-bottom:12px; line-height:1.6;">
-              Restart onboarding to update your target company, level, or timeline.
+            <div style="font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.6;">
+              Update target company, level, or timeline.
             </div>
-            <a href="onboarding.html" onclick="window.SS.onboarding && window.SS.onboarding.clear()"
-               style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
-                      color:var(--indigo); text-decoration:none; padding:7px 14px;
-                      background:var(--indigo3); border:1px solid rgba(var(--indigo-rgb),0.18);
-                      border-radius:var(--r); transition:background var(--dur-fast);"
+            <a href="onboarding.html" onclick="window.SS.onboarding&&window.SS.onboarding.clear()"
+               style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+                      color:var(--indigo);text-decoration:none;padding:7px 14px;
+                      background:var(--indigo3);border:1px solid rgba(var(--indigo-rgb),0.18);
+                      border-radius:var(--r);transition:background var(--dur-fast);"
                onmouseover="this.style.background='rgba(43,160,126,0.14)'"
                onmouseout="this.style.background='var(--indigo3)'">
               ↺ Update my plan
@@ -273,6 +318,8 @@
     </div>
   </div>
 
+  <!-- Auth gate handled by firebase-init.js via data-auth-required on <body> -->
+
   <script src="js/core/onboarding.js"></script>
   <script src="js/content/tracks.js"></script>
   <script src="js/content/companies.js"></script>
@@ -286,9 +333,9 @@
     var prog   = window.SS.progress;
     var gam    = window.SS.gamification;
 
-    /* ── If not onboarded, redirect ── */
+    /* ── If not onboarded, go to the estimator (core product) ── */
     if (!ob.isComplete()) {
-      window.location.href = 'onboarding.html';
+      window.location.replace('estimator.html');
       return;
     }
 
@@ -328,8 +375,8 @@
     document.getElementById('plan-level').textContent = levelObj.label + ' — ' + levelObj.sub;
 
     document.getElementById('plan-stats').innerHTML =
-      '<div class="plan-stat"><div class="plan-stat-num">' + daysLeft + '</div><div class="plan-stat-label">Days left</div></div>' +
-      '<div class="plan-stat"><div class="plan-stat-num" id="total-done">0</div><div class="plan-stat-label">Modules done</div></div>';
+      '<div class="dash-hero-stat"><div class="dash-hero-stat-num">' + daysLeft + '</div><div class="dash-hero-stat-label">Days left</div></div>' +
+      '<div class="dash-hero-stat"><div class="dash-hero-stat-num" id="total-done">0</div><div class="dash-hero-stat-label">Modules done</div></div>';
 
     /* ── Readiness ring ── */
     var readiness = mentor.calcReadiness(user);
@@ -386,11 +433,12 @@
       missionGrid.appendChild(card);
     });
 
-    /* ── Mentor card ── */
+    /* ── Mentor / insight ── */
     var tip = mentor.getDailyTip(user);
-    document.getElementById('mentor-title').textContent = company.name + ' Interview Insight';
-    document.getElementById('mentor-insight').textContent = tip;
-    document.getElementById('mentor-company-link').href = companyPageUrl;
+    var _set = function(id, prop, val) { var el = document.getElementById(id); if(el) el[prop] = val; };
+    _set('mentor-title', 'textContent', company.name + ' Interview Insight');
+    _set('mentor-insight', 'textContent', tip);
+    _set('mentor-company-link', 'href', companyPageUrl);
 
     /* ── Track readiness sidebar ── */
     var trackReadiness = mentor.calcTrackReadiness(user);
@@ -466,5 +514,6 @@
   })();
   </script>
 
+  <script src="js/auth/firebase-init.js"></script>
 </body>
 </html>

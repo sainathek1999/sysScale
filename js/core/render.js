@@ -220,18 +220,69 @@ window.SS = window.SS || {};
       h += `<div class="bottleneck-warn">⚠ <strong>Bottleneck detected:</strong> ${c.bottleneck}</div>`;
     }
 
+    // Design decisions — rich card format
     if (req.designDecisions && req.designDecisions.length) {
       h += `<div class="req-section">
         <div class="req-section-title">Critical Design Decisions</div>
-        <ul class="req-list">${req.designDecisions.map(d => `<li>${d}</li>`).join('')}</ul>
-      </div>`;
+        <div class="dd-list">`;
+      req.designDecisions.forEach(function(d) {
+        if (typeof d === 'string') {
+          h += `<div class="dd-card-simple"><span class="dd-bullet">◆</span>${d}</div>`;
+        } else {
+          const optsHtml = d.options ? d.options.map(function(opt) {
+            const chosen = opt.name === d.choice;
+            return `<div class="dd-opt${chosen ? ' dd-opt-chosen' : ''}">
+              <div class="dd-opt-name">${opt.name}${chosen ? ' <span class="dd-chosen-tag">chosen</span>' : ''}</div>
+              <div class="dd-opt-pro">✓ ${opt.pro}</div>
+              <div class="dd-opt-con">✗ ${opt.con}</div>
+            </div>`;
+          }).join('<div class="dd-opt-vs">vs</div>') : '';
+          h += `<div class="dd-card">
+            <div class="dd-card-title">${d.title}</div>
+            <div class="dd-problem">${d.problem}</div>
+            ${optsHtml ? `<div class="dd-options">${optsHtml}</div>` : ''}
+            <div class="dd-verdict">
+              <span class="dd-verdict-label">Decision</span>
+              <span class="dd-verdict-choice">${d.choice}</span>
+            </div>
+            <div class="dd-rationale">${d.rationale}</div>
+          </div>`;
+        }
+      });
+      h += `</div></div>`;
     }
 
+    // Failure modes — trigger → impact → mitigation chain
     if (req.failureModes && req.failureModes.length) {
       h += `<div class="req-section">
-        <div class="req-section-title">Failure Modes</div>
-        <ul class="req-list req-list-warn">${req.failureModes.map(f => `<li>${f}</li>`).join('')}</ul>
-      </div>`;
+        <div class="req-section-title">Failure Modes & Recovery</div>
+        <div class="fm-list">`;
+      req.failureModes.forEach(function(f) {
+        if (typeof f === 'string') {
+          h += `<div class="fm-card-simple"><span class="fm-warn-icon">⚠</span>${f}</div>`;
+        } else {
+          h += `<div class="fm-card">
+            <div class="fm-scenario">⚡ ${f.scenario}</div>
+            <div class="fm-chain">
+              <div class="fm-step">
+                <div class="fm-step-icon fm-icon-impact">💥</div>
+                <div class="fm-step-body"><span class="fm-step-label">Impact</span>${f.impact}</div>
+              </div>
+              <div class="fm-connector-line"></div>
+              <div class="fm-step">
+                <div class="fm-step-icon fm-icon-fix">🛡</div>
+                <div class="fm-step-body"><span class="fm-step-label">Mitigation</span>${f.mitigation}</div>
+              </div>
+              ${f.recovery ? `<div class="fm-connector-line"></div>
+              <div class="fm-step">
+                <div class="fm-step-icon fm-icon-recover">♻</div>
+                <div class="fm-step-body"><span class="fm-step-label">Recovery</span>${f.recovery}</div>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+      });
+      h += `</div></div>`;
     }
 
     if (req.monitoring && req.monitoring.length) {

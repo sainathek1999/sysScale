@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/tokens.css">
+  <script>!function(){var t=localStorage.getItem("ss_theme")||"light";document.documentElement.setAttribute("data-theme",t)}();</script>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/animations.css">
 
@@ -437,6 +438,7 @@
     .related-system-link:hover { border-color: rgba(var(--indigo-rgb),0.20); background: var(--indigo3); color: var(--indigo); }
     .related-system-link:last-child { margin-bottom: 0; }
   </style>
+  <script src="js/utils/theme.js"></script>
 </head>
 <body>
 
@@ -458,6 +460,8 @@
       <button class="complete-btn" id="complete-btn" onclick="toggleComplete()">
         <span id="complete-icon">○</span> Mark Complete
       </button>
+      <button id="theme-btn" onclick="SS.toggleTheme()" title="Dark mode">🌙</button>
+      <div id="nav-auth"></div>
     </div>
   </header>
 
@@ -788,5 +792,6 @@
 
   })();
   </script>
+  <script src="js/auth/firebase-init.js"></script>
 </body>
 </html>
