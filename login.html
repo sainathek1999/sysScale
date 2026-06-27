@@ -384,9 +384,19 @@
            'Something went wrong. Please try again.';
   }
   async function ensureUserDoc(uid, email) {
-    var ref = doc(db, 'users', uid);
-    var snap = await getDoc(ref);
-    if (!snap.exists()) await setDoc(ref, { email, hasPaid: false, createdAt: Date.now() });
+    try {
+      var ref = doc(db, 'users', uid);
+      var snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, { email, hasPaid: false, createdAt: Date.now() });
+        console.log('[login] Firestore user doc created:', uid);
+      } else {
+        console.log('[login] Firestore user doc already exists:', uid);
+      }
+    } catch(e) {
+      console.error('[login] Firestore write FAILED:', e.code, e.message);
+      // Don't rethrow — auth succeeded, Firestore failure shouldn't block login
+    }
   }
   function showSuccess(msg) {
     document.getElementById('form-wrap').style.display = 'none';
@@ -406,15 +416,19 @@
       var cred;
       if (_mode === 'signup') {
         cred = await createUserWithEmailAndPassword(auth, email, pass);
+        console.log('[login] Auth user created:', cred.user.uid, email);
         await ensureUserDoc(cred.user.uid, email);
         showSuccess('Account created! Taking you to the app…');
       } else {
         cred = await signInWithEmailAndPassword(auth, email, pass);
+        console.log('[login] Auth sign in OK:', cred.user.uid);
+        await ensureUserDoc(cred.user.uid, email);
         showSuccess('Signed in! Redirecting…');
       }
       setTimeout(function() { redirect(cred.user); }, 1000);
     } catch(err) {
       setLoading(false);
+      console.error('[login] Auth error:', err.code, err.message);
       showError(friendlyError(err.code));
     }
   };

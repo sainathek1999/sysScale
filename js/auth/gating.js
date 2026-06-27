@@ -159,7 +159,11 @@
       f.fbStore.getDoc(f.fbStore.doc(f.db, 'users', user.uid)).then(function (snap) {
         SS._auth.hasPaid = snap.exists() ? !!snap.data().hasPaid : false;
         afterAuthLoaded();
-      }).catch(function () { SS._auth.hasPaid = false; afterAuthLoaded(); });
+      }).catch(function (e) {
+        console.error('[gating] Firestore read failed:', e.code, e.message);
+        SS._auth.hasPaid = false;
+        afterAuthLoaded();
+      });
     } else {
       SS._auth.hasPaid = false;
       afterAuthLoaded();

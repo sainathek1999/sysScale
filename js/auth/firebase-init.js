@@ -47,16 +47,35 @@
         resolved = true;
         var needsAuth = document.body.getAttribute('data-auth-required') === 'true';
         if (needsAuth && !user) {
-          /* Preserve intended destination */
           var next = encodeURIComponent(location.pathname.replace(/^\//, '') + location.search);
           window.location.replace('login.html?next=' + next);
           return;
         }
       }
 
+      /* Ensure Firestore user doc exists — fallback if login.html write failed */
+      if (user) ensureUserDoc(user);
+
       /* Notify gating.js / any other listener */
       if (typeof window._onAuthUser === 'function') window._onAuthUser(user);
     });
+
+    function ensureUserDoc(user) {
+      var ref = fbStore.doc(db, 'users', user.uid);
+      fbStore.getDoc(ref).then(function (snap) {
+        if (!snap.exists()) {
+          return fbStore.setDoc(ref, {
+            email:     user.email || '',
+            hasPaid:   false,
+            createdAt: Date.now(),
+          });
+        }
+      }).then(function () {
+        console.log('[firebase-init] user doc OK for', user.uid);
+      }).catch(function (e) {
+        console.error('[firebase-init] Firestore error:', e.code, e.message);
+      });
+    }
 
     /* ── Nav auth chip ──────────────────────────────────────── */
     function renderNavAuth(user) {
