@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SysScale — Ace Your System Design Interview</title>
-  <meta name="description" content="The only interactive system design prep tool with real capacity math, architecture diagrams, and structured reasoning cards. 16 systems. One lifetime payment.">
+  <meta name="description" content="The only interactive system design prep tool with real capacity math, architecture diagrams, and structured reasoning cards. 16 systems. Free to use.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -403,7 +403,6 @@
     }
     .l-sys-card:hover { border-color: rgba(43,160,126,0.25); background: rgba(43,160,126,0.05); }
     .l-sys-card.free { border-color: rgba(43,160,126,0.2); }
-    .l-sys-card.locked { opacity: 0.7; }
     .l-sys-icon { font-size: 22px; flex-shrink: 0; }
     .l-sys-info { flex: 1; min-width: 0; }
     .l-sys-name { font-size: 12.5px; font-weight: 700; color: #D8EDE6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -449,75 +448,6 @@
     }
 
     /* ── PRICING ─────────────────────────────────────────────── */
-    .l-pricing {
-      padding: 96px 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(43,160,126,0.08) 0%, transparent 70%);
-    }
-    .l-pricing-inner { text-align: center; }
-    .l-pricing-inner .section-sub { margin: 0 auto 48px; }
-    .l-pricing-card {
-      max-width: 520px; margin: 0 auto;
-      background: rgba(13,26,32,0.95); border: 1px solid rgba(43,160,126,0.3);
-      border-radius: 24px; padding: 44px 40px;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 60px rgba(43,160,126,0.1);
-      position: relative; overflow: hidden;
-    }
-    .l-pricing-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--teal), var(--teal2), var(--teal), transparent);
-    }
-    .l-pricing-popular {
-      position: absolute; top: 20px; right: 20px;
-      background: linear-gradient(135deg, #F59E0B, #F0A020);
-      color: #000; font-size: 10px; font-weight: 800;
-      font-family: var(--mono); letter-spacing: .1em;
-      padding: 4px 12px; border-radius: 20px;
-    }
-    .l-pricing-name {
-      font-family: var(--mono); font-size: 11px; font-weight: 700;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--teal);
-      margin-bottom: 24px;
-    }
-    .l-pricing-price {
-      display: flex; align-items: flex-start; justify-content: center; gap: 4px;
-      margin-bottom: 8px;
-    }
-    .l-pricing-curr { font-size: 28px; font-weight: 700; color: #E0EDE8; padding-top: 12px; }
-    .l-pricing-amt { font-size: 80px; font-weight: 800; color: #F0F8F4; letter-spacing: -4px; line-height: 1; }
-    .l-pricing-once {
-      font-size: 13px; color: var(--muted); margin-bottom: 32px;
-    }
-    .l-pricing-was {
-      font-size: 14px; color: rgba(255,255,255,0.3); text-decoration: line-through;
-      margin-left: 8px; font-weight: 500;
-    }
-    .l-pricing-features {
-      list-style: none; text-align: left; margin-bottom: 36px;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .l-pricing-features li {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 14px; color: #C0D4CC;
-    }
-    .l-pricing-features li::before {
-      content: '✓'; width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(43,160,126,0.15); border: 1px solid rgba(43,160,126,0.3);
-      color: var(--teal2); font-size: 11px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .l-pricing-cta {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      width: 100%; padding: 18px; border-radius: 12px; font-size: 16px; font-weight: 700;
-      background: linear-gradient(135deg, var(--teal) 0%, var(--teal2) 100%);
-      color: white; box-shadow: var(--teal-glow); cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: none; font-family: inherit;
-    }
-    .l-pricing-cta:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(43,160,126,0.5); }
-    .l-pricing-guarantee {
-      margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-    }
 
     /* ── FAQ ─────────────────────────────────────────────────── */
     .l-faq { padding: 96px 0; }
@@ -688,12 +618,11 @@
       <div class="l-nav-links">
         <a href="#features">Features</a>
         <a href="#systems">Systems</a>
-        <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
       </div>
       <div class="l-nav-ctas" id="nav-ctas">
         <a href="login.html" class="l-btn-ghost">Sign In</a>
-        <button class="l-btn-primary" onclick="openAuth('signup')">Get Access · $49</button>
+        <a href="login.html" class="l-btn-primary">Get Started Free →</a>
       </div>
     </div>
   </nav>
@@ -778,9 +707,7 @@
           16 interactive systems with real capacity math, live architecture diagrams, and reasoning cards that explain <em>why</em> — not just what. Built by engineers who cleared FAANG.
         </p>
         <div class="l-hero-ctas">
-          <button class="l-btn-big-primary" onclick="openAuth('signup')">
-            Get Lifetime Access · $49
-          </button>
+          <a href="login.html" class="l-btn-big-primary">Get Started Free →</a>
           <a href="estimator.html" class="l-btn-big-ghost">Try free systems →</a>
         </div>
         <div class="l-hero-stats">
@@ -1004,7 +931,7 @@
       <div class="l-systems-header reveal">
         <div class="l-badge">16 Systems</div>
         <h2 class="section-h2">Every system design<br>question that matters.</h2>
-        <p class="section-sub">Handpicked from real FAANG interview reports. 4 free forever. Unlock all 16 with one payment.</p>
+        <p class="section-sub">Handpicked from real FAANG interview reports. All 16 systems, free to use.</p>
       </div>
       <div class="l-systems-grid reveal">
         <div class="l-sys-card free">
@@ -1027,68 +954,68 @@
           <div class="l-sys-info"><div class="l-sys-name">Message Queue</div><div class="l-sys-cat">Messaging</div></div>
           <div class="l-sys-badge free-badge">FREE</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">💬</div>
           <div class="l-sys-info"><div class="l-sys-name">Chat Service</div><div class="l-sys-cat">Real-time</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🔔</div>
           <div class="l-sys-info"><div class="l-sys-name">Notifications</div><div class="l-sys-cat">Fan-out</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🔍</div>
           <div class="l-sys-info"><div class="l-sys-name">Typeahead Search</div><div class="l-sys-cat">Search</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">📹</div>
           <div class="l-sys-info"><div class="l-sys-name">Video Calls (Zoom)</div><div class="l-sys-cat">Real-time Media</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">📰</div>
           <div class="l-sys-info"><div class="l-sys-name">News Feed</div><div class="l-sys-cat">Fan-out</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🚗</div>
           <div class="l-sys-info"><div class="l-sys-name">Ride Sharing</div><div class="l-sys-cat">Geo / Matching</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">⏰</div>
           <div class="l-sys-info"><div class="l-sys-name">Job Scheduler</div><div class="l-sys-cat">Distributed</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🕷️</div>
           <div class="l-sys-info"><div class="l-sys-name">Web Crawler</div><div class="l-sys-cat">Large Scale</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🗄️</div>
           <div class="l-sys-info"><div class="l-sys-name">Object Storage</div><div class="l-sys-cat">Storage</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">🌐</div>
           <div class="l-sys-info"><div class="l-sys-name">CDN</div><div class="l-sys-cat">Distribution</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">💳</div>
           <div class="l-sys-info"><div class="l-sys-name">Payment System</div><div class="l-sys-cat">Fintech</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
-        <div class="l-sys-card locked">
+        <div class="l-sys-card">
           <div class="l-sys-icon">👥</div>
           <div class="l-sys-info"><div class="l-sys-name">Social Graph</div><div class="l-sys-cat">Graph / Scale</div></div>
           <div class="l-sys-badge pro-badge">PRO</div>
         </div>
       </div>
-      <p class="l-systems-note">4 free forever · 12 unlocked with <a href="#pricing">Lifetime Access →</a></p>
+      <p class="l-systems-note">All 16 systems · Free to use</p>
     </div>
   </section>
 
@@ -1138,43 +1065,6 @@
     </div>
   </section>
 
-  <!-- ── PRICING ────────────────────────────────────────────────── -->
-  <section class="l-pricing" id="pricing">
-    <div class="l-inner">
-      <div class="l-pricing-inner">
-        <div class="l-badge" style="margin:0 auto 20px;">Pricing</div>
-        <h2 class="section-h2 reveal">One payment.<br><span class="gradient-text">Lifetime access.</span></h2>
-        <p class="section-sub reveal" style="margin:0 auto 48px;">No subscriptions. No monthly fees. Pay once, use forever — including all future systems we add.</p>
-        <div class="l-pricing-card reveal">
-          <div class="l-pricing-popular">🔥 BEST VALUE</div>
-          <div class="l-pricing-name">Lifetime Access</div>
-          <div class="l-pricing-price">
-            <span class="l-pricing-curr">$</span>
-            <span class="l-pricing-amt">49</span>
-          </div>
-          <div class="l-pricing-once">one-time payment <span class="l-pricing-was">$97</span></div>
-          <ul class="l-pricing-features">
-            <li>All 16 systems (12 pro + 4 free)</li>
-            <li>Live capacity estimator with sliders</li>
-            <li>Architecture diagrams for every system</li>
-            <li>48 structured reasoning cards (Phase 4)</li>
-            <li>48 failure mode chains</li>
-            <li>35-min mock interview timer with prompts</li>
-            <li>Concept quiz bank (64+ questions)</li>
-            <li>Comparison mode across all systems</li>
-            <li>All future systems added (free)</li>
-            <li>No account required after purchase</li>
-          </ul>
-          <button class="l-pricing-cta" onclick="openAuth('signup')">
-            Get Lifetime Access · $49 →
-          </button>
-          <div class="l-pricing-guarantee">
-            🛡 30-day money-back guarantee · No questions asked
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ── FAQ ───────────────────────────────────────────────────── -->
   <section class="l-faq l-section" id="faq">
@@ -1186,31 +1076,17 @@
       <div class="l-faq-list reveal">
         <div class="l-faq-item">
           <button class="l-faq-q" onclick="toggleFaq(this)">
-            What's included in the free tier?
+            Is this really free?
             <span class="l-faq-icon">+</span>
           </button>
-          <div class="l-faq-a">The free tier includes 4 complete systems: Rate Limiter, URL Shortener, Distributed Cache, and Message Queue. Each includes the full 4-phase framework, capacity estimator, architecture diagram, and all reasoning cards. No account required to use the free systems.</div>
-        </div>
-        <div class="l-faq-item">
-          <button class="l-faq-q" onclick="toggleFaq(this)">
-            Is this a subscription?
-            <span class="l-faq-icon">+</span>
-          </button>
-          <div class="l-faq-a">No. $49 is a one-time payment. You get lifetime access to all current and future systems. We'll never charge you again or require a subscription to keep using it.</div>
+          <div class="l-faq-a">Yes, completely free. All 16 systems, all phases, all reasoning cards — no payment, no subscription, no catch. Just create an account to save your progress.</div>
         </div>
         <div class="l-faq-item">
           <button class="l-faq-q" onclick="toggleFaq(this)">
             How is this different from system design books or YouTube?
             <span class="l-faq-icon">+</span>
           </button>
-          <div class="l-faq-a">Books and videos are passive. SysScale is interactive — you adjust parameters and watch the entire system (math, architecture, tradeoffs) update live. You learn by doing, not by reading. The reasoning cards also show you structured arguments you can practice saying out loud, which is exactly what interviews test.</div>
-        </div>
-        <div class="l-faq-item">
-          <button class="l-faq-q" onclick="toggleFaq(this)">
-            Do you offer refunds?
-            <span class="l-faq-icon">+</span>
-          </button>
-          <div class="l-faq-a">Yes. We offer a 30-day no-questions-asked refund. If you're not satisfied for any reason, email us and we'll refund you in full within 24 hours.</div>
+          <div class="l-faq-a">Books and videos are passive. This tool is interactive — you adjust parameters and watch the entire system (math, architecture, tradeoffs) update live. You learn by doing, not by reading. The reasoning cards also show you structured arguments you can practice saying out loud, which is exactly what interviews test.</div>
         </div>
         <div class="l-faq-item">
           <button class="l-faq-q" onclick="toggleFaq(this)">
@@ -1231,7 +1107,7 @@
         <h2 class="section-h2">Stop guessing.<br><span class="gradient-text">Start designing.</span></h2>
         <p class="section-sub" style="margin: 0 auto 40px;">Join engineers who used SysScale to go from "I don't know where to start" to Staff Engineer offers.</p>
         <div class="l-footer-cta-btns">
-          <button class="l-btn-big-primary" onclick="openAuth('signup')">Get Lifetime Access · $49</button>
+          <a href="login.html" class="l-btn-big-primary">Get Started Free →</a>
           <a href="estimator.html" class="l-btn-big-ghost">Try 4 free systems →</a>
         </div>
       </div>
@@ -1267,7 +1143,7 @@
           <div class="l-logo-mark" style="width:44px;height:44px;font-size:14px;margin:0 auto 12px;">SS</div>
         </div>
         <h2 class="l-auth-title" id="auth-title">Create your account</h2>
-        <p class="l-auth-sub" id="auth-sub">Get lifetime access to all 16 systems.</p>
+        <p class="l-auth-sub" id="auth-sub">Create your free account.</p>
         <div class="l-auth-tabs">
           <button class="l-auth-tab active" id="tab-signup" onclick="switchAuthTab('signup')">Sign up</button>
           <button class="l-auth-tab" id="tab-login" onclick="switchAuthTab('login')">Sign in</button>
@@ -1425,7 +1301,7 @@
       document.getElementById('tab-login').classList.toggle('active', mode === 'login');
       document.getElementById('auth-title').textContent = mode === 'signup' ? 'Create your account' : 'Welcome back';
       document.getElementById('auth-sub').textContent = mode === 'signup'
-        ? 'Get lifetime access to all 16 systems.' : 'Sign in to your SysScale account.';
+        ? 'Create your free account.' : 'Sign in to your account.';
       document.getElementById('auth-submit').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
       clearAuthError();
     }

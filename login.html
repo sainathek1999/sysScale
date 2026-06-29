@@ -345,7 +345,7 @@
     document.getElementById('tab-login').classList.toggle('active',  mode === 'login');
     document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
     document.getElementById('form-title').textContent = mode === 'login' ? 'Welcome back'   : 'Create account';
-    document.getElementById('form-sub').textContent   = mode === 'login' ? 'Sign in to your SysScale account' : 'Get lifetime access to all 16 systems';
+    document.getElementById('form-sub').textContent   = mode === 'login' ? 'Sign in to your account' : 'Create your free account';
     document.getElementById('submit-btn').textContent = mode === 'login' ? 'Sign in' : 'Create account';
     document.getElementById('forgot-link').style.display = mode === 'login' ? '' : 'none';
     clearMsg();
