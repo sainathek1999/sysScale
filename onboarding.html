@@ -90,7 +90,7 @@
 
     /* ── Card ────────────────────────────────────────── */
     .onb-card {
-      background: white;
+      background: var(--bg1);
       border: 1px solid var(--border2);
       border-radius: 20px;
       padding: 40px 44px;
@@ -150,7 +150,7 @@
       display: flex; flex-direction: column;
       align-items: center; gap: 8px;
       cursor: pointer;
-      background: white;
+      background: var(--bg1);
       transition: border-color var(--dur), box-shadow var(--dur),
                   transform var(--dur) var(--ease-out), background var(--dur-fast);
       user-select: none;
@@ -162,8 +162,8 @@
     }
     .company-card.selected {
       border-color: var(--company-color, var(--indigo));
-      background: color-mix(in srgb, var(--company-color, var(--indigo)) 6%, white);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--company-color, var(--indigo)) 15%, transparent);
+      background: var(--indigo3);
+      box-shadow: 0 0 0 3px rgba(var(--indigo-rgb), 0.15);
       transform: translateY(-2px);
     }
     .company-logo {
@@ -184,7 +184,7 @@
     .level-option {
       border: 2px solid var(--border2); border-radius: var(--r-lg);
       padding: 14px 18px; display: flex; align-items: center;
-      gap: 14px; cursor: pointer; background: white;
+      gap: 14px; cursor: pointer; background: var(--bg1);
       transition: border-color var(--dur), box-shadow var(--dur),
                   transform var(--dur) var(--ease-out);
       user-select: none;
@@ -228,7 +228,7 @@
     }
     .timeline-btn {
       padding: 10px 18px; border-radius: 20px;
-      border: 2px solid var(--border2); background: white;
+      border: 2px solid var(--border2); background: var(--bg1);
       font-size: 13px; font-weight: 600; font-family: var(--font-head);
       color: var(--text2); cursor: pointer;
       transition: border-color var(--dur), background var(--dur-fast),
@@ -262,7 +262,7 @@
     .quiz-opt {
       display: flex; align-items: center; gap: 12px;
       padding: 11px 16px; border-radius: var(--r);
-      border: 1.5px solid var(--border2); background: white;
+      border: 1.5px solid var(--border2); background: var(--bg1);
       cursor: pointer; font-size: 13px; color: var(--text2);
       transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
       user-select: none;
@@ -292,7 +292,7 @@
     }
     .onb-back {
       padding: 10px 20px; border-radius: var(--r);
-      border: 1px solid var(--border2); background: white;
+      border: 1px solid var(--border2); background: var(--bg1);
       font-size: 13px; font-weight: 600; font-family: var(--font-head);
       color: var(--text2); cursor: pointer;
       transition: background var(--dur-fast), border-color var(--dur-fast);
@@ -348,7 +348,7 @@
       line-height: 1.7; margin-bottom: 32px;
     }
     .success-plan {
-      background: white; border: 1px solid var(--border2);
+      background: var(--bg1); border: 1px solid var(--border2);
       border-radius: var(--r-xl); padding: 24px 28px;
       width: 100%; max-width: 480px; margin-bottom: 32px;
       box-shadow: var(--shadow); text-align: left;
@@ -407,7 +407,10 @@
         <div class="onb-logo-mark">SS</div>
         SysScale
       </a>
-      <button class="onb-skip" onclick="skipOnboarding()">Skip for now →</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="theme-btn" onclick="SS.toggleTheme()" title="Dark mode" style="width:30px;height:30px;border-radius:7px;border:1px solid var(--border2);background:none;cursor:pointer;font-size:14px;color:var(--text3);display:inline-flex;align-items:center;justify-content:center;font-family:inherit;">🌙</button>
+        <button class="onb-skip" onclick="skipOnboarding()">Skip for now →</button>
+      </div>
     </nav>
 
     <!-- Progress dots -->
