@@ -13,9 +13,46 @@ npm start          # python3 -m http.server 8000  →  http://localhost:8000
 
 ## Architecture
 
-This is a zero-dependency vanilla JS/CSS app. Everything lives on a single global namespace `window.SS`.
+Zero-dependency vanilla JS/CSS app. Everything lives on a single global namespace `window.SS`.
 
-**Execution order matters** — `index.html` loads scripts in this sequence:
+### Pages
+
+| Page | Auth required | Purpose |
+|---|---|---|
+| `landing.html` | No | Marketing / unauthenticated entry point |
+| `login.html` | No | Google Sign-In via Firebase |
+| `onboarding.html` | No | 4-step wizard (company/level/timeline) |
+| `estimator.html` | No | Main estimator tool — accessible without onboarding |
+| `index.html` | Yes | Dashboard — redirects to `estimator.html` if not onboarded |
+| `learn.html` | No | Curriculum browser (5 tracks, 18+ modules) |
+| `module.html` | No | Individual module content + quiz |
+| `practice.html` | No | Mock interview (timed sessions) |
+| `reference.html` | No | Capacity constants / latency cheat sheet |
+| `companies.html` | No | Company grid |
+| `company.html` | No | Per-company rubric + top systems |
+
+### Auth layer
+
+Pages requiring login add `data-auth-required="true"` to `<body>`. `firebase-init.js` reads this attribute on `onAuthStateChanged` and redirects unauthenticated users to `login.html?next=<current-path>`.
+
+Two Firebase scripts serve different purposes:
+- **`js/auth/firebase-init.js`** — use on pages that need Firestore writes or auth gating. Exposes `window.SS_FIREBASE` (`auth`, `db`, `fbAuth`, `fbStore`) and `window.SS_USER`. Fires `window._onAuthUser(user)` after auth resolves. Also creates/ensures the Firestore user doc (`users/{uid}` with `email`, `hasPaid`, `createdAt`).
+- **`js/auth/nav-auth.js`** — lightweight script for pages that only need the nav Sign In / Sign Out chip. Initializes Firebase under a named app `'nav'` to avoid conflicts.
+
+### localStorage keys
+
+All user state is localStorage-first (no server sync):
+
+| Key | Owner | Contents |
+|---|---|---|
+| `ss_theme` | `theme.js` | `'light'` or `'dark'` |
+| `ss_user_v1` | `onboarding.js` | Onboarding answers + XP + streak + `savedAt` |
+| `ss_progress_v1` | `progress.js` | `completedModules[]` + `quizScores{}` |
+| `ss_achievements_v1` | `gamification.js` | Unlocked achievement IDs |
+
+### Estimator script load order
+
+`estimator.html` loads scripts in this exact sequence (order matters):
 
 1. `js/utils/format.js` — number formatters (`fmt`, `fmtB`, `fmtBw`) attached to `window.SS`
 2. `js/core/diagram.js` — `SS.drawArch(nodes, edges)` SVG builder
@@ -28,10 +65,25 @@ This is a zero-dependency vanilla JS/CSS app. Everything lives on a single globa
 
 **Bottleneck signaling:** when `compute()` sets `c.bottleneck` to a non-null string, `render.js` injects a warning banner, and any arch node with `color: '#ef4444'` gets the pulsing CSS animation via the `.arch-node-bottleneck` class.
 
+### Learning platform modules
+
+Four core modules are used by `index.html` and `learn.html`/`module.html`:
+
+- **`js/core/onboarding.js`** → `window.SS.onboarding` — 4-step wizard state; `isComplete()`, `getUser()`, `getCompany(id)`, `clear()`, `LEVELS`, `TIMELINES`.
+- **`js/core/progress.js`** → `window.SS.progress` — module completion; `completeModule(id)`, `isCompleted(id)`, `getTrackProgress(trackId)`, `saveQuizScore(moduleId, score)`.
+- **`js/core/gamification.js`** → `window.SS.gamification` — XP/level tiers (Intern → Legend), achievements, streak; `levelFromXP(xp)`, `checkAndUnlock()`, `updateStreak()`.
+- **`js/core/mentor.js`** → `window.SS.mentor` — daily task generation + readiness score (0–100 weighted: 40% module completion, 30% quiz avg, 20% days active, 10% mock count); `calcReadiness(user)`, `generateDailyTasks(user)`.
+
+Content lives in `js/content/`:
+- `tracks.js` → `window.SS.TRACKS` (array of 5 track objects; `id` values: `foundations`, `storage`, `patterns`, `systems`, `interview`)
+- `modules-foundations.js`, `modules-storage.js`, `modules-patterns.js`, `modules-interview.js` — module definitions per track
+- `companies.js` → company rubrics / insights
+- `requirements.js` — requirements framework content
+
 ## Adding a new system
 
 1. Create `js/systems/your-system.js` — call `window.SS.register('your-id', { ... })` inside an IIFE.
-2. Add `<script src="js/systems/your-system.js"></script>` to `index.html` before `js/app.js`.
+2. Add `<script src="js/systems/your-system.js"></script>` to `estimator.html` before `js/app.js`.
 
 The system definition object must implement:
 
@@ -54,6 +106,7 @@ The system definition object must implement:
 - Arch node colors are the one exception: use hex literals when calling `drawArch` (e.g. `color: '#ef4444'` for bottleneck red, `color: '#6366f1'` for default indigo).
 - Responsive breakpoints: right panel hidden below 920 px, left sidebar hidden below 680 px (defined in `css/layout.css`).
 - All animations respect `prefers-reduced-motion` (defined in `css/animations.css`).
+- Theme is applied via `data-theme` on `<html>`. Each page `<head>` has an inline `<script>` that reads `ss_theme` from localStorage and sets the attribute before first paint — this prevents the light→dark flash. Do not remove this inline script.
 
 ## HTML CSS class reference (for `steps` body HTML)
 

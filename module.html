@@ -40,7 +40,7 @@
     /* ── Header ───────────────────────────────────────────── */
     .header {
       height: var(--header-h);
-      background: rgba(255,255,255,0.92);
+      background: var(--bg1);
       border-bottom: 1px solid var(--border2);
       box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(15,23,42,0.04);
       display: flex;
@@ -155,7 +155,7 @@
       margin-left: auto;
     }
     .complete-btn:hover { background: rgba(16,185,129,0.14); border-color: rgba(16,185,129,0.35); }
-    .complete-btn.done { background: rgba(16,185,129,0.14); border-color: var(--teal); color: #047857; }
+    .complete-btn.done { background: rgba(16,185,129,0.14); border-color: var(--teal); color: var(--teal); }
 
     /* Module divider */
     .module-divider {
@@ -176,7 +176,7 @@
     .module-body strong { color: var(--text); font-weight: 700; }
 
     .module-body .formula-box {
-      background: white; border: 1px solid var(--border2);
+      background: var(--bg1); border: 1px solid var(--border2);
       border-left: 3px solid var(--indigo); border-radius: var(--r);
       padding: 14px 18px; font-family: var(--font-mono); font-size: 12.5px;
       color: var(--text2); margin: 16px 0; line-height: 2.2;
@@ -228,7 +228,7 @@
 
     /* ── Key points ───────────────────────────────────────── */
     .keypoints-section {
-      background: white; border: 1px solid var(--border);
+      background: var(--bg1); border: 1px solid var(--border);
       border-radius: var(--r-xl); padding: 24px 28px;
       margin: 40px 0; box-shadow: var(--shadow-sm);
     }
@@ -256,7 +256,7 @@
 
     /* ── Quiz ─────────────────────────────────────────────── */
     .quiz-section {
-      background: white; border: 1px solid var(--border);
+      background: var(--bg1); border: 1px solid var(--border);
       border-radius: var(--r-xl); padding: 28px;
       margin: 40px 0; box-shadow: var(--shadow);
     }
@@ -292,7 +292,7 @@
     .quiz-opt {
       display: flex; align-items: flex-start; gap: 10px;
       padding: 12px 16px; border-radius: var(--r);
-      border: 1.5px solid var(--border2); background: white;
+      border: 1.5px solid var(--border2); background: var(--bg1);
       cursor: pointer; font-size: 13.5px; color: var(--text2); line-height: 1.5;
       transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
       user-select: none; text-align: left;
@@ -304,10 +304,10 @@
       border-color: var(--indigo); background: var(--indigo3); color: var(--indigo); font-weight: 600;
     }
     .quiz-opt.correct {
-      border-color: var(--teal); background: rgba(16,185,129,0.07); color: #065F46; font-weight: 600; cursor: default;
+      border-color: var(--teal); background: rgba(16,185,129,0.07); color: var(--teal); font-weight: 600; cursor: default;
     }
     .quiz-opt.wrong {
-      border-color: var(--red); background: rgba(239,68,68,0.05); color: #991B1B; cursor: default;
+      border-color: var(--red); background: rgba(239,68,68,0.05); color: var(--red); cursor: default;
     }
     .quiz-opt-key {
       width: 22px; height: 22px; border-radius: 6px;
@@ -375,7 +375,7 @@
     .nav-btn {
       display: flex; flex-direction: column; gap: 3px;
       padding: 14px 20px; border-radius: var(--r-lg);
-      border: 1px solid var(--border); background: white;
+      border: 1px solid var(--border); background: var(--bg1);
       text-decoration: none; cursor: pointer;
       box-shadow: var(--shadow-sm);
       transition: border-color var(--dur), box-shadow var(--dur), transform var(--dur) var(--ease-out);
@@ -397,7 +397,7 @@
     }
 
     .sidebar-card {
-      background: white; border: 1px solid var(--border);
+      background: var(--bg1); border: 1px solid var(--border);
       border-radius: var(--r-lg); padding: 16px 18px;
       margin-bottom: 14px; box-shadow: var(--shadow-sm);
     }
@@ -430,7 +430,7 @@
     .related-system-link {
       display: flex; align-items: center; gap: 8px;
       padding: 8px 10px; border-radius: var(--r);
-      border: 1px solid var(--border); background: white;
+      border: 1px solid var(--border); background: var(--bg1);
       text-decoration: none; font-size: 12px; color: var(--text2);
       margin-bottom: 6px;
       transition: border-color var(--dur-fast), background var(--dur-fast);
